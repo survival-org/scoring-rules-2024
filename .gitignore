@@ -1,0 +1,8 @@
+renv/library
+renv/staging
+getopt
+os
+sys
+sysconfig
+.Rprofile
+.Rproj.user/

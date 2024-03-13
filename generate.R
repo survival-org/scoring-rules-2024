@@ -104,7 +104,7 @@ with_progress({
         # define Kaplan-Meier, CoxPH and AFT-Weibull models
         kaplan = lrn("surv.kaplan")
         cox = lrn("surv.coxph")
-        aft = lrn("surv.parametric", type = "aft", dist = "weibull", discrete = TRUE)
+        aft = lrn("surv.parametric", form = "aft", dist = "weibull", discrete = TRUE)
 
         # add encapsulation for capturing errors
         kaplan$encapsulate = c(train = "evaluate", predict = "evaluate")

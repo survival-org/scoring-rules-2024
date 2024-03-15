@@ -1,8 +1,8 @@
-#' Make datasets to tasks, check PH assumption and censoring dependence
-#' Compare ISBS proper vs improper on some real-world datasets
-library(tidyverse)
+#' Convert datasets to tasks, record if PH assumption is satisfied or not and
+#' other censoring-related info
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(mlr3misc))
 library(mlr3proba)
-library(mlr3misc)
 
 paths = list.files(path = "data", full.names = TRUE)
 
@@ -51,7 +51,6 @@ task_tbl = lapply(paths, function(path) {
 
   tibble(
     task = list(task),
-    coef_tbl = list(coef_tbl),
     task_id = task_id,
     n_obs = n_obs,
     n_vars = n_vars,
@@ -64,4 +63,4 @@ task_tbl = lapply(paths, function(path) {
   )
 }) |> bind_rows()
 
-saveRDS(task_tbl, file = "data/task_tbl.rds")
+saveRDS(task_tbl, file = "task_tbl.rds")

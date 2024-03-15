@@ -18,7 +18,7 @@ library(pracma)
 #' 5) Number of datasets to generate: 1000 `n_dfs`
 #' 6) Number of covariates (random select): 3-10 `n_vars` (low-dim setting)
 
-n_dfs = 50 # Number of datasets to generate PER combo of the (1)-(4) parameters
+n_dfs = 100 # Number of datasets to generate PER combo of the (1)-(4) parameters
 sim_grid = expand.grid(
   cens_dep = c(TRUE, FALSE),
   prop_haz = c(TRUE, FALSE),
@@ -131,10 +131,10 @@ with_progress({
           km_proper_scores = graf_proper$scores
           km_improper_scores = graf_improper$scores
         } else {
-          km_proper = NULL
-          km_improper = NULL
-          km_proper_scores = NULL
-          km_improper_scores = NULL
+          km_proper = NA
+          km_improper = NA
+          km_proper_scores = NA
+          km_improper_scores = NA
         }
 
         # Cox
@@ -148,10 +148,10 @@ with_progress({
           cox_proper_scores = graf_proper$scores
           cox_improper_scores = graf_improper$scores
         } else {
-          cox_proper = NULL
-          cox_improper = NULL
-          cox_proper_scores = NULL
-          cox_improper_scores = NULL
+          cox_proper = NA
+          cox_improper = NA
+          cox_proper_scores = NA
+          cox_improper_scores = NA
         }
 
         # AFT
@@ -165,10 +165,10 @@ with_progress({
           aft_proper_scores = graf_proper$scores
           aft_improper_scores = graf_improper$scores
         } else {
-          aft_proper = NULL
-          aft_improper = NULL
-          aft_proper_scores = NULL
-          aft_improper_scores = NULL
+          aft_proper = NA
+          aft_improper = NA
+          aft_proper_scores = NA
+          aft_improper_scores = NA
         }
 
         #' Convert the simulated distr predictions to `mlr3proba::PredictionSurv()`
@@ -181,10 +181,10 @@ with_progress({
         p = try(mlr3proba::.surv_return(surv = surv), silent = TRUE)
 
         if (inherits(p, "try-error")) {
-          sim_proper = NULL
-          sim_improper = NULL
-          sim_proper_scores = NULL
-          sim_improper_scores = NULL
+          sim_proper = NA
+          sim_improper = NA
+          sim_proper_scores = NA
+          sim_improper_scores = NA
         } else {
           # keep only the simulated predictions of the test set
           pred_sim = mlr3proba::PredictionSurv$new(
@@ -201,13 +201,12 @@ with_progress({
         test_truth = task$truth(rows = part$test)
 
         data_list[[index]] = tibble(
-          # general info about the simulated train and test data
-          n_obs = n_obs, # train
+          # general info about the simulated data
+          n_obs = n_obs,
           n_vars = n_vars,
           prop_haz = prop_haz,
-          cens_prop = cens_prop, # train
+          cens_prop = cens_prop,
           cens_dep = cens_dep,
-          test_truth = list(test_truth), # test
           # KM
           km_proper = km_proper,
           km_improper = km_improper,
@@ -228,8 +227,10 @@ with_progress({
           sim_improper = sim_improper,
           sim_proper_scores = list(sim_proper_scores),
           sim_improper_scores = list(sim_improper_scores),
-          # data takes too much space to keep
+          # miscellenious data (takes too much space to keep)
           # sim_data = list(simdata$data),
+          # test_truth = list(test_truth),
+          # test_rows = list(part$test)
           # sim_surv = list(simdata$ind.survive)
         )
         index = index + 1

@@ -6,6 +6,7 @@ library(mlr3proba)
 library(mlr3extralearners)
 library(progressr)
 library(pracma)
+library(future.apply)
 
 #' Parameters of interest:
 #' 1) independent (random) vs dependent censoring (`cens_dep`)

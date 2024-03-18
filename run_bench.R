@@ -106,8 +106,10 @@ with_progress({
       }
 
       tibble(
+        # task info
         task_id = task$id,
-        aft = list(aft),
+        # task = list(task),
+        # part = list(part),
         # KM
         km_proper = km_proper,
         km_improper = km_improper,

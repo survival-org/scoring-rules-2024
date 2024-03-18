@@ -198,9 +198,6 @@ with_progress({
           sim_improper_scores = graf_improper$scores
         }
 
-        #' keep survival (time, status) of the test set (`Surv` object)
-        test_truth = task$truth(rows = part$test)
-
         data_list[[index]] = tibble(
           # general info about the simulated data
           n_obs = n_obs,
@@ -229,9 +226,8 @@ with_progress({
           sim_proper_scores = list(sim_proper_scores),
           sim_improper_scores = list(sim_improper_scores),
           # miscellenious data (takes too much space to keep)
-          # sim_data = list(simdata$data),
-          # test_truth = list(test_truth),
-          # test_rows = list(part$test)
+          # task = list(task),
+          # part = list(part),
           # sim_surv = list(simdata$ind.survive)
         )
         index = index + 1

@@ -33,6 +33,9 @@ sim_grid = expand.grid(
 n_rows = nrow(sim_grid)
 print(paste0("Number of dataset categories: ", n_rows))
 
+# censored obs at last time point?
+cens_last = FALSE
+
 # Integrated Survival Brier Score (improper) and re-weighted version (proper)
 graf_improper = msr("surv.graf", proper = FALSE, id = "graf.improper")
 graf_proper   = msr("surv.graf", proper = TRUE,  id = "graf.proper")
@@ -80,6 +83,16 @@ with_progress({
         censor = cens_prop,
         censor.cond = cens_dep
       )
+
+      # censor all observations at t_max
+      if (cens_last) {
+        times = simdata$data$y
+        status = simdata$data$failed
+
+        t_max = max(times)
+        indx = which(times == t_max)
+        simdata$data$failed[indx] = 0
+      }
 
       # convert to survival mlr3 task
       task = mlr3proba::as_task_surv(x = simdata$data, time = "y",

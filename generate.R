@@ -238,7 +238,7 @@ with_progress({
           sim_improper = sim_improper,
           sim_proper_scores = list(sim_proper_scores),
           sim_improper_scores = list(sim_improper_scores),
-          # miscellenious data (takes too much space to keep)
+          # task and simulated survival data (takes too much space to keep)
           # task = list(task),
           # part = list(part),
           # sim_surv = list(simdata$ind.survive)

@@ -6,3 +6,4 @@ sys
 sysconfig
 .Rprofile
 .Rproj.user/
+/.quarto/

@@ -1538,8 +1538,8 @@
       "RemoteHost": "api.github.com",
       "RemoteUsername": "mlr-org",
       "RemoteRepo": "mlr3proba",
-      "RemoteRef": "efba3ba4f33eeade17f1ff3faee9ed55774211b2",
-      "RemoteSha": "efba3ba4f33eeade17f1ff3faee9ed55774211b2",
+      "RemoteRef": "107b3a9feb2eb8f42ac5d43a3c439634a556fe89",
+      "RemoteSha": "107b3a9feb2eb8f42ac5d43a3c439634a556fe89",
       "Remotes": "xoopR/distr6, xoopR/param6, xoopR/set6",
       "Requirements": [
         "R",
@@ -1556,7 +1556,7 @@
         "survival",
         "survivalmodels"
       ],
-      "Hash": "d7d80872901314d336dd8177bb6130f0"
+      "Hash": "2befa61125ed1410a0dfa03eb1a4fe6b"
     },
     "mlr3viz": {
       "Package": "mlr3viz",

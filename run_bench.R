@@ -8,20 +8,19 @@ library(future.apply)
 #' see `prepare_tasks.R`
 task_tbl = readRDS(file = "task_tbl.rds")
 
+# whether to keep the data and train/test partition
+keep_data = FALSE
+
 # Progress bars
 options(progressr.enable = TRUE)
 handlers(global = TRUE)
 handlers("progress")
 
 # use all available CPUs
-future::plan("multicore")
+future::plan("multicore", workers = 10)
 
 # how many times to split to train and test set each dataset?
 n_rsmps = 100
-
-# Integrated Survival Brier Score (improper) and re-weighted version (proper)
-graf_improper = msr("surv.graf", proper = FALSE, id = "graf.improper")
-graf_proper   = msr("surv.graf", proper = TRUE,  id = "graf.proper")
 
 with_progress({
   row_seq = seq_len(nrow(task_tbl))
@@ -50,6 +49,10 @@ with_progress({
       kaplan$train(task, row_ids = part$train)
       cox$train(task, row_ids = part$train)
       aft$train(task, row_ids = part$train)
+
+      # Integrated Survival Brier Score (improper) and re-weighted version (proper)
+      graf_improper = msr("surv.graf", proper = FALSE, id = "graf.improper")
+      graf_proper   = msr("surv.graf", proper = TRUE,  id = "graf.proper")
 
       # evaluate graf proper and improper on the test set
       # using various models, but check if training succeeded first

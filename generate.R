@@ -29,16 +29,14 @@ sim_grid = expand.grid(
   n_dfs = n_dfs
 ) |> as_tibble()
 
+# whether to keep the simulated survival predictions and associated scores
+keep_sim_pred = FALSE
+# whether to keep the generated simulated data and train/test partition
+keep_sim_data = FALSE
+
 # How many different categories of datasets to generate (per category)?
 n_rows = nrow(sim_grid)
 print(paste0("Number of dataset categories: ", n_rows))
-
-# censored obs at last time point?
-cens_last = FALSE
-
-# Integrated Survival Brier Score (improper) and re-weighted version (proper)
-graf_improper = msr("surv.graf", proper = FALSE, id = "graf.improper")
-graf_proper   = msr("surv.graf", proper = TRUE,  id = "graf.proper")
 
 # Progress bars
 options(progressr.enable = TRUE)
@@ -46,7 +44,7 @@ handlers(global = TRUE)
 handlers("progress")
 
 # use all available CPUs
-future::plan("multicore")
+future::plan("multicore", workers = 10)
 
 with_progress({
   row_seq = seq_len(n_rows)
@@ -84,16 +82,6 @@ with_progress({
         censor.cond = cens_dep
       )
 
-      # censor all observations at t_max
-      if (cens_last) {
-        times = simdata$data$y
-        status = simdata$data$failed
-
-        t_max = max(times)
-        indx = which(times == t_max)
-        simdata$data$failed[indx] = 0
-      }
-
       # convert to survival mlr3 task
       task = mlr3proba::as_task_surv(x = simdata$data, time = "y",
         event = "failed", type = "right", id = "coxed.sim.surv")
@@ -130,6 +118,13 @@ with_progress({
         kaplan$train(task, row_ids = part$train)
         cox$train(task, row_ids = part$train)
         aft$train(task, row_ids = part$train)
+
+        # Integrated Survival Brier Score (improper) and re-weighted version (proper)
+        t_max = 364
+        graf_improper = msr("surv.graf", proper = FALSE, id = "graf.improper",
+                            t_max = t_max)
+        graf_proper   = msr("surv.graf", proper = TRUE,  id = "graf.proper",
+                            t_max = t_max)
 
         # evaluate graf proper and improper on the test set
         # using various models, but check if training succeeded first
@@ -185,30 +180,32 @@ with_progress({
           aft_improper_scores = NA
         }
 
-        #' Convert the simulated distr predictions to `mlr3proba::PredictionSurv()`
-        #' `ind.survive` is a survival matrix (N x T)
-        surv = simdata$ind.survive
-        colnames(surv) = 1:ncol(surv) # all integer time points
+        if (keep_sim_pred) {
+          #' Convert the simulated distr predictions to `mlr3proba::PredictionSurv()`
+          #' `ind.survive` is a survival matrix (N x T)
+          surv = simdata$ind.survive
+          colnames(surv) = 1:ncol(surv) # all integer time points
 
-        #' survival probabilities must by non-strictly decreasing
-        #' checked by `survivalmodels:::assert_surv_matrix()`
-        p = try(mlr3proba::.surv_return(surv = surv), silent = TRUE)
+          #' survival probabilities must by non-strictly decreasing
+          #' checked by `survivalmodels:::assert_surv_matrix()`
+          p = try(mlr3proba::.surv_return(surv = surv), silent = TRUE)
 
-        if (inherits(p, "try-error")) {
-          sim_proper = NA
-          sim_improper = NA
-          sim_proper_scores = NA
-          sim_improper_scores = NA
-        } else {
-          # keep only the simulated predictions of the test set
-          pred_sim = mlr3proba::PredictionSurv$new(
-            row_ids = part$test, truth = task$truth(rows = part$test),
-            distr = p$distr[part$test, ], crank = p$crank[part$test]
-          )
-          sim_proper = pred_sim$score(graf_proper, task = task, train_set = part$train)
-          sim_improper = pred_sim$score(graf_improper, task = task, train_set = part$train)
-          sim_proper_scores = graf_proper$scores
-          sim_improper_scores = graf_improper$scores
+          if (inherits(p, "try-error")) {
+            sim_proper = NA
+            sim_improper = NA
+            sim_proper_scores = NA
+            sim_improper_scores = NA
+          } else {
+            # keep only the simulated predictions of the test set
+            pred_sim = mlr3proba::PredictionSurv$new(
+              row_ids = part$test, truth = task$truth(rows = part$test),
+              distr = p$distr[part$test, ], crank = p$crank[part$test]
+            )
+            sim_proper = pred_sim$score(graf_proper, task = task, train_set = part$train)
+            sim_improper = pred_sim$score(graf_improper, task = task, train_set = part$train)
+            sim_proper_scores = graf_proper$scores
+            sim_improper_scores = graf_improper$scores
+          }
         }
 
         data_list[[index]] = tibble(
@@ -234,14 +231,14 @@ with_progress({
           aft_proper_scores = list(aft_proper_scores),
           aft_improper_scores = list(aft_improper_scores),
           # Simulated distr predictions
-          sim_proper = sim_proper,
-          sim_improper = sim_improper,
-          sim_proper_scores = list(sim_proper_scores),
-          sim_improper_scores = list(sim_improper_scores),
-          # task and simulated survival data (takes too much space to keep)
-          # task = list(task),
-          # part = list(part),
-          # sim_surv = list(simdata$ind.survive)
+          sim_proper = base::switch(keep_sim_pred, sim_proper),
+          sim_improper = base::switch(keep_sim_pred, sim_improper),
+          sim_proper_scores = base::switch(keep_sim_pred, list(sim_proper_scores)),
+          sim_improper_scores = base::switch(keep_sim_pred, list(sim_improper_scores)),
+          # task and simulated survival data (Note: takes too much space to keep)
+          task = base::switch(keep_sim_data, list(task)),
+          part = base::switch(keep_sim_data, list(part)),
+          sim_surv = base::switch(keep_sim_data, list(simdata$ind.survive))
         )
         index = index + 1
       }

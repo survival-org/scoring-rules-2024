@@ -1,0 +1,8 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  repo-url: https://github.com/bblodfon/scoring-rules-2024/
+  repo-branch: main
+  repo-actions: source

@@ -1,0 +1,24 @@
+---
+title: "Benchmark results analysis"
+author: "[John Zobolas](https://github.com/bblodfon)"
+date: last-modified
+description: "Explore the relationship between proper and improper Integrated Brier Score in the validation of survival models"
+format:
+  html:
+    date: last-modified
+    code-fold: true
+    toc: true
+    toc-location: left
+    html-math-method: katex
+    page-layout: full
+---
+
+## Introduction {-}
+
+## Simulated Data Results {-}
+
+## Real-world Data Results {-}
+
+## Inflation with IBS proper {-}
+
+lala

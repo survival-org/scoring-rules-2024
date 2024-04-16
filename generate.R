@@ -15,9 +15,9 @@ suppressPackageStartupMessages(library(future.apply))
 #' 4) Number of observations: 100 - 1000 (`n_obs`)
 
 #' Fixed parameters (for each combo of 1-4 above):
-#' 4) Time horizon (max event time): **365 days** - 1 year (`time_horizon`)
-#' 5) Number of datasets to generate: 1000 `n_dfs`
-#' 6) Number of covariates (random select): 3-10 `n_vars` (low-dim setting)
+#' 5) Time horizon (max event time): **365 days** - 1 year (`time_horizon`)
+#' 6) Number of datasets to generate: 100 `n_dfs`
+#' 7) Number of covariates (random select): 3-10 `n_vars` (low-dim setting)
 
 n_dfs = 100 # Number of datasets to generate PER combo of the (1)-(4) parameters
 sim_grid = expand.grid(
@@ -58,9 +58,9 @@ with_progress({
     n_obs = sim_params$n_obs
     n_dfs = sim_params$n_dfs
     time_horizon = sim_params$time_horizon
-    prop_haz = sim_params$prop_haz
-    cens_prop = sim_params$cens_prop
-    cens_dep = sim_params$cens_dep
+    prop_haz     = sim_params$prop_haz
+    cens_prop    = sim_params$cens_prop
+    cens_dep     = sim_params$cens_dep
 
     # generate data
     index = 1

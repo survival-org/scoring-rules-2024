@@ -87,8 +87,10 @@ with_progress({
         event = "failed", type = "right", id = "coxed.sim.surv")
 
       # check PH assumption
-      cox = lrn("surv.coxph")$train(task)
-      ok = (length(cox$errors) == 0) &
+      cox = lrn("surv.coxph")
+      cox$encapsulate = c(train = "evaluate", predict = "evaluate")
+      cox$train(task)
+      ok = (length(cox$errors)   == 0) &
            (length(cox$warnings) == 0)
       # rare case, somehow cox model didn't converge, train didn't succeed, etc
       if (!ok) next

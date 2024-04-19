@@ -3,22 +3,202 @@ title: "Benchmark results analysis"
 author: "[John Zobolas](https://github.com/bblodfon)"
 date: last-modified
 description: "Explore the relationship between proper and improper Integrated Brier Score in the validation of survival models"
+bibliography: references.bib
 format:
   html:
     date: last-modified
-    code-fold: true
+    code-block-bg: true
+    code-copy: true
+    code-overflow: wrap
+    code-block-border-left: true
     toc: true
     toc-location: left
     html-math-method: katex
     page-layout: full
+execute: 
+  freeze: true
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = FALSE)
+```
 
 ## Introduction {-}
 
+We benchmark the two versions of the survival brier score  [@Graf1999], namely the **Integrated Survival Brier Score (ISBS)** and the proposed **we-weighted version (RISBS)** (see [documentation details](https://mlr3proba.mlr-org.com/reference/mlr_measures_surv.graf.html#details) for their respective formulas).
+The first (ISBS) is not a proper scoring rule [@Rindt2022], the second (RISBS) is [@Sonabend2022].
+Our goal is to assess whether these scores exhibit differences in simulated and real-world datasets, and if so, to understand the reasons behind these differences.
+
+Load libraries:
+```{r, result=FALSE, message=FALSE}
+library(tidyverse)
+library(mlr3proba)
+library(DT)
+```
+
 ## Simulated Data Results {-}
+
+:::{.callout-note}
+- [Code](https://github.com/bblodfon/scoring-rules-2024/blob/main/generate.R) to generate the simulated datasets.
+
+We simulate datasets with **varying characteristics**:
+
+1. Independent (random) vs dependent censoring
+2. PH (Proportional Hazards) vs non-PH data (time-varying coefficients)
+3. Proportion of censoring ($20\% - 80\%$)
+4. Number of observations ($100 - 1000$)
+
+The 'fixed' parameters in our simulations are the following:
+
+- Time horizon (max event or censoring time): **365 days**
+- Number of datasets to generate per (1)-(4) combinations: $100$
+- Number of covariates per dataset (chosen randomly): $3-10$ (low-dim setting)
+:::
 
 ## Real-world Data Results {-}
 
-## Inflation with IBS proper {-}
+:::{.callout-note}
+- [Compressed data files](https://github.com/bblodfon/scoring-rules-2024/tree/main/data)
+- [R script](https://github.com/bblodfon/scoring-rules-2024/blob/main/prepare_tasks.R) used to translate the datasets into `mlr3` tasks and extract useful info, namely:
+  - `n_obs`: Number of observations
+  - `n_vars`: Number of total variables
+  - `n_factors`: Number of factor/categorical variables
+  - `n_numeric`: Number of numeric variables
+  - `cens_prop`: Proportion of censoring
+  - `admin_cens_prop`: Proportion of censored observations that are censored administratively, i.e. at the last censoring time
+  - `dep_cens_prop`: Proportion of significant coefficients (adjusted `p < 0.05`) to predict censoring status using a logistic regression model
+  - `prop_haz`: If the dataset satisfies the proportional hazards assumption (`p > 0.05` using a global Schoenfeld test)
+:::
 
-lala
+We used a total of $26$ real-word, low-dimensional datasets (fewer features than observations) for benchmarking, freely available via various `R` packages:
+
+```{r}
+task_tbl = readRDS(file = "task_tbl.rds") |> select(-task)
+
+datatable(data = task_tbl, rownames = FALSE, options = 
+  list(pageLength = 13, searching = FALSE,
+       order = list(list(0, 'asc')))) |>
+  formatRound(columns = 6:8, digits = 2) |>
+  formatStyle(columns = 'prop_haz',
+              backgroundColor = styleEqual(c(TRUE, FALSE), c("#4DAF4A", "#E41A1C")))
+```
+
+## Investigate inflation of proper ISBS {-}
+
+:::{.callout-note}
+In this section we investigate an example where the **proper ISBS gets inflated** (i.e. too large value for the score, compared to the improper version) and show how we can avoid such a thing from happening when evaluating model performance.
+:::
+
+Let's use a dataset where in a particular train/test resampling the issue occurs:
+```{r}
+inflated_data = readRDS(file = "inflated_data.rds")
+task = inflated_data$task
+part = inflated_data$part
+
+task
+```
+
+Separate train and test data:
+```{r}
+task_train = task$clone()$filter(rows = part$train)
+task_test  = task$clone()$filter(rows = part$test)
+```
+
+Kaplan-Meier of the training survival data:
+```{r, message=FALSE}
+autoplot(task_train) +
+  labs(title = "Kaplan-Meier (train data)",
+       subtitle = "Time-to-event distribution")
+```
+
+Kaplan-Meier of the training censoring data:
+```{r, message=FALSE}
+autoplot(task_train, reverse = TRUE) +
+    labs(title = "Kaplan-Meier (train data)",
+         subtitle = "Censoring distribution")
+```
+
+Estimates of the censoring distribution $G_{KM}(t)$ (values from the above figure):
+```{r}
+km_train = task_train$kaplan(reverse = TRUE)
+km_tbl = tibble(time = km_train$time, surv = km_train$surv)
+tail(km_tbl)
+```
+
+:::{.callout-important}
+As we can see from the above figures and table, due to having *at least one censored observation at the last time point*, $G_{KM}(t_{max}) = 0$ for $t_{max} = 13019$.
+:::
+
+Is there an observation **on the test set** that has died (`status` = $1$) on that last time point (or after)?
+```{r}
+max_time = max(km_tbl$time) # max time point
+
+test_times  = task_test$times()
+test_status = task_test$status()
+
+# get the id of the observation in the test data
+id = which(test_times >= max_time & test_status == 1)
+id
+```
+
+Yes there is such observation!
+
+In `mlr3proba` using `proper = TRUE` for the RISBS calculation, this observation will be weighted by $1/0$ according to the formula.
+Practically, to avoid division by zero, a small value `eps = 0.001` will be used.
+
+Let's train a simple Cox model on the train set and calculate its predictions on the test set:
+```{r}
+cox = lrn("surv.coxph")
+p = cox$train(task, part$train)$predict(task, part$test)
+```
+
+We calculate the ISBS (improper) and RISBS (proper) scores:
+```{r}
+graf_improper = msr("surv.graf", proper = FALSE, id = "graf.improper")
+graf_proper   = msr("surv.graf", proper = TRUE,  id = "graf.proper")
+p$score(graf_improper, task = task, train_set = part$train)
+p$score(graf_proper  , task = task, train_set = part$train)
+```
+
+As we can see there is **huge difference** between the two versions of the score.
+We check the *per-observation* scores (integrated across all time points):
+
+Observation-wise RISBS scores:
+```{r}
+graf_proper$scores
+```
+
+Observation-wise ISBS scores:
+```{r}
+graf_improper$scores
+```
+
+It is **the one observation that we identified earlier** that causes the inflation of the RISBS score - it's pretty much an outlier compared to all other values:
+```{r}
+graf_proper$scores[id]
+```
+
+By setting `t_max` (time horizon to evaluate the measure up to) to the $95\%$ quantile of the event times, we can solve the inflation problem of the proper RISBS score, since we will divide by a value larger than zero from the above table of $G_{KM}(t)$ values.
+The `t_max` time point is:
+```{r}
+t_max = as.integer(quantile(task_train$unique_event_times(), 0.95))
+t_max
+```
+
+Integrating up to `t_max`, the proper RISBS score is:
+```{r}
+graf_proper_tmax = msr("surv.graf", proper = TRUE, t_max = t_max)
+p$score(graf_proper_tmax, task = task, train_set = part$train) # ISBS
+```
+
+The score for the specific observation that had experienced the event at (or beyond) the latest training time point is now:
+```{r}
+graf_proper_tmax$scores[id]
+```
+
+:::{.callout-tip title="Suggestion when calculating time-integrated scoring rules"}
+To avoid the inflation of RISBS and generally have a more robust estimation of both RISBS and ISBS time-dependent scores, we advise to set the `t_max` argument (time horizon).
+This can be either study-driven or based on a meaningful quantile of the distribution of (usually event) times in your dataset (e.g. $80\%$).
+:::
+
+## References

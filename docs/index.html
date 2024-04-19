@@ -208,9 +208,13 @@ div.csl-indent {
 <p>We benchmark the two versions of the survival brier score <span class="citation" data-cites="Graf1999">(<a href="#ref-Graf1999" role="doc-biblioref">Graf et al. 1999</a>)</span>, namely the <strong>Integrated Survival Brier Score (ISBS)</strong> and the proposed <strong>we-weighted version (RISBS)</strong> (see <a href="https://mlr3proba.mlr-org.com/reference/mlr_measures_surv.graf.html#details">documentation details</a> for their respective formulas). The first (ISBS) is not a proper scoring rule <span class="citation" data-cites="Rindt2022">(<a href="#ref-Rindt2022" role="doc-biblioref">Rindt et al. 2022</a>)</span>, the second (RISBS) is <span class="citation" data-cites="Sonabend2022">(<a href="#ref-Sonabend2022" role="doc-biblioref">Sonabend 2022</a>)</span>. Our goal is to assess whether these scores exhibit differences in simulated and real-world datasets, and if so, to understand the reasons behind these differences.</p>
 <p>Load libraries:</p>
 <div class="cell" data-result="false">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3proba)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DT)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DT)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggpubr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
 <section id="simulated-data-results" class="level2 unnumbered">
@@ -274,18 +278,163 @@ Note
 </div>
 <p>We used a total of <span class="math inline">26</span> real-word, low-dimensional datasets (fewer features than observations) for benchmarking, freely available via various <code>R</code> packages:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>task_tbl <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">"task_tbl.rds"</span>) <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>task)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">datatable</span>(<span class="at">data =</span> task_tbl, <span class="at">rownames =</span> <span class="cn">FALSE</span>, <span class="at">options =</span> </span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">pageLength =</span> <span class="dv">13</span>, <span class="at">searching =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">order =</span> <span class="fu">list</span>(<span class="fu">list</span>(<span class="dv">0</span>, <span class="st">'asc'</span>)))) <span class="sc">|&gt;</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="dv">6</span><span class="sc">:</span><span class="dv">8</span>, <span class="at">digits =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatStyle</span>(<span class="at">columns =</span> <span class="st">'prop_haz'</span>,</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">backgroundColor =</span> <span class="fu">styleEqual</span>(<span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="fu">c</span>(<span class="st">"#4DAF4A"</span>, <span class="st">"#E41A1C"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># task info, see `prepare_tasks.R`</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>task_tbl <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">"task_tbl.rds"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>task_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>task) <span class="sc">|&gt;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">datatable</span>(</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">rownames =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">options =</span> <span class="fu">list</span>(<span class="at">pageLength =</span> <span class="dv">13</span>, <span class="at">searching =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>                   <span class="at">order =</span> <span class="fu">list</span>(<span class="fu">list</span>(<span class="dv">0</span>, <span class="st">'asc'</span>)))) <span class="sc">|&gt;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="dv">6</span><span class="sc">:</span><span class="dv">8</span>, <span class="at">digits =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">formatStyle</span>(<span class="at">columns =</span> <span class="st">'prop_haz'</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">backgroundColor =</span> <span class="fu">styleEqual</span>(<span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>                                 <span class="fu">c</span>(<span class="st">"#4DAF4A"</span>, <span class="st">"#E41A1C"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 
-<div class="datatables html-widget html-fill-item" id="htmlwidget-8d582ee66b3d4da71707" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-8d582ee66b3d4da71707">{"x":{"filter":"none","vertical":false,"data":[["aids.id","aids2","channing","colrec","cost","dataFTR","dataSTR","e1684","gbsg","grace","kidtran","liver","lung","metabric","mgus","nafld1","nwtco","ova","rdata","std","support","tumor","uis","veteran","wbc1","whas"],[467,2814,458,5578,518,2206,546,284,2232,1000,863,488,228,1903,176,4000,4028,358,1040,877,4000,776,575,137,190,481],[5,4,2,5,13,2,4,3,7,6,3,2,8,9,7,5,3,5,3,21,14,7,12,6,2,9],[4,2,0,2,10,0,0,0,0,0,0,0,1,0,1,1,1,3,1,4,0,1,1,3,0,2],[1,2,2,3,3,2,4,3,7,6,3,2,7,9,6,4,2,2,2,17,14,6,11,3,2,7],[0.5974304068522484,0.3841506751954513,0.6157205240174672,0.17497310864109,0.2200772200772201,0.8640072529465095,0.815018315018315,0.3098591549295774,0.432347670250896,0.676,0.8377752027809965,0.4016393442622951,0.2763157894736842,0.4203888596952181,0.0625,0.9195,0.8582423038728898,0.2569832402234637,0.4740384615384615,0.6043329532497149,0.32375,0.5167525773195877,0.1930434782608696,0.06569343065693431,0.4263157894736842,0.4823284823284824],[0.003584229390681004,0.0009250693802035153,0.4397163120567376,0.001024590163934426,0.008771929824561403,0.001049317943336831,0.002247191011235955,0.01136363636363636,0.001036269430051813,0.7248520710059172,0.001383125864453665,0.00510204081632653,0.01587301587301587,0.00125,0.09090909090909091,0.0002718868950516585,0.0002892681515765114,0.0108695652173913,0.002028397565922921,0.001886792452830189,0.002316602316602316,0.002493765586034913,0.009009009009009009,0.1111111111111111,0.01234567901234568,0.004310344827586207],[0.3333333333333333,0,0.6666666666666666,0.8333333333333334,0.1428571428571428,0.6666666666666666,0.6,0.25,0.5,0.7142857142857143,0.5,0.6666666666666666,0.1111111111111111,0.6,0.125,0.3333333333333333,1,0.07692307692307693,0.5714285714285714,0,0.2666666666666667,0.3076923076923077,0.06666666666666667,0,0,0.4666666666666667],[true,false,true,false,false,true,true,true,false,false,true,false,true,false,true,true,false,false,true,true,false,false,true,false,true,false]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>task_id<\/th>\n      <th>n_obs<\/th>\n      <th>n_vars<\/th>\n      <th>n_factors<\/th>\n      <th>n_numeric<\/th>\n      <th>cens_prop<\/th>\n      <th>admin_cens_prop<\/th>\n      <th>dep_cens_prop<\/th>\n      <th>prop_haz<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":13,"searching":false,"order":[[0,"asc"]],"columnDefs":[{"targets":5,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":7,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[1,2,3,4,5,6,7]},{"name":"task_id","targets":0},{"name":"n_obs","targets":1},{"name":"n_vars","targets":2},{"name":"n_factors","targets":3},{"name":"n_numeric","targets":4},{"name":"cens_prop","targets":5},{"name":"admin_cens_prop","targets":6},{"name":"dep_cens_prop","targets":7},{"name":"prop_haz","targets":8}],"autoWidth":false,"orderClasses":false,"lengthMenu":[10,13,25,50,100],"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[8]; $(this.api().cell(row, 8).node()).css({'background-color':value == true ? \"#4DAF4A\" : value == false ? \"#E41A1C\" : null});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-86e3bd3fbaac9568a6dc" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-86e3bd3fbaac9568a6dc">{"x":{"filter":"none","vertical":false,"data":[["aids.id","aids2","channing","colrec","cost","dataFTR","dataSTR","e1684","gbsg","grace","kidtran","liver","lung","metabric","mgus","nafld1","nwtco","ova","rdata","std","support","tumor","uis","veteran","wbc1","whas"],[467,2814,458,5578,518,2206,546,284,2232,1000,863,488,228,1903,176,4000,4028,358,1040,877,4000,776,575,137,190,481],[5,4,2,5,13,2,4,3,7,6,3,2,8,9,7,5,3,5,3,21,14,7,12,6,2,9],[4,2,0,2,10,0,0,0,0,0,0,0,1,0,1,1,1,3,1,4,0,1,1,3,0,2],[1,2,2,3,3,2,4,3,7,6,3,2,7,9,6,4,2,2,2,17,14,6,11,3,2,7],[0.5974304068522484,0.3841506751954513,0.6157205240174672,0.17497310864109,0.2200772200772201,0.8640072529465095,0.815018315018315,0.3098591549295774,0.432347670250896,0.676,0.8377752027809965,0.4016393442622951,0.2763157894736842,0.4203888596952181,0.0625,0.9195,0.8582423038728898,0.2569832402234637,0.4740384615384615,0.6043329532497149,0.32375,0.5167525773195877,0.1930434782608696,0.06569343065693431,0.4263157894736842,0.4823284823284824],[0.003584229390681004,0.0009250693802035153,0.4397163120567376,0.001024590163934426,0.008771929824561403,0.001049317943336831,0.002247191011235955,0.01136363636363636,0.001036269430051813,0.7248520710059172,0.001383125864453665,0.00510204081632653,0.01587301587301587,0.00125,0.09090909090909091,0.0002718868950516585,0.0002892681515765114,0.0108695652173913,0.002028397565922921,0.001886792452830189,0.002316602316602316,0.002493765586034913,0.009009009009009009,0.1111111111111111,0.01234567901234568,0.004310344827586207],[0.3333333333333333,0,0.6666666666666666,0.8333333333333334,0.1428571428571428,0.6666666666666666,0.6,0.25,0.5,0.7142857142857143,0.5,0.6666666666666666,0.1111111111111111,0.6,0.125,0.3333333333333333,1,0.07692307692307693,0.5714285714285714,0,0.2666666666666667,0.3076923076923077,0.06666666666666667,0,0,0.4666666666666667],[true,false,true,false,false,true,true,true,false,false,true,false,true,false,true,true,false,false,true,true,false,false,true,false,true,false]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>task_id<\/th>\n      <th>n_obs<\/th>\n      <th>n_vars<\/th>\n      <th>n_factors<\/th>\n      <th>n_numeric<\/th>\n      <th>cens_prop<\/th>\n      <th>admin_cens_prop<\/th>\n      <th>dep_cens_prop<\/th>\n      <th>prop_haz<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":13,"searching":false,"order":[[0,"asc"]],"columnDefs":[{"targets":5,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":7,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[1,2,3,4,5,6,7]},{"name":"task_id","targets":0},{"name":"n_obs","targets":1},{"name":"n_vars","targets":2},{"name":"n_factors","targets":3},{"name":"n_numeric","targets":4},{"name":"cens_prop","targets":5},{"name":"admin_cens_prop","targets":6},{"name":"dep_cens_prop","targets":7},{"name":"prop_haz","targets":8}],"autoWidth":false,"orderClasses":false,"lengthMenu":[10,13,25,50,100],"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[8]; $(this.api().cell(row, 8).node()).css({'background-color':value == true ? \"#4DAF4A\" : value == false ? \"#E41A1C\" : null});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
+</div>
+</div>
+<p>Get the benchmark results:</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># see `run_bench.R`</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>bench_res <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">"bench_res_tmax.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Order datasets by their Pearson correlation between RISBS and ISBS:</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>score_corrs <span class="ot">=</span> </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  bench_res <span class="sc">|&gt;</span> </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(task_id) <span class="sc">|&gt;</span> </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">ends_with</span>(<span class="st">"proper"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">km_cor  =</span> <span class="fu">cor</span>(km_proper, km_improper),</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">cox_cor =</span> <span class="fu">cor</span>(cox_proper, cox_improper),</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">aft_cor =</span> <span class="fu">cor</span>(aft_proper, aft_improper)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mean_cor =</span> <span class="fu">mean</span>(<span class="fu">c_across</span>(<span class="fu">ends_with</span>(<span class="st">"cor"</span>)), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(mean_cor))</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>task_ids <span class="ot">=</span> score_corrs<span class="sc">$</span>task_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Loop through the tasks and compare RISBS and ISBS scores:</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-5_2405ead946fb4163aac6da3a5486bbdd">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (id <span class="cf">in</span> task_ids) {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">=</span> bench_res <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(task_id <span class="sc">==</span> id) <span class="sc">|&gt;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(km_proper, km_improper, cox_proper, cox_improper, aft_proper, aft_improper) <span class="sc">|&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"model"</span>, <span class="st">".value"</span>), <span class="at">names_pattern =</span> <span class="st">"(.*)_(.*)"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">model =</span> <span class="fu">factor</span>(model, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"km"</span>, <span class="st">"cox"</span>, <span class="st">"aft"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># scatter plot with Pearson's coef.</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    ggpubr<span class="sc">::</span><span class="fu">ggscatter</span>(</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">"proper"</span>, <span class="at">y =</span> <span class="st">"improper"</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">facet.by =</span> <span class="fu">c</span>(<span class="st">"model"</span>),</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.labs =</span> <span class="fu">list</span>(<span class="at">model =</span> <span class="fu">c</span>(<span class="st">"Kaplan-Meier"</span>, <span class="st">"CoxPH"</span>, <span class="st">"AFT (Weibull)"</span>)),</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab =</span> <span class="st">"RISBS (proper)"</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">ylab =</span> <span class="st">"ISBS (improper)"</span>,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="dv">2</span>,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">add =</span> <span class="st">"reg.line"</span>,  <span class="co"># Add regression line</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">add.params =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">fill =</span> <span class="st">"lightgray"</span>), <span class="co"># Customize regr. line</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="co"># Add confidence interval</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">cor.coef =</span> <span class="cn">TRUE</span>, <span class="co"># Add Pearson's correlation coefficient</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">cor.coeff.args =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"pearson"</span>, <span class="at">label.sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> id) <span class="sc">+</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">panel.spacing =</span> <span class="fu">unit</span>(<span class="dv">1</span>, <span class="st">"cm"</span>))</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(p)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-3.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-4.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-5.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-6.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-7.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-8.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-9.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-10.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-11.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-12.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-13.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-14.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-15.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-16.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-17.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-18.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-19.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-20.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-21.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-22.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-23.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-24.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-25.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-26.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 </section>
@@ -306,11 +455,14 @@ Note
 </div>
 <p>Let’s use a dataset where in a particular train/test resampling the issue occurs:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>inflated_data <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">"inflated_data.rds"</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>task <span class="ot">=</span> inflated_data<span class="sc">$</span>task</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>part <span class="ot">=</span> inflated_data<span class="sc">$</span>part</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>task</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>inflated_data <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">"inflated_data.rds"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>task <span class="ot">=</span> inflated_data<span class="sc">$</span>task</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>part <span class="ot">=</span> inflated_data<span class="sc">$</span>part</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>task</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;TaskSurv:mgus&gt; (176 x 9)
 * Target: time, status
@@ -322,32 +474,44 @@ Note
 </div>
 <p>Separate train and test data:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>task_train <span class="ot">=</span> task<span class="sc">$</span><span class="fu">clone</span>()<span class="sc">$</span><span class="fu">filter</span>(<span class="at">rows =</span> part<span class="sc">$</span>train)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>task_test  <span class="ot">=</span> task<span class="sc">$</span><span class="fu">clone</span>()<span class="sc">$</span><span class="fu">filter</span>(<span class="at">rows =</span> part<span class="sc">$</span>test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>task_train <span class="ot">=</span> task<span class="sc">$</span><span class="fu">clone</span>()<span class="sc">$</span><span class="fu">filter</span>(<span class="at">rows =</span> part<span class="sc">$</span>train)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>task_test  <span class="ot">=</span> task<span class="sc">$</span><span class="fu">clone</span>()<span class="sc">$</span><span class="fu">filter</span>(<span class="at">rows =</span> part<span class="sc">$</span>test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <p>Kaplan-Meier of the training survival data:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(task_train) <span class="sc">+</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Kaplan-Meier (train data)"</span>,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Time-to-event distribution"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-8_0740eb8adf3c33d0736c3589772754ee">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(task_train) <span class="sc">+</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Kaplan-Meier (train data)"</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Time-to-event distribution"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Kaplan-Meier of the training censoring data:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(task_train, <span class="at">reverse =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Kaplan-Meier (train data)"</span>,</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">subtitle =</span> <span class="st">"Censoring distribution"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-9_c4b9c8cc55903ba54a5aaed01dd8a365">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(task_train, <span class="at">reverse =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Kaplan-Meier (train data)"</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">subtitle =</span> <span class="st">"Censoring distribution"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Estimates of the censoring distribution <span class="math inline">G_{KM}(t)</span> (values from the above figure):</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>km_train <span class="ot">=</span> task_train<span class="sc">$</span><span class="fu">kaplan</span>(<span class="at">reverse =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>km_tbl <span class="ot">=</span> <span class="fu">tibble</span>(<span class="at">time =</span> km_train<span class="sc">$</span>time, <span class="at">surv =</span> km_train<span class="sc">$</span>surv)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(km_tbl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>km_train <span class="ot">=</span> task_train<span class="sc">$</span><span class="fu">kaplan</span>(<span class="at">reverse =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>km_tbl <span class="ot">=</span> <span class="fu">tibble</span>(<span class="at">time =</span> km_train<span class="sc">$</span>time, <span class="at">surv =</span> km_train<span class="sc">$</span>surv)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(km_tbl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 2
    time  surv
@@ -375,14 +539,17 @@ Important
 </div>
 <p>Is there an observation <strong>on the test set</strong> that has died (<code>status</code> = <span class="math inline">1</span>) on that last time point (or after)?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>max_time <span class="ot">=</span> <span class="fu">max</span>(km_tbl<span class="sc">$</span>time) <span class="co"># max time point</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>test_times  <span class="ot">=</span> task_test<span class="sc">$</span><span class="fu">times</span>()</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>test_status <span class="ot">=</span> task_test<span class="sc">$</span><span class="fu">status</span>()</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co"># get the id of the observation in the test data</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>id <span class="ot">=</span> <span class="fu">which</span>(test_times <span class="sc">&gt;=</span> max_time <span class="sc">&amp;</span> test_status <span class="sc">==</span> <span class="dv">1</span>)</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>max_time <span class="ot">=</span> <span class="fu">max</span>(km_tbl<span class="sc">$</span>time) <span class="co"># max time point</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>test_times  <span class="ot">=</span> task_test<span class="sc">$</span><span class="fu">times</span>()</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>test_status <span class="ot">=</span> task_test<span class="sc">$</span><span class="fu">status</span>()</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co"># get the id of the observation in the test data</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>id <span class="ot">=</span> <span class="fu">which</span>(test_times <span class="sc">&gt;=</span> max_time <span class="sc">&amp;</span> test_status <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 14</code></pre>
 </div>
@@ -391,19 +558,28 @@ Important
 <p>In <code>mlr3proba</code> using <code>proper = TRUE</code> for the RISBS calculation, this observation will be weighted by <span class="math inline">1/0</span> according to the formula. Practically, to avoid division by zero, a small value <code>eps = 0.001</code> will be used.</p>
 <p>Let’s train a simple Cox model on the train set and calculate its predictions on the test set:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>cox <span class="ot">=</span> <span class="fu">lrn</span>(<span class="st">"surv.coxph"</span>)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">=</span> cox<span class="sc">$</span><span class="fu">train</span>(task, part<span class="sc">$</span>train)<span class="sc">$</span><span class="fu">predict</span>(task, part<span class="sc">$</span>test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>cox <span class="ot">=</span> <span class="fu">lrn</span>(<span class="st">"surv.coxph"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">=</span> cox<span class="sc">$</span><span class="fu">train</span>(task, part<span class="sc">$</span>train)<span class="sc">$</span><span class="fu">predict</span>(task, part<span class="sc">$</span>test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <p>We calculate the ISBS (improper) and RISBS (proper) scores:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>graf_improper <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">proper =</span> <span class="cn">FALSE</span>, <span class="at">id =</span> <span class="st">"graf.improper"</span>)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>graf_proper   <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">proper =</span> <span class="cn">TRUE</span>,  <span class="at">id =</span> <span class="st">"graf.proper"</span>)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>p<span class="sc">$</span><span class="fu">score</span>(graf_improper, <span class="at">task =</span> task, <span class="at">train_set =</span> part<span class="sc">$</span>train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>graf_improper <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">proper =</span> <span class="cn">FALSE</span>, <span class="at">id =</span> <span class="st">"graf.improper"</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>graf_proper   <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">proper =</span> <span class="cn">TRUE</span>,  <span class="at">id =</span> <span class="st">"graf.proper"</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>p<span class="sc">$</span><span class="fu">score</span>(graf_improper, <span class="at">task =</span> task, <span class="at">train_set =</span> part<span class="sc">$</span>train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>graf.improper 
     0.1493429 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>p<span class="sc">$</span><span class="fu">score</span>(graf_proper  , <span class="at">task =</span> task, <span class="at">train_set =</span> part<span class="sc">$</span>train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>p<span class="sc">$</span><span class="fu">score</span>(graf_proper  , <span class="at">task =</span> task, <span class="at">train_set =</span> part<span class="sc">$</span>train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>graf.proper 
    10.64584 </code></pre>
@@ -412,7 +588,10 @@ Important
 <p>As we can see there is <strong>huge difference</strong> between the two versions of the score. We check the <em>per-observation</em> scores (integrated across all time points):</p>
 <p>Observation-wise RISBS scores:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>graf_proper<span class="sc">$</span>scores</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>graf_proper<span class="sc">$</span>scores</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1]   0.08994417   0.02854219   0.04214266   0.15578719   0.05364692
  [6]   0.12969150   0.06463256   0.32033549   2.43262450   0.11602432
@@ -425,7 +604,10 @@ Important
 </div>
 <p>Observation-wise ISBS scores:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>graf_improper<span class="sc">$</span>scores</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>graf_improper<span class="sc">$</span>scores</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] 0.08994417 0.02854219 0.04214266 0.15578719 0.05364692 0.12969150
  [7] 0.06463256 0.32033549 0.62971109 0.11602432 0.03228501 0.10172088
@@ -437,23 +619,32 @@ Important
 </div>
 <p>It is <strong>the one observation that we identified earlier</strong> that causes the inflation of the RISBS score - it’s pretty much an outlier compared to all other values:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>graf_proper<span class="sc">$</span>scores[id]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>graf_proper<span class="sc">$</span>scores[id]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 367.1023</code></pre>
 </div>
 </div>
 <p>By setting <code>t_max</code> (time horizon to evaluate the measure up to) to the <span class="math inline">95\%</span> quantile of the event times, we can solve the inflation problem of the proper RISBS score, since we will divide by a value larger than zero from the above table of <span class="math inline">G_{KM}(t)</span> values. The <code>t_max</code> time point is:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>t_max <span class="ot">=</span> <span class="fu">as.integer</span>(<span class="fu">quantile</span>(task_train<span class="sc">$</span><span class="fu">unique_event_times</span>(), <span class="fl">0.95</span>))</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>t_max</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>t_max <span class="ot">=</span> <span class="fu">as.integer</span>(<span class="fu">quantile</span>(task_train<span class="sc">$</span><span class="fu">unique_event_times</span>(), <span class="fl">0.95</span>))</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>t_max</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 10080</code></pre>
 </div>
 </div>
 <p>Integrating up to <code>t_max</code>, the proper RISBS score is:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>graf_proper_tmax <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">proper =</span> <span class="cn">TRUE</span>, <span class="at">t_max =</span> t_max)</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>p<span class="sc">$</span><span class="fu">score</span>(graf_proper_tmax, <span class="at">task =</span> task, <span class="at">train_set =</span> part<span class="sc">$</span>train) <span class="co"># ISBS</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>graf_proper_tmax <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">proper =</span> <span class="cn">TRUE</span>, <span class="at">t_max =</span> t_max)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>p<span class="sc">$</span><span class="fu">score</span>(graf_proper_tmax, <span class="at">task =</span> task, <span class="at">train_set =</span> part<span class="sc">$</span>train) <span class="co"># ISBS</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>surv.graf 
 0.1436484 </code></pre>
@@ -461,7 +652,10 @@ Important
 </div>
 <p>The score for the specific observation that had experienced the event at (or beyond) the latest training time point is now:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>graf_proper_tmax<span class="sc">$</span>scores[id]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>graf_proper_tmax<span class="sc">$</span>scores[id]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.141502</code></pre>
 </div>
@@ -476,7 +670,7 @@ Suggestion when calculating time-integrated scoring rules
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>To avoid the inflation of RISBS and generally have a more robust estimation of both RISBS and ISBS time-dependent scores, we advise to set the <code>t_max</code> argument (time horizon). This can be either study-driven or based on a meaningful quantile of the distribution of (usually event) times in your dataset (e.g.&nbsp;<span class="math inline">80\%</span>).</p>
+<p>To avoid the inflation of RISBS and generally have a more robust estimation of both RISBS and ISBS scoring rules, we advise to set the <code>t_max</code> argument (time horizon). This can be either study-driven or based on a meaningful quantile of the distribution of (usually event) times in your dataset (e.g.&nbsp;<span class="math inline">80\%</span>).</p>
 </div>
 </div>
 </section>

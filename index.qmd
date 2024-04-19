@@ -9,6 +9,7 @@ format:
     date: last-modified
     code-block-bg: true
     code-copy: true
+    code-fold: true
     code-overflow: wrap
     code-block-border-left: true
     toc: true
@@ -34,6 +35,7 @@ Load libraries:
 library(tidyverse)
 library(mlr3proba)
 library(DT)
+library(ggpubr)
 ```
 
 ## Simulated Data Results {-}
@@ -73,14 +75,74 @@ The 'fixed' parameters in our simulations are the following:
 We used a total of $26$ real-word, low-dimensional datasets (fewer features than observations) for benchmarking, freely available via various `R` packages:
 
 ```{r}
-task_tbl = readRDS(file = "task_tbl.rds") |> select(-task)
+# task info, see `prepare_tasks.R`
+task_tbl = readRDS(file = "task_tbl.rds")
 
-datatable(data = task_tbl, rownames = FALSE, options = 
-  list(pageLength = 13, searching = FALSE,
-       order = list(list(0, 'asc')))) |>
-  formatRound(columns = 6:8, digits = 2) |>
-  formatStyle(columns = 'prop_haz',
-              backgroundColor = styleEqual(c(TRUE, FALSE), c("#4DAF4A", "#E41A1C")))
+task_tbl |> 
+  select(-task) |>
+  datatable(
+    rownames = FALSE, 
+    options = list(pageLength = 13, searching = FALSE,
+                   order = list(list(0, 'asc')))) |>
+    formatRound(columns = 6:8, digits = 2) |>
+    formatStyle(columns = 'prop_haz',
+    backgroundColor = styleEqual(c(TRUE, FALSE), 
+                                 c("#4DAF4A", "#E41A1C")))
+```
+
+Get the benchmark results:
+```{r}
+# see `run_bench.R`
+bench_res = readRDS(file = "bench_res_tmax.rds")
+```
+
+Order datasets by their Pearson correlation between RISBS and ISBS:
+```{r, message=FALSE}
+score_corrs = 
+  bench_res |> 
+  group_by(task_id) |> 
+  select(ends_with("proper")) |> 
+  summarize(
+    km_cor  = cor(km_proper, km_improper),
+    cox_cor = cor(cox_proper, cox_improper),
+    aft_cor = cor(aft_proper, aft_improper)
+  ) |> 
+  rowwise() |> 
+  mutate(mean_cor = mean(c_across(ends_with("cor")), na.rm = TRUE)) |> 
+  ungroup() |> 
+  arrange(desc(mean_cor))
+
+task_ids = score_corrs$task_id
+```
+
+Loop through the tasks and compare RISBS and ISBS scores:
+```{r, cache=TRUE}
+#| fig-width: 8
+#| fig-height: 4
+for (id in task_ids) {
+  p = bench_res |>
+    filter(task_id == id) |>
+    select(km_proper, km_improper, cox_proper, cox_improper, aft_proper, aft_improper) |>
+    pivot_longer(cols = everything(), names_to = c("model", ".value"), names_pattern = "(.*)_(.*)") |>
+    mutate(model = factor(model, levels = c("km", "cox", "aft"))) |>
+    # scatter plot with Pearson's coef.
+    ggpubr::ggscatter(
+      x = "proper", y = "improper",
+      facet.by = c("model"),
+      panel.labs = list(model = c("Kaplan-Meier", "CoxPH", "AFT (Weibull)")),
+      xlab = "RISBS (proper)",
+      ylab = "ISBS (improper)",
+      color = "black", shape = 21, size = 2,
+      add = "reg.line",  # Add regression line
+      add.params = list(color = "blue", fill = "lightgray"), # Customize regr. line
+      conf.int = TRUE, # Add confidence interval
+      cor.coef = TRUE, # Add Pearson's correlation coefficient
+      cor.coeff.args = list(method = "pearson", label.sep = "\n")
+    ) +
+    labs(title = id) +
+    theme(panel.spacing = unit(1, "cm"))
+    print(p)
+}
 ```
 
 ## Investigate inflation of proper ISBS {-}
@@ -105,14 +167,14 @@ task_test  = task$clone()$filter(rows = part$test)
 ```
 
 Kaplan-Meier of the training survival data:
-```{r, message=FALSE}
+```{r, message=FALSE, cache=TRUE}
 autoplot(task_train) +
   labs(title = "Kaplan-Meier (train data)",
        subtitle = "Time-to-event distribution")
 ```
 
 Kaplan-Meier of the training censoring data:
-```{r, message=FALSE}
+```{r, message=FALSE, cache=TRUE}
 autoplot(task_train, reverse = TRUE) +
     labs(title = "Kaplan-Meier (train data)",
          subtitle = "Censoring distribution")
@@ -197,7 +259,7 @@ graf_proper_tmax$scores[id]
 ```
 
 :::{.callout-tip title="Suggestion when calculating time-integrated scoring rules"}
-To avoid the inflation of RISBS and generally have a more robust estimation of both RISBS and ISBS time-dependent scores, we advise to set the `t_max` argument (time horizon).
+To avoid the inflation of RISBS and generally have a more robust estimation of both RISBS and ISBS scoring rules, we advise to set the `t_max` argument (time horizon).
 This can be either study-driven or based on a meaningful quantile of the distribution of (usually event) times in your dataset (e.g. $80\%$).
 :::
 

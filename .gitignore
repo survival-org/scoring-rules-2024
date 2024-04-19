@@ -7,4 +7,5 @@ sysconfig
 .Rprofile
 .Rproj.user/
 /.quarto/
-index_files/
+/index_files/
+/index_cache/

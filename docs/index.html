@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="John Zobolas">
-<meta name="dcterms.date" content="2024-04-15">
+<meta name="dcterms.date" content="2024-04-19">
 <meta name="description" content="Explore the relationship between proper and improper Integrated Brier Score in the validation of survival models">
 
 <title>Benchmark results analysis</title>
@@ -23,7 +23,60 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -61,6 +114,32 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+<script src="site_libs/datatables-binding-0.33/datatables.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet">
+<script src="site_libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
+<link href="site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet">
+<script src="site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
 
 </head>
 
@@ -78,7 +157,8 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
   <li><a href="#simulated-data-results" id="toc-simulated-data-results" class="nav-link" data-scroll-target="#simulated-data-results">Simulated Data Results</a></li>
   <li><a href="#real-world-data-results" id="toc-real-world-data-results" class="nav-link" data-scroll-target="#real-world-data-results">Real-world Data Results</a></li>
-  <li><a href="#inflation-with-ibs-proper" id="toc-inflation-with-ibs-proper" class="nav-link" data-scroll-target="#inflation-with-ibs-proper">Inflation with IBS proper</a></li>
+  <li><a href="#investigate-inflation-of-proper-isbs" id="toc-investigate-inflation-of-proper-isbs" class="nav-link" data-scroll-target="#investigate-inflation-of-proper-isbs">Investigate inflation of proper ISBS</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/bblodfon/scoring-rules-2024/blob/main/index.qmd" class="toc-action">View source</a></p></div></div></nav>
 </nav>
@@ -113,7 +193,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 15, 2024</p>
+      <p class="date">April 19, 2024</p>
     </div>
   </div>
   
@@ -125,21 +205,299 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="introduction" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="introduction">Introduction</h2>
+<p>We benchmark the two versions of the survival brier score <span class="citation" data-cites="Graf1999">(<a href="#ref-Graf1999" role="doc-biblioref">Graf et al. 1999</a>)</span>, namely the <strong>Integrated Survival Brier Score (ISBS)</strong> and the proposed <strong>we-weighted version (RISBS)</strong> (see <a href="https://mlr3proba.mlr-org.com/reference/mlr_measures_surv.graf.html#details">documentation details</a> for their respective formulas). The first (ISBS) is not a proper scoring rule <span class="citation" data-cites="Rindt2022">(<a href="#ref-Rindt2022" role="doc-biblioref">Rindt et al. 2022</a>)</span>, the second (RISBS) is <span class="citation" data-cites="Sonabend2022">(<a href="#ref-Sonabend2022" role="doc-biblioref">Sonabend 2022</a>)</span>. Our goal is to assess whether these scores exhibit differences in simulated and real-world datasets, and if so, to understand the reasons behind these differences.</p>
+<p>Load libraries:</p>
+<div class="cell" data-result="false">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3proba)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DT)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 <section id="simulated-data-results" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="simulated-data-results">Simulated Data Results</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><a href="https://github.com/bblodfon/scoring-rules-2024/blob/main/generate.R">Code</a> to generate the simulated datasets.</li>
+</ul>
+<p>We simulate datasets with <strong>varying characteristics</strong>:</p>
+<ol type="1">
+<li>Independent (random) vs dependent censoring</li>
+<li>PH (Proportional Hazards) vs non-PH data (time-varying coefficients)</li>
+<li>Proportion of censoring (<span class="math inline">20\% - 80\%</span>)</li>
+<li>Number of observations (<span class="math inline">100 - 1000</span>)</li>
+</ol>
+<p>The ‘fixed’ parameters in our simulations are the following:</p>
+<ul>
+<li>Time horizon (max event or censoring time): <strong>365 days</strong></li>
+<li>Number of datasets to generate per (1)-(4) combinations: <span class="math inline">100</span></li>
+<li>Number of covariates per dataset (chosen randomly): <span class="math inline">3-10</span> (low-dim setting)</li>
+</ul>
+</div>
+</div>
 </section>
 <section id="real-world-data-results" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="real-world-data-results">Real-world Data Results</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><a href="https://github.com/bblodfon/scoring-rules-2024/tree/main/data">Compressed data files</a></li>
+<li><a href="https://github.com/bblodfon/scoring-rules-2024/blob/main/prepare_tasks.R">R script</a> used to translate the datasets into <code>mlr3</code> tasks and extract useful info, namely:
+<ul>
+<li><code>n_obs</code>: Number of observations</li>
+<li><code>n_vars</code>: Number of total variables</li>
+<li><code>n_factors</code>: Number of factor/categorical variables</li>
+<li><code>n_numeric</code>: Number of numeric variables</li>
+<li><code>cens_prop</code>: Proportion of censoring</li>
+<li><code>admin_cens_prop</code>: Proportion of censored observations that are censored administratively, i.e.&nbsp;at the last censoring time</li>
+<li><code>dep_cens_prop</code>: Proportion of significant coefficients (adjusted <code>p &lt; 0.05</code>) to predict censoring status using a logistic regression model</li>
+<li><code>prop_haz</code>: If the dataset satisfies the proportional hazards assumption (<code>p &gt; 0.05</code> using a global Schoenfeld test)</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<p>We used a total of <span class="math inline">26</span> real-word, low-dimensional datasets (fewer features than observations) for benchmarking, freely available via various <code>R</code> packages:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>task_tbl <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">"task_tbl.rds"</span>) <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>task)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">datatable</span>(<span class="at">data =</span> task_tbl, <span class="at">rownames =</span> <span class="cn">FALSE</span>, <span class="at">options =</span> </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">pageLength =</span> <span class="dv">13</span>, <span class="at">searching =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">order =</span> <span class="fu">list</span>(<span class="fu">list</span>(<span class="dv">0</span>, <span class="st">'asc'</span>)))) <span class="sc">|&gt;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="dv">6</span><span class="sc">:</span><span class="dv">8</span>, <span class="at">digits =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatStyle</span>(<span class="at">columns =</span> <span class="st">'prop_haz'</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">backgroundColor =</span> <span class="fu">styleEqual</span>(<span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="fu">c</span>(<span class="st">"#4DAF4A"</span>, <span class="st">"#E41A1C"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div class="datatables html-widget html-fill-item" id="htmlwidget-8d582ee66b3d4da71707" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-8d582ee66b3d4da71707">{"x":{"filter":"none","vertical":false,"data":[["aids.id","aids2","channing","colrec","cost","dataFTR","dataSTR","e1684","gbsg","grace","kidtran","liver","lung","metabric","mgus","nafld1","nwtco","ova","rdata","std","support","tumor","uis","veteran","wbc1","whas"],[467,2814,458,5578,518,2206,546,284,2232,1000,863,488,228,1903,176,4000,4028,358,1040,877,4000,776,575,137,190,481],[5,4,2,5,13,2,4,3,7,6,3,2,8,9,7,5,3,5,3,21,14,7,12,6,2,9],[4,2,0,2,10,0,0,0,0,0,0,0,1,0,1,1,1,3,1,4,0,1,1,3,0,2],[1,2,2,3,3,2,4,3,7,6,3,2,7,9,6,4,2,2,2,17,14,6,11,3,2,7],[0.5974304068522484,0.3841506751954513,0.6157205240174672,0.17497310864109,0.2200772200772201,0.8640072529465095,0.815018315018315,0.3098591549295774,0.432347670250896,0.676,0.8377752027809965,0.4016393442622951,0.2763157894736842,0.4203888596952181,0.0625,0.9195,0.8582423038728898,0.2569832402234637,0.4740384615384615,0.6043329532497149,0.32375,0.5167525773195877,0.1930434782608696,0.06569343065693431,0.4263157894736842,0.4823284823284824],[0.003584229390681004,0.0009250693802035153,0.4397163120567376,0.001024590163934426,0.008771929824561403,0.001049317943336831,0.002247191011235955,0.01136363636363636,0.001036269430051813,0.7248520710059172,0.001383125864453665,0.00510204081632653,0.01587301587301587,0.00125,0.09090909090909091,0.0002718868950516585,0.0002892681515765114,0.0108695652173913,0.002028397565922921,0.001886792452830189,0.002316602316602316,0.002493765586034913,0.009009009009009009,0.1111111111111111,0.01234567901234568,0.004310344827586207],[0.3333333333333333,0,0.6666666666666666,0.8333333333333334,0.1428571428571428,0.6666666666666666,0.6,0.25,0.5,0.7142857142857143,0.5,0.6666666666666666,0.1111111111111111,0.6,0.125,0.3333333333333333,1,0.07692307692307693,0.5714285714285714,0,0.2666666666666667,0.3076923076923077,0.06666666666666667,0,0,0.4666666666666667],[true,false,true,false,false,true,true,true,false,false,true,false,true,false,true,true,false,false,true,true,false,false,true,false,true,false]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>task_id<\/th>\n      <th>n_obs<\/th>\n      <th>n_vars<\/th>\n      <th>n_factors<\/th>\n      <th>n_numeric<\/th>\n      <th>cens_prop<\/th>\n      <th>admin_cens_prop<\/th>\n      <th>dep_cens_prop<\/th>\n      <th>prop_haz<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":13,"searching":false,"order":[[0,"asc"]],"columnDefs":[{"targets":5,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":7,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[1,2,3,4,5,6,7]},{"name":"task_id","targets":0},{"name":"n_obs","targets":1},{"name":"n_vars","targets":2},{"name":"n_factors","targets":3},{"name":"n_numeric","targets":4},{"name":"cens_prop","targets":5},{"name":"admin_cens_prop","targets":6},{"name":"dep_cens_prop","targets":7},{"name":"prop_haz","targets":8}],"autoWidth":false,"orderClasses":false,"lengthMenu":[10,13,25,50,100],"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[8]; $(this.api().cell(row, 8).node()).css({'background-color':value == true ? \"#4DAF4A\" : value == false ? \"#E41A1C\" : null});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
+</div>
+</div>
 </section>
-<section id="inflation-with-ibs-proper" class="level2 unnumbered">
-<h2 class="unnumbered anchored" data-anchor-id="inflation-with-ibs-proper">Inflation with IBS proper</h2>
-<p>lala</p>
+<section id="investigate-inflation-of-proper-isbs" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="investigate-inflation-of-proper-isbs">Investigate inflation of proper ISBS</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In this section we investigate an example where the <strong>proper ISBS gets inflated</strong> (i.e.&nbsp;too large value for the score, compared to the improper version) and show how we can avoid such a thing from happening when evaluating model performance.</p>
+</div>
+</div>
+<p>Let’s use a dataset where in a particular train/test resampling the issue occurs:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>inflated_data <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">"inflated_data.rds"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>task <span class="ot">=</span> inflated_data<span class="sc">$</span>task</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>part <span class="ot">=</span> inflated_data<span class="sc">$</span>part</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>task</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;TaskSurv:mgus&gt; (176 x 9)
+* Target: time, status
+* Properties: -
+* Features (7):
+  - dbl (6): age, alb, creat, dxyr, hgb, mspike
+  - fct (1): sex</code></pre>
+</div>
+</div>
+<p>Separate train and test data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>task_train <span class="ot">=</span> task<span class="sc">$</span><span class="fu">clone</span>()<span class="sc">$</span><span class="fu">filter</span>(<span class="at">rows =</span> part<span class="sc">$</span>train)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>task_test  <span class="ot">=</span> task<span class="sc">$</span><span class="fu">clone</span>()<span class="sc">$</span><span class="fu">filter</span>(<span class="at">rows =</span> part<span class="sc">$</span>test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Kaplan-Meier of the training survival data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(task_train) <span class="sc">+</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Kaplan-Meier (train data)"</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Time-to-event distribution"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Kaplan-Meier of the training censoring data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(task_train, <span class="at">reverse =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Kaplan-Meier (train data)"</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">subtitle =</span> <span class="st">"Censoring distribution"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Estimates of the censoring distribution <span class="math inline">G_{KM}(t)</span> (values from the above figure):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>km_train <span class="ot">=</span> task_train<span class="sc">$</span><span class="fu">kaplan</span>(<span class="at">reverse =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>km_tbl <span class="ot">=</span> <span class="fu">tibble</span>(<span class="at">time =</span> km_train<span class="sc">$</span>time, <span class="at">surv =</span> km_train<span class="sc">$</span>surv)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(km_tbl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+   time  surv
+  &lt;dbl&gt; &lt;dbl&gt;
+1 12140 0.75 
+2 12313 0.625
+3 12319 0.5  
+4 12349 0.25 
+5 12689 0.125
+6 13019 0    </code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>As we can see from the above figures and table, due to having <em>at least one censored observation at the last time point</em>, <span class="math inline">G_{KM}(t_{max}) = 0</span> for <span class="math inline">t_{max} = 13019</span>.</p>
+</div>
+</div>
+<p>Is there an observation <strong>on the test set</strong> that has died (<code>status</code> = <span class="math inline">1</span>) on that last time point (or after)?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>max_time <span class="ot">=</span> <span class="fu">max</span>(km_tbl<span class="sc">$</span>time) <span class="co"># max time point</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>test_times  <span class="ot">=</span> task_test<span class="sc">$</span><span class="fu">times</span>()</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>test_status <span class="ot">=</span> task_test<span class="sc">$</span><span class="fu">status</span>()</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co"># get the id of the observation in the test data</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>id <span class="ot">=</span> <span class="fu">which</span>(test_times <span class="sc">&gt;=</span> max_time <span class="sc">&amp;</span> test_status <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 14</code></pre>
+</div>
+</div>
+<p>Yes there is such observation!</p>
+<p>In <code>mlr3proba</code> using <code>proper = TRUE</code> for the RISBS calculation, this observation will be weighted by <span class="math inline">1/0</span> according to the formula. Practically, to avoid division by zero, a small value <code>eps = 0.001</code> will be used.</p>
+<p>Let’s train a simple Cox model on the train set and calculate its predictions on the test set:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>cox <span class="ot">=</span> <span class="fu">lrn</span>(<span class="st">"surv.coxph"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">=</span> cox<span class="sc">$</span><span class="fu">train</span>(task, part<span class="sc">$</span>train)<span class="sc">$</span><span class="fu">predict</span>(task, part<span class="sc">$</span>test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We calculate the ISBS (improper) and RISBS (proper) scores:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>graf_improper <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">proper =</span> <span class="cn">FALSE</span>, <span class="at">id =</span> <span class="st">"graf.improper"</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>graf_proper   <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">proper =</span> <span class="cn">TRUE</span>,  <span class="at">id =</span> <span class="st">"graf.proper"</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>p<span class="sc">$</span><span class="fu">score</span>(graf_improper, <span class="at">task =</span> task, <span class="at">train_set =</span> part<span class="sc">$</span>train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>graf.improper 
+    0.1493429 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>p<span class="sc">$</span><span class="fu">score</span>(graf_proper  , <span class="at">task =</span> task, <span class="at">train_set =</span> part<span class="sc">$</span>train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>graf.proper 
+   10.64584 </code></pre>
+</div>
+</div>
+<p>As we can see there is <strong>huge difference</strong> between the two versions of the score. We check the <em>per-observation</em> scores (integrated across all time points):</p>
+<p>Observation-wise RISBS scores:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>graf_proper<span class="sc">$</span>scores</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1]   0.08994417   0.02854219   0.04214266   0.15578719   0.05364692
+ [6]   0.12969150   0.06463256   0.32033549   2.43262450   0.11602432
+[11]   0.03228501   0.10172088   0.14652850 367.10227335   0.18004727
+[16]   0.21991511   0.09070024   0.03507389   0.19856844   0.07925747
+[21]   0.07732517   0.06982001   0.19468406   0.05267402   0.02419841
+[26]   0.17645640   0.07633691   0.04379196   0.07839955   0.06684222
+[31]   0.05457688   0.02874430   0.04071108   0.00000000   0.00000000</code></pre>
+</div>
+</div>
+<p>Observation-wise ISBS scores:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>graf_improper<span class="sc">$</span>scores</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 0.08994417 0.02854219 0.04214266 0.15578719 0.05364692 0.12969150
+ [7] 0.06463256 0.32033549 0.62971109 0.11602432 0.03228501 0.10172088
+[13] 0.14652850 1.07969258 0.16743979 0.21991511 0.09070024 0.03507389
+[19] 0.19856844 0.07925747 0.07732517 0.06982001 0.19468406 0.05267402
+[25] 0.02419841 0.16199516 0.07633691 0.04379196 0.07839955 0.06684222
+[31] 0.05457688 0.02874430 0.04071108 0.03512466 0.46541333</code></pre>
+</div>
+</div>
+<p>It is <strong>the one observation that we identified earlier</strong> that causes the inflation of the RISBS score - it’s pretty much an outlier compared to all other values:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>graf_proper<span class="sc">$</span>scores[id]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 367.1023</code></pre>
+</div>
+</div>
+<p>By setting <code>t_max</code> (time horizon to evaluate the measure up to) to the <span class="math inline">95\%</span> quantile of the event times, we can solve the inflation problem of the proper RISBS score, since we will divide by a value larger than zero from the above table of <span class="math inline">G_{KM}(t)</span> values. The <code>t_max</code> time point is:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>t_max <span class="ot">=</span> <span class="fu">as.integer</span>(<span class="fu">quantile</span>(task_train<span class="sc">$</span><span class="fu">unique_event_times</span>(), <span class="fl">0.95</span>))</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>t_max</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 10080</code></pre>
+</div>
+</div>
+<p>Integrating up to <code>t_max</code>, the proper RISBS score is:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>graf_proper_tmax <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">proper =</span> <span class="cn">TRUE</span>, <span class="at">t_max =</span> t_max)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>p<span class="sc">$</span><span class="fu">score</span>(graf_proper_tmax, <span class="at">task =</span> task, <span class="at">train_set =</span> part<span class="sc">$</span>train) <span class="co"># ISBS</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>surv.graf 
+0.1436484 </code></pre>
+</div>
+</div>
+<p>The score for the specific observation that had experienced the event at (or beyond) the latest training time point is now:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>graf_proper_tmax<span class="sc">$</span>scores[id]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.141502</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Suggestion when calculating time-integrated scoring rules">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Suggestion when calculating time-integrated scoring rules
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To avoid the inflation of RISBS and generally have a more robust estimation of both RISBS and ISBS time-dependent scores, we advise to set the <code>t_max</code> argument (time horizon). This can be either study-driven or based on a meaningful quantile of the distribution of (usually event) times in your dataset (e.g.&nbsp;<span class="math inline">80\%</span>).</p>
+</div>
+</div>
+</section>
+<section id="references" class="level2">
+
+
 
 
 </section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-Graf1999" class="csl-entry" role="listitem">
+Graf, Erika, Claudia Schmoor, Willi Sauerbrei, and Martin Schumacher. 1999. <span>“<span class="nocase">Assessment and comparison of prognostic classification schemes for survival data</span>.”</span> <em>Statistics in Medicine</em> 18 (17-18): 2529–45. <a href="https://doi.org/10.1002/(SICI)1097-0258(19990915/30)18:17/18<2529::AID-SIM274>3.0.CO;2-5">https://doi.org/10.1002/(SICI)1097-0258(19990915/30)18:17/18&lt;2529::AID-SIM274&gt;3.0.CO;2-5</a>.
+</div>
+<div id="ref-Rindt2022" class="csl-entry" role="listitem">
+Rindt, David, Robert Hu, David Steinsaltz, and Dino Sejdinovic. 2022. <span>“<span class="nocase">Survival regression with proper scoring rules and monotonic neural networks</span>.”</span> In <em>Proceedings of the 25th International Conference on Artificial Intelligence and Statistics</em>, edited by Gustau Camps-Valls, Francisco J R Ruiz, and Isabel Valera, 151:1190–1205. Proceedings of Machine Learning Research. PMLR. <a href="https://proceedings.mlr.press/v151/rindt22a.html">https://proceedings.mlr.press/v151/rindt22a.html</a>.
+</div>
+<div id="ref-Sonabend2022" class="csl-entry" role="listitem">
+Sonabend, Raphael. 2022. <span>“<span class="nocase">Scoring rules in survival analysis</span>.”</span> <a href="https://doi.org/10.48550/arxiv.2212.05260">https://doi.org/10.48550/arxiv.2212.05260</a>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

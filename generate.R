@@ -114,7 +114,7 @@ with_progress({
         # add encapsulation for capturing errors
         kaplan$encapsulate = c(train = "evaluate", predict = "evaluate")
         cox$encapsulate    = c(train = "evaluate", predict = "evaluate")
-        aft$encapsulate    = c(train = "evaluate", predict = "evaluate")
+        aft$encapsulate    = c(train = "callr", predict = "callr")
 
         # train
         kaplan$train(task, row_ids = part$train)

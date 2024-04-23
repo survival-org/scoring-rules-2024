@@ -57,6 +57,11 @@ with_progress({
       graf_improper = msr("surv.graf", proper = FALSE, id = "graf.improper", t_max = t_max)
       graf_proper   = msr("surv.graf", proper = TRUE,  id = "graf.proper", t_max = t_max)
 
+      # keep censoring status of the test observations with t <= t_max
+      times  = task$times (rows = part$test)
+      status = task$status(rows = part$test)
+      test_status = status[times <= t_max]
+
       # evaluate graf proper and improper on the test set
       # using various models, but check if training succeeded first
 
@@ -116,6 +121,7 @@ with_progress({
         task_id = task$id,
         # task = list(task),
         # part = list(part),
+        test_status = list(test_status),
         # KM
         km_proper = km_proper,
         km_improper = km_improper,

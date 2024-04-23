@@ -53,7 +53,7 @@ with_progress({
       # Integrated Survival Brier Score (improper) and re-weighted version (proper)
       # Use 80% quantile of event times in the train set as time horizon
       event_times = task$unique_event_times(rows = part$train)
-      t_max = as.integer(quantile(event_times, probs = 0.8))
+      t_max = unname(quantile(event_times, probs = 0.8))
       graf_improper = msr("surv.graf", proper = FALSE, id = "graf.improper", t_max = t_max)
       graf_proper   = msr("surv.graf", proper = TRUE,  id = "graf.proper", t_max = t_max)
 

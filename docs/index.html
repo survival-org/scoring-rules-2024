@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="John Zobolas">
-<meta name="dcterms.date" content="2024-04-21">
+<meta name="dcterms.date" content="2024-04-23">
 <meta name="description" content="Explore the relationship between proper and improper Integrated Brier Score in the validation of survival models">
 
 <title>Benchmark results analysis</title>
@@ -154,14 +154,15 @@ div.csl-indent {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#aim" id="toc-aim" class="nav-link active" data-scroll-target="#aim">Aim</a></li>
   <li><a href="#simulated-data-results" id="toc-simulated-data-results" class="nav-link" data-scroll-target="#simulated-data-results">Simulated Data Results</a></li>
   <li><a href="#real-world-data-results" id="toc-real-world-data-results" class="nav-link" data-scroll-target="#real-world-data-results">Real-world Data Results</a>
   <ul class="collapse">
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a></li>
   <li><a href="#datasets-table" id="toc-datasets-table" class="nav-link" data-scroll-target="#datasets-table">Datasets table</a></li>
   <li><a href="#benchmarking-stats" id="toc-benchmarking-stats" class="nav-link" data-scroll-target="#benchmarking-stats">Benchmarking stats</a></li>
   <li><a href="#risbs-vs-isbs" id="toc-risbs-vs-isbs" class="nav-link" data-scroll-target="#risbs-vs-isbs">RISBS vs ISBS</a></li>
-  <li><a href="#risbs-vs-isbs-per-observation" id="toc-risbs-vs-isbs-per-observation" class="nav-link" data-scroll-target="#risbs-vs-isbs-per-observation">RISBS vs ISBS (per-observation)</a></li>
+  <li><a href="#risbs-vs-isbs-per-observation-scores" id="toc-risbs-vs-isbs-per-observation-scores" class="nav-link" data-scroll-target="#risbs-vs-isbs-per-observation-scores">RISBS vs ISBS (per-observation scores)</a></li>
   </ul></li>
   <li><a href="#investigate-inflation-of-proper-isbs" id="toc-investigate-inflation-of-proper-isbs" class="nav-link" data-scroll-target="#investigate-inflation-of-proper-isbs">Investigate inflation of proper ISBS</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
@@ -199,7 +200,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 21, 2024</p>
+      <p class="date">April 23, 2024</p>
     </div>
   </div>
   
@@ -209,8 +210,8 @@ div.csl-indent {
 
 </header>
 
-<section id="introduction" class="level2 unnumbered">
-<h2 class="unnumbered anchored" data-anchor-id="introduction">Introduction</h2>
+<section id="aim" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="aim">Aim</h2>
 <p>We benchmark the two versions of the survival brier score <span class="citation" data-cites="Graf1999">(<a href="#ref-Graf1999" role="doc-biblioref">Graf et al. 1999</a>)</span>, namely the <strong>Integrated Survival Brier Score (ISBS)</strong> and the proposed <strong>we-weighted version (RISBS)</strong> (see <a href="https://mlr3proba.mlr-org.com/reference/mlr_measures_surv.graf.html#details">documentation details</a> for their respective formulas). The first (ISBS) is not a proper scoring rule <span class="citation" data-cites="Rindt2022">(<a href="#ref-Rindt2022" role="doc-biblioref">Rindt et al. 2022</a>)</span>, the second (RISBS) is <span class="citation" data-cites="Sonabend2022">(<a href="#ref-Sonabend2022" role="doc-biblioref">Sonabend 2022</a>)</span>. Our goal is to assess whether these scores exhibit differences in simulated and real-world datasets, and if so, to understand the reasons behind these differences.</p>
 <p>Load libraries:</p>
 <div class="cell" data-result="false">
@@ -283,8 +284,11 @@ Note
 </ul>
 </div>
 </div>
-<p>We used a total of <span class="math inline">26</span> real-word, low-dimensional datasets (fewer features than observations) for benchmarking, some of which are freely available via various <code>R</code> packages. For each dataset, we performed a simple train/test resampling (80%/20%) <span class="math inline">100</span> times.</p>
-<p>We trained 3 models in each respective train set, namely the <strong>Kaplan-Meier</strong>, the <strong>Cox Proportional Hazards</strong> (CoxPH) model and an <strong>Accelerated Failure Time</strong> (AFT) model with Weibull distribution for the time-to-event output variable. We tested the performance of each model in each respective test set using the ISBS and RISBS measures. We kept also the brier scores for each specific observation (<em>per-observation</em> scores) in all respective test sets.</p>
+<section id="introduction" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="introduction">Introduction</h3>
+<p>We used a total of <span class="math inline">26</span> real-word, low-dimensional datasets (fewer features than observations) for benchmarking, some of which are freely available via various <code>R</code> packages. For each dataset, we performed a simple train/test resampling (80%/20%) <span class="math inline">100</span> times. Each resampling was stratified using the <code>status</code> variable so that the proportion of censoring remains the same in each respective train and test set.</p>
+<p>We trained 3 models in each respective train set, namely the <strong>Kaplan-Meier</strong>, the <strong>Cox Proportional Hazards</strong> (CoxPH) model and an <strong>Accelerated Failure Time</strong> (AFT) model with Weibull distribution for the time-to-event output variable. We tested the performance of each model in each respective test set using the <strong>ISBS</strong> and <strong>RISBS</strong> measures, integrating up to the <span class="math inline">80\%</span> quantile of the event times of each train set. We kept also the brier scores for each specific observation (<em>per-observation</em> scores) in all respective test sets.</p>
+</section>
 <section id="datasets-table" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="datasets-table">Datasets table</h3>
 <div class="cell">
@@ -297,7 +301,7 @@ Note
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>task) <span class="sc">|&gt;</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">datatable</span>(</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">rownames =</span> <span class="cn">FALSE</span>, </span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">options =</span> <span class="fu">list</span>(<span class="at">pageLength =</span> <span class="dv">13</span>, <span class="at">searching =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">options =</span> <span class="fu">list</span>(<span class="at">pageLength =</span> <span class="dv">13</span>, <span class="at">searching =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>                   <span class="at">order =</span> <span class="fu">list</span>(<span class="fu">list</span>(<span class="dv">0</span>, <span class="st">'asc'</span>)))) <span class="sc">|&gt;</span></span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="dv">6</span><span class="sc">:</span><span class="dv">8</span>, <span class="at">digits =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span></span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">formatStyle</span>(<span class="at">columns =</span> <span class="st">'prop_haz'</span>,</span>
@@ -305,22 +309,22 @@ Note
 </details>
 <div class="cell-output-display">
 
-<div class="datatables html-widget html-fill-item" id="htmlwidget-1def06d927cc999284a5" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-1def06d927cc999284a5">{"x":{"filter":"none","vertical":false,"data":[["aids.id","aids2","channing","colrec","cost","dataFTR","dataSTR","e1684","gbsg","grace","kidtran","liver","lung","metabric","mgus","nafld1","nwtco","ova","rdata","std","support","tumor","uis","veteran","wbc1","whas"],[467,2814,458,5578,518,2206,546,284,2232,1000,863,488,228,1903,176,4000,4028,358,1040,877,4000,776,575,137,190,481],[5,4,2,5,13,2,4,3,7,6,3,2,8,9,7,5,3,5,3,21,14,7,12,6,2,9],[4,2,0,2,10,0,0,0,0,0,0,0,1,0,1,1,1,3,1,4,0,1,1,3,0,2],[1,2,2,3,3,2,4,3,7,6,3,2,7,9,6,4,2,2,2,17,14,6,11,3,2,7],[0.5974304068522484,0.3841506751954513,0.6157205240174672,0.17497310864109,0.2200772200772201,0.8640072529465095,0.815018315018315,0.3098591549295774,0.432347670250896,0.676,0.8377752027809965,0.4016393442622951,0.2763157894736842,0.4203888596952181,0.0625,0.9195,0.8582423038728898,0.2569832402234637,0.4740384615384615,0.6043329532497149,0.32375,0.5167525773195877,0.1930434782608696,0.06569343065693431,0.4263157894736842,0.4823284823284824],[0.003584229390681004,0.0009250693802035153,0.4397163120567376,0.001024590163934426,0.008771929824561403,0.001049317943336831,0.002247191011235955,0.01136363636363636,0.001036269430051813,0.7248520710059172,0.001383125864453665,0.00510204081632653,0.01587301587301587,0.00125,0.09090909090909091,0.0002718868950516585,0.0002892681515765114,0.0108695652173913,0.002028397565922921,0.001886792452830189,0.002316602316602316,0.002493765586034913,0.009009009009009009,0.1111111111111111,0.01234567901234568,0.004310344827586207],[0.3333333333333333,0,0.6666666666666666,0.8333333333333334,0.1428571428571428,0.6666666666666666,0.6,0.25,0.5,0.7142857142857143,0.5,0.6666666666666666,0.1111111111111111,0.6,0.125,0.3333333333333333,1,0.07692307692307693,0.5714285714285714,0,0.2666666666666667,0.3076923076923077,0.06666666666666667,0,0,0.4666666666666667],[true,false,true,false,false,true,true,true,false,false,true,false,true,false,true,true,false,false,true,true,false,false,true,false,true,false]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>task_id<\/th>\n      <th>n_obs<\/th>\n      <th>n_vars<\/th>\n      <th>n_factors<\/th>\n      <th>n_numeric<\/th>\n      <th>cens_prop<\/th>\n      <th>admin_cens_prop<\/th>\n      <th>dep_cens_prop<\/th>\n      <th>prop_haz<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":13,"searching":false,"order":[[0,"asc"]],"columnDefs":[{"targets":5,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":7,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[1,2,3,4,5,6,7]},{"name":"task_id","targets":0},{"name":"n_obs","targets":1},{"name":"n_vars","targets":2},{"name":"n_factors","targets":3},{"name":"n_numeric","targets":4},{"name":"cens_prop","targets":5},{"name":"admin_cens_prop","targets":6},{"name":"dep_cens_prop","targets":7},{"name":"prop_haz","targets":8}],"autoWidth":false,"orderClasses":false,"lengthMenu":[10,13,25,50,100],"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[8]; $(this.api().cell(row, 8).node()).css({'background-color':value == true ? \"#4DAF4A\" : value == false ? \"#E41A1C\" : null});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-adeb886921274a5bac64" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-adeb886921274a5bac64">{"x":{"filter":"none","vertical":false,"data":[["aids.id","aids2","channing","colrec","cost","dataFTR","dataSTR","e1684","gbsg","grace","kidtran","liver","lung","metabric","mgus","nafld1","nwtco","ova","rdata","std","support","tumor","uis","veteran","wbc1","whas"],[467,2814,458,5578,518,2206,546,284,2232,1000,863,488,228,1903,176,4000,4028,358,1040,877,4000,776,575,137,190,481],[5,4,2,5,13,2,4,3,7,6,3,2,8,9,7,5,3,5,3,21,14,7,12,6,2,9],[4,2,0,2,10,0,0,0,0,0,0,0,1,0,1,1,1,3,1,4,0,1,1,3,0,2],[1,2,2,3,3,2,4,3,7,6,3,2,7,9,6,4,2,2,2,17,14,6,11,3,2,7],[0.5974304068522484,0.3841506751954513,0.6157205240174672,0.17497310864109,0.2200772200772201,0.8640072529465095,0.815018315018315,0.3098591549295774,0.432347670250896,0.676,0.8377752027809965,0.4016393442622951,0.2763157894736842,0.4203888596952181,0.0625,0.9195,0.8582423038728898,0.2569832402234637,0.4740384615384615,0.6043329532497149,0.32375,0.5167525773195877,0.1930434782608696,0.06569343065693431,0.4263157894736842,0.4823284823284824],[0.003584229390681004,0.0009250693802035153,0.4397163120567376,0.001024590163934426,0.008771929824561403,0.001049317943336831,0.002247191011235955,0.01136363636363636,0.001036269430051813,0.7248520710059172,0.001383125864453665,0.00510204081632653,0.01587301587301587,0.00125,0.09090909090909091,0.0002718868950516585,0.0002892681515765114,0.0108695652173913,0.002028397565922921,0.001886792452830189,0.002316602316602316,0.002493765586034913,0.009009009009009009,0.1111111111111111,0.01234567901234568,0.004310344827586207],[0.3333333333333333,0,0.6666666666666666,0.8333333333333334,0.1428571428571428,0.6666666666666666,0.6,0.25,0.5,0.7142857142857143,0.5,0.6666666666666666,0.1111111111111111,0.6,0.125,0.3333333333333333,1,0.07692307692307693,0.5714285714285714,0,0.2666666666666667,0.3076923076923077,0.06666666666666667,0,0,0.4666666666666667],[true,false,true,false,false,true,true,true,false,false,true,false,true,false,true,true,false,false,true,true,false,false,true,false,true,false]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>task_id<\/th>\n      <th>n_obs<\/th>\n      <th>n_vars<\/th>\n      <th>n_factors<\/th>\n      <th>n_numeric<\/th>\n      <th>cens_prop<\/th>\n      <th>admin_cens_prop<\/th>\n      <th>dep_cens_prop<\/th>\n      <th>prop_haz<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":13,"searching":true,"order":[[0,"asc"]],"columnDefs":[{"targets":5,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":7,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[1,2,3,4,5,6,7]},{"name":"task_id","targets":0},{"name":"n_obs","targets":1},{"name":"n_vars","targets":2},{"name":"n_factors","targets":3},{"name":"n_numeric","targets":4},{"name":"cens_prop","targets":5},{"name":"admin_cens_prop","targets":6},{"name":"dep_cens_prop","targets":7},{"name":"prop_haz","targets":8}],"autoWidth":false,"orderClasses":false,"lengthMenu":[10,13,25,50,100],"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[8]; $(this.api().cell(row, 8).node()).css({'background-color':value == true ? \"#4DAF4A\" : value == false ? \"#E41A1C\" : null});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
 </div>
 </div>
+</section>
+<section id="benchmarking-stats" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="benchmarking-stats">Benchmarking stats</h3>
 <p>Get the benchmark results:</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># see `run_bench.R`</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>bench_res <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">"bench_res_tmax.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>bench_res <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">"bench_res.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-</section>
-<section id="benchmarking-stats" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="benchmarking-stats">Benchmarking stats</h3>
-<p>We calculate the <strong>Pearson correlation</strong> and <strong>root mean square error (RMSE)</strong> between RISBS and ISBS scores for each dataset (<span class="math inline">100</span> resamplings) and each model:</p>
+<p>We calculate the <strong>Pearson correlation</strong> and <strong>root mean square error (RMSE)</strong> between RISBS and ISBS scores per dataset (<span class="math inline">100</span> resamplings) and model:</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -336,174 +340,117 @@ Note
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">cox_rmse =</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(cox_proper <span class="sc">-</span> cox_improper)<span class="sc">^</span><span class="dv">2</span>),</span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">aft_rmse =</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(aft_proper <span class="sc">-</span> aft_improper)<span class="sc">^</span><span class="dv">2</span>),</span>
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_cor  =</span> <span class="fu">mean</span>(<span class="fu">c_across</span>(<span class="fu">ends_with</span>(<span class="st">"cor"</span>)), <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_rmse =</span> <span class="fu">mean</span>(<span class="fu">c_across</span>(<span class="fu">ends_with</span>(<span class="st">"rmse"</span>)), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(mean_cor))</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>score_corrs <span class="sc">|&gt;</span></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">datatable</span>(</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">rownames =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">options =</span> <span class="fu">list</span>(<span class="at">pageLength =</span> <span class="dv">13</span>, <span class="at">searching =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>                   <span class="at">order =</span> <span class="fu">list</span>(<span class="fu">list</span>(<span class="dv">7</span>, <span class="st">'desc'</span>)))) <span class="sc">|&gt;</span></span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">9</span>, <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(cox_cor))</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>score_corrs <span class="sc">|&gt;</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">datatable</span>(</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">rownames =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">options =</span> <span class="fu">list</span>(<span class="at">pageLength =</span> <span class="dv">13</span>, <span class="at">searching =</span> <span class="cn">TRUE</span>, <span class="at">order =</span> <span class="fu">list</span>(<span class="fu">list</span>(<span class="dv">2</span>, <span class="st">'desc'</span>)))</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">7</span>, <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 
-<div class="datatables html-widget html-fill-item" id="htmlwidget-388088f1f8f8d4439529" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-388088f1f8f8d4439529">{"x":{"filter":"none","vertical":false,"data":[["mgus","uis","cost","ova","aids.id","colrec","grace","nwtco","e1684","dataFTR","kidtran","channing","wbc1","rdata","gbsg","metabric","nafld1","liver","dataSTR","lung","std","whas","veteran","tumor","aids2","support"],[0.9999999999999999,1,1,1,0.9999974775498958,0.9999911925011142,0.9996850818291312,0.9999776289511731,0.9994175279133308,0.9992240819066495,0.9995120362720006,0.9963887304493455,0.9973274314084082,0.997893082385733,0.9926819237957166,0.9841983223817505,0.999840736818331,0.9797010611085292,0.9930515245343804,0.9578955951673479,0.9650767593615264,0.9616893347536847,0.9479066635335457,0.9798367166688503,0.8758289671652648,0.5501651426954823],[1,1,1,0.9999999999999999,0.9999997201131987,0.9999997920702467,0.9998957713373687,0.9996178743556782,0.9995367263986038,0.9987054833247618,0.9968458130530483,0.9974691409999067,0.9950864260475469,0.9952071886614481,0.9893169700858135,0.9819511052358293,0.9766240182709197,0.9804667655270295,0.9821711601739345,0.9501229781362157,0.9470563626322416,0.9391126069363087,0.9410461286262014,0.9352292313895469,0.8695719299689061,0.8530764029299597],[1,1,0.9999999999999998,0.9999999991771283,0.9999997531468515,0.9999998326737253,0.9999165583313302,0.999859015079287,0.9997774676045043,0.997916632646661,0.9966212188955218,0.9972994639894507,0.9965424279402543,0.9943356498934092,0.9927513653141143,0.9829261058920362,0.971610238750237,0.9805795809961569,0.9639581118182305,0.9499152596439241,0.9408180329984862,0.9376744514946737,0.9487879844521035,0.9195840325999618,0.841742369495088,0.9025906425662827],[0,0,0,0,3.060339003182116e-05,1.677584108150665e-06,0.0006591554297339347,0.001209654743712725,0.0005078740668580156,0.003386954675427923,0.00346130637940814,0.004259917911818392,0.007485302917960656,0.003835508049855832,0.005591759407440941,0.01226003164391563,0.001091234492048482,0.005970655124833954,0.006451722162836938,0.008904849962133215,0.01379623007942229,0.0215766012131976,0.00549793600697037,0.01463492939973727,0.01138445931257735,0.03260631366717408],[0,0,0,0,1.04568970210922e-05,1.333842859682632e-07,0.000722479204056953,0.001307878799191368,0.0003958562654835868,0.003715738759635774,0.004645069984170917,0.002629098654979489,0.007559624522980638,0.004269926541313578,0.00509721230758021,0.01110198704196172,0.00270262260508197,0.005368066515840452,0.007572614532392868,0.004782417309276831,0.0140735874711075,0.01352147806440553,0.005557935759311643,0.01571343687192718,0.01126738439379705,0.03009511420538663],[0,0,0,2.134628129404903e-07,9.64817687412134e-06,1.600683089361676e-07,0.0006647590209606979,0.0007701136541211062,0.0002624370892461009,0.004803935407381828,0.0045696296711532,0.002696613691321004,0.006449598774039436,0.004489328455657667,0.004132351966698197,0.01059978271973086,0.003056740761256357,0.00519413951120313,0.01032241344199379,0.004865817691251533,0.01440183122310476,0.01252830478597281,0.005318351289123809,0.01648888317272688,0.01240038770797603,0.02683263758891158],[1,1,0.9999999999999999,0.9999999997257094,0.9999989836033153,0.9999969390816954,0.9998324704992767,0.9998181727953794,0.9995772406388129,0.9986153992926907,0.9976596894068569,0.9970524451462343,0.9963187617987365,0.9958119736468635,0.9915834197318815,0.9830251778365386,0.9826916646131626,0.9802491358772385,0.9797269321755151,0.9526446109824959,0.9509837183307513,0.9461587977282223,0.9459135922039502,0.9448833268861196,0.8623810888764196,0.7686107293972416],[0,0,0,7.115427098016343e-08,1.690282130901157e-05,6.570122343516986e-07,0.0006821312182505285,0.0010958823990084,0.0003887224738625678,0.003968876280815175,0.004225335344910753,0.003195210086039629,0.007164842071660243,0.004198254348942359,0.004940441227239783,0.01132060046853607,0.00228353261946227,0.005510953717292512,0.008115583379074531,0.006184361654220526,0.01409054959121152,0.01587546135452531,0.00545807435180194,0.01561241648146378,0.01168407713811681,0.02984468848715743]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>task_id<\/th>\n      <th>km_cor<\/th>\n      <th>cox_cor<\/th>\n      <th>aft_cor<\/th>\n      <th>km_rmse<\/th>\n      <th>cox_rmse<\/th>\n      <th>aft_rmse<\/th>\n      <th>mean_cor<\/th>\n      <th>mean_rmse<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":13,"searching":false,"order":[[7,"desc"]],"columnDefs":[{"targets":1,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":2,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":3,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":5,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":7,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":8,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[1,2,3,4,5,6,7,8]},{"name":"task_id","targets":0},{"name":"km_cor","targets":1},{"name":"cox_cor","targets":2},{"name":"aft_cor","targets":3},{"name":"km_rmse","targets":4},{"name":"cox_rmse","targets":5},{"name":"aft_rmse","targets":6},{"name":"mean_cor","targets":7},{"name":"mean_rmse","targets":8}],"autoWidth":false,"orderClasses":false,"lengthMenu":[10,13,25,50,100]}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.columnDefs.3.render","options.columnDefs.4.render","options.columnDefs.5.render","options.columnDefs.6.render","options.columnDefs.7.render"],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-afd636f505d97d1936ac" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-afd636f505d97d1936ac">{"x":{"filter":"none","vertical":false,"data":[["cost","mgus","ova","uis","colrec","grace","nwtco","dataFTR","channing","kidtran","aids.id","rdata","wbc1","e1684","gbsg","dataSTR","metabric","nafld1","liver","lung","std","veteran","whas","tumor","aids2","support"],[1,0.9999999999999999,1,1,0.9999911925011142,0.9996850818291312,0.9999776289511731,0.9992240819066495,0.9963887304493455,0.9995120362720006,0.9992356185106409,0.997893082385733,0.9953579765949976,0.9874342464757688,0.9920589725565674,0.9928308959687651,0.9832905303501287,0.999840736818331,0.961259178299209,0.9578955951673479,0.9650767593615264,0.9479066635335457,0.9616893347536847,0.9798367166688503,0.8758289671652648,0.5501651426954823],[1,1,1,1,0.9999997920702467,0.9998957713373687,0.9996178743556782,0.9987054833247618,0.9974691409999067,0.9968458130530483,0.9965125148264731,0.9952071886614481,0.9901513894688344,0.990014652838489,0.9889809870910098,0.9820933012092952,0.9799541837535042,0.9766240182709197,0.9683441285149659,0.9501229781362157,0.9470563626322416,0.9410461286262014,0.9391126069363087,0.9352292313895469,0.8695719299689061,0.8530764029299597],[0.9999999999999998,1,0.9999999992411213,1,0.9999998326737253,0.9999165583313302,0.999859015079287,0.997916632646661,0.9972994639894507,0.9966212188955218,0.9964306086573956,0.9943356498934092,0.9927548603298052,0.9966768460221932,0.9925817519892476,0.9646447750531115,0.9810374857898373,0.971610238750237,0.9663438785223293,0.9499152596439241,0.9408180329984862,0.9487879844521035,0.9376744514946737,0.9195840325999618,0.841742369495088,0.9025906425662827],[0,0,0,0,1.677584108150665e-06,0.0006591554297339347,0.001209654743712725,0.003386954675427923,0.004259917911818392,0.00346130637940814,0.004752604544185073,0.003835508049855832,0.009591776879412582,0.001663969509036554,0.005818452738558754,0.007236883248440551,0.01232001450366572,0.001091234492048482,0.007103708299537075,0.008904849962133215,0.01379623007942229,0.00549793600697037,0.0215766012131976,0.01463492939973727,0.01138445931257735,0.03260631366717408],[0,0,0,0,1.333842859682632e-07,0.000722479204056953,0.001307878799191368,0.003715738759635774,0.002629098654979489,0.004645069984170917,0.00538564705198439,0.004269926541313578,0.009833067170218493,0.001544384350823155,0.005228621647947091,0.008069894582255013,0.01120665832212826,0.00270262260508197,0.005869593371785998,0.004782417309276831,0.0140735874711075,0.005557935759311643,0.01352147806440553,0.01571343687192718,0.01126738439379705,0.03009511420538663],[0,0,1.605343601210341e-07,0,1.600683089361676e-07,0.0006647590209606979,0.0007701136541211062,0.004803935407381828,0.002696613691321004,0.0045696296711532,0.005437024881557449,0.004489328455657667,0.008594728982130593,0.001039242573443114,0.004232217437806184,0.01097517403686401,0.01070745562982043,0.003056740761256357,0.005811179235595533,0.004865817691251533,0.01440183122310476,0.005318351289123809,0.01252830478597281,0.01648888317272688,0.01240038770797603,0.02683263758891158]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>task_id<\/th>\n      <th>km_cor<\/th>\n      <th>cox_cor<\/th>\n      <th>aft_cor<\/th>\n      <th>km_rmse<\/th>\n      <th>cox_rmse<\/th>\n      <th>aft_rmse<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":13,"searching":true,"order":[[2,"desc"]],"columnDefs":[{"targets":1,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":2,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":3,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":5,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[1,2,3,4,5,6]},{"name":"task_id","targets":0},{"name":"km_cor","targets":1},{"name":"cox_cor","targets":2},{"name":"aft_cor","targets":3},{"name":"km_rmse","targets":4},{"name":"cox_rmse","targets":5},{"name":"aft_rmse","targets":6}],"autoWidth":false,"orderClasses":false,"lengthMenu":[10,13,25,50,100]}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.columnDefs.3.render","options.columnDefs.4.render","options.columnDefs.5.render"],"jsHooks":[]}</script>
+</div>
+</div>
+<p>Mean and standard deviation of the Pearson’s correlation and RMSE across all datasets:</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>score_corrs <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="sc">-</span>task_id, <span class="fu">list</span>(<span class="at">mean =</span> mean, <span class="at">sd =</span> sd))) <span class="sc">|&gt;</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>(), </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"model"</span>, <span class="st">"statistic"</span>, <span class="st">".value"</span>), </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_pattern =</span> <span class="st">"(.*)_(.*)_(.*)"</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">model</th>
+<th style="text-align: left;">statistic</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">km</td>
+<td style="text-align: left;">cor</td>
+<td style="text-align: right;">0.967</td>
+<td style="text-align: right;">0.089</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cox</td>
+<td style="text-align: left;">cor</td>
+<td style="text-align: right;">0.973</td>
+<td style="text-align: right;">0.039</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">aft</td>
+<td style="text-align: left;">cor</td>
+<td style="text-align: right;">0.973</td>
+<td style="text-align: right;">0.039</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">km</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: right;">0.007</td>
+<td style="text-align: right;">0.008</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cox</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: right;">0.006</td>
+<td style="text-align: right;">0.007</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">aft</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: right;">0.006</td>
+<td style="text-align: right;">0.006</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </section>
 <section id="risbs-vs-isbs" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="risbs-vs-isbs">RISBS vs ISBS</h3>
-<p>Visually comparing RISBS and ISBS scores per dataset:</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-5_c23d896edbada66f36ccb514d9a690b4">
+<p>Scatter plots of RISBS vs ISBS scores per dataset (<span class="math inline">100</span> dots/resamplings per figure). Datasets are ordered by decreasing correlation between the two metrics:</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-6_59bb4fd0268c213c60765dbbd37500a2">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (id <span class="cf">in</span> score_corrs<span class="sc">$</span>task_id) {</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">=</span> </span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    bench_res <span class="sc">|&gt;</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(task_id <span class="sc">==</span> id) <span class="sc">|&gt;</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">ends_with</span>(<span class="st">"proper"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"model"</span>, <span class="st">".value"</span>), <span class="at">names_pattern =</span> <span class="st">"(.*)_(.*)"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">model =</span> <span class="fu">factor</span>(model, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"km"</span>, <span class="st">"cox"</span>, <span class="st">"aft"</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># scatter plot with Pearson's coef.</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    ggpubr<span class="sc">::</span><span class="fu">ggscatter</span>(</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">"proper"</span>, <span class="at">y =</span> <span class="st">"improper"</span>,</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">facet.by =</span> <span class="fu">c</span>(<span class="st">"model"</span>),</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.labs =</span> <span class="fu">list</span>(<span class="at">model =</span> <span class="fu">c</span>(<span class="st">"Kaplan-Meier"</span>, <span class="st">"CoxPH"</span>, <span class="st">"AFT (Weibull)"</span>)),</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab =</span> <span class="st">"RISBS (proper)"</span>,</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">ylab =</span> <span class="st">"ISBS (improper)"</span>,</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="dv">2</span>,</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">add =</span> <span class="st">"reg.line"</span>,  <span class="co"># Add regression line</span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">add.params =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">fill =</span> <span class="st">"lightgray"</span>), <span class="co"># Customize regr. line</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="co"># Add confidence interval</span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">cor.coef =</span> <span class="cn">TRUE</span>, <span class="co"># Add Pearson's correlation coefficient</span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">cor.coeff.args =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"pearson"</span>, <span class="at">label.sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> id) <span class="sc">+</span></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">panel.spacing =</span> <span class="fu">unit</span>(<span class="dv">1</span>, <span class="st">"cm"</span>))</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(p)</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-3.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-4.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-5.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-6.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-7.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-8.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-9.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-10.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-11.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-12.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-13.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-14.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-15.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-16.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-17.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-18.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-19.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-20.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-21.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-22.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-23.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-24.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-25.png" class="img-fluid" width="768"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-26.png" class="img-fluid" width="768"></p>
-</div>
-</div>
-</section>
-<section id="risbs-vs-isbs-per-observation" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="risbs-vs-isbs-per-observation">RISBS vs ISBS (per-observation)</h3>
-<p>Visually comparing RISBS and ISBS <em>per-observation</em> scores per dataset (TO COLOR BY CENSORING STATUS):</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-6_2d89f2149bbdcb2207f5a58bdd3c22c2">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (id <span class="cf">in</span> score_corrs<span class="sc">$</span>task_id) {</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">=</span> </span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    bench_res <span class="sc">|&gt;</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(task_id <span class="sc">==</span> id) <span class="sc">|&gt;</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">ends_with</span>(<span class="st">"scores"</span>)) <span class="sc">|&gt;</span>  <span class="co"># add censored column for coloring</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unnest</span>(<span class="at">cols =</span> <span class="fu">everything</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"model"</span>, <span class="st">"type"</span>, <span class="st">".value"</span>), <span class="at">names_pattern =</span> <span class="st">"(.*)_(.*)_(.*)"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> type, <span class="at">values_from =</span> scores, <span class="at">values_fn =</span> list) <span class="sc">|&gt;</span> </span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unnest</span>(<span class="at">cols =</span> <span class="fu">everything</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">model =</span> <span class="fu">factor</span>(model, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"km"</span>, <span class="st">"cox"</span>, <span class="st">"aft"</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># scatter plot with Pearson's coef.</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    ggpubr<span class="sc">::</span><span class="fu">ggscatter</span>(</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">"proper"</span>, <span class="at">y =</span> <span class="st">"improper"</span>,</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">facet.by =</span> <span class="fu">c</span>(<span class="st">"model"</span>),</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.labs =</span> <span class="fu">list</span>(<span class="at">model =</span> <span class="fu">c</span>(<span class="st">"Kaplan-Meier"</span>, <span class="st">"CoxPH"</span>, <span class="st">"AFT (Weibull)"</span>)),</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab =</span> <span class="st">"RISBS (proper)"</span>,</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">ylab =</span> <span class="st">"ISBS (improper)"</span>,</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="dv">2</span>,</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">add =</span> <span class="st">"reg.line"</span>,  <span class="co"># Add regression line</span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">add.params =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">fill =</span> <span class="st">"lightgray"</span>), <span class="co"># Customize regr. line</span></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="co"># Add confidence interval</span></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">cor.coef =</span> <span class="cn">TRUE</span>, <span class="co"># Add Pearson's correlation coefficient</span></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>      <span class="at">cor.coeff.args =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"pearson"</span>, <span class="at">label.sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> id) <span class="sc">+</span></span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">panel.spacing =</span> <span class="fu">unit</span>(<span class="dv">1</span>, <span class="st">"cm"</span>))</span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(p)</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># order is by decreasing correlation</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (id <span class="cf">in</span> score_corrs<span class="sc">$</span>task_id) {</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">=</span> </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    bench_res <span class="sc">|&gt;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(task_id <span class="sc">==</span> id) <span class="sc">|&gt;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">ends_with</span>(<span class="st">"proper"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"model"</span>, <span class="st">".value"</span>), <span class="at">names_pattern =</span> <span class="st">"(.*)_(.*)"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">model =</span> <span class="fu">factor</span>(model, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"km"</span>, <span class="st">"cox"</span>, <span class="st">"aft"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># scatter plot with Pearson's coef.</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    ggpubr<span class="sc">::</span><span class="fu">ggscatter</span>(</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">"proper"</span>, <span class="at">y =</span> <span class="st">"improper"</span>,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">facet.by =</span> <span class="fu">c</span>(<span class="st">"model"</span>),</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.labs =</span> <span class="fu">list</span>(<span class="at">model =</span> <span class="fu">c</span>(<span class="st">"Kaplan-Meier"</span>, <span class="st">"CoxPH"</span>, <span class="st">"AFT (Weibull)"</span>)),</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab =</span> <span class="st">"RISBS (proper)"</span>,</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">ylab =</span> <span class="st">"ISBS (improper)"</span>,</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="dv">2</span>,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">add =</span> <span class="st">"reg.line"</span>,  <span class="co"># Add regression line</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">add.params =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">fill =</span> <span class="st">"lightgray"</span>), <span class="co"># Customize regr. line</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="co"># Add confidence interval</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">cor.coef =</span> <span class="cn">TRUE</span>, <span class="co"># Add Pearson's correlation coefficient</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">cor.coeff.args =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"pearson"</span>, <span class="at">label.sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> id) <span class="sc">+</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">panel.spacing =</span> <span class="fu">unit</span>(<span class="dv">1</span>, <span class="st">"cm"</span>))</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(p)</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="768"></p>
@@ -585,6 +532,146 @@ Note
 </div>
 </div>
 </section>
+<section id="risbs-vs-isbs-per-observation-scores" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="risbs-vs-isbs-per-observation-scores">RISBS vs ISBS (per-observation scores)</h3>
+<p>Scatter plots of RISBS vs ISBS <em>per-observation</em> scores per dataset. Every figure has a total of dots equal to (<span class="math inline">100</span> resamplings) x (number of test observations). Datasets are ordered by <em>decreasing proportion of censoring</em> after applying the <span class="math inline">80\%</span> quantile <code>t_max</code> cutoff in each full dataset.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>cens_props <span class="ot">=</span> <span class="fu">vapply</span>(task_tbl<span class="sc">$</span>task, <span class="cf">function</span>(task) {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  event_times <span class="ot">=</span> task<span class="sc">$</span><span class="fu">unique_event_times</span>()</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  t_max <span class="ot">=</span> <span class="fu">unname</span>(<span class="fu">quantile</span>(event_times, <span class="at">probs =</span> <span class="fl">0.8</span>))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  truth <span class="ot">=</span> task<span class="sc">$</span><span class="fu">truth</span>()</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  times  <span class="ot">=</span> truth[, <span class="dv">1</span>]</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  status <span class="ot">=</span> truth[, <span class="dv">2</span>]</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  status_tmax <span class="ot">=</span> status[times <span class="sc">&lt;=</span> t_max]</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(status_tmax <span class="sc">==</span> <span class="dv">0</span>)<span class="sc">/</span><span class="fu">length</span>(status_tmax) <span class="co"># censoring proportion</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>}, <span class="fu">numeric</span>(<span class="dv">1</span>))</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cens_props) <span class="ot">=</span> task_tbl<span class="sc">$</span>task_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-8_a9e48fe99a5af0c85a2fd38f317c3417">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ids <span class="ot">=</span> <span class="fu">names</span>(<span class="fu">sort</span>(cens_props, <span class="at">decreasing =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (id <span class="cf">in</span> ids) {</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">=</span> </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    bench_res <span class="sc">|&gt;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(task_id <span class="sc">==</span> id) <span class="sc">|&gt;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">ends_with</span>(<span class="st">"scores"</span>), test_status) <span class="sc">|&gt;</span> <span class="co"># `test_status` is the censoring status for coloring</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unnest</span>(<span class="at">cols =</span> <span class="fu">everything</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">ends_with</span>(<span class="st">"scores"</span>), <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"model"</span>, <span class="st">"type"</span>, <span class="st">".value"</span>), <span class="at">names_pattern =</span> <span class="st">"(.*)_(.*)_(.*)"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> type, <span class="at">values_from =</span> scores, <span class="at">values_fn =</span> list) <span class="sc">|&gt;</span> </span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unnest</span>(<span class="at">cols =</span> <span class="fu">everything</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">Status =</span> test_status) <span class="sc">|&gt;</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Status =</span> <span class="fu">case_when</span>(Status <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"Censored"</span>, <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Event"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">Status =</span> <span class="fu">as.factor</span>(Status),</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">model =</span> <span class="fu">factor</span>(model, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"km"</span>, <span class="st">"cox"</span>, <span class="st">"aft"</span>))</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># scatter plot with Pearson's coef.</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    ggpubr<span class="sc">::</span><span class="fu">ggscatter</span>(</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">"proper"</span>, <span class="at">y =</span> <span class="st">"improper"</span>,</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">facet.by =</span> <span class="fu">c</span>(<span class="st">"model"</span>),</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.labs =</span> <span class="fu">list</span>(<span class="at">model =</span> <span class="fu">c</span>(<span class="st">"Kaplan-Meier"</span>, <span class="st">"CoxPH"</span>, <span class="st">"AFT (Weibull)"</span>)),</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab =</span> <span class="st">"RISBS (proper)"</span>,</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">ylab =</span> <span class="st">"ISBS (improper)"</span>,</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">color =</span> <span class="st">"Status"</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>,</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">palette =</span> <span class="fu">c</span>(<span class="st">"Censored"</span> <span class="ot">=</span> <span class="st">"#377eb8"</span>, <span class="st">"Event"</span> <span class="ot">=</span> <span class="st">"#e41a1c"</span>),</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>      <span class="at">add =</span> <span class="st">"reg.line"</span>,  <span class="co"># Add regression line</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>      <span class="at">add.params =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">fill =</span> <span class="st">"lightgray"</span>), <span class="co"># Customize regr. line</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>      <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="co"># Add confidence interval</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>      <span class="at">cor.coef =</span> <span class="cn">TRUE</span>, <span class="co"># Add Pearson's correlation coefficient</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>      <span class="at">cor.coeff.args =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"pearson"</span>, <span class="at">label.sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> id) <span class="sc">+</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">panel.spacing =</span> <span class="fu">unit</span>(<span class="dv">1</span>, <span class="st">"cm"</span>))</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(p)</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-3.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-4.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-5.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-6.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-7.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-8.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-9.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-10.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-11.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-12.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-13.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-14.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-15.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-16.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-17.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-18.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-19.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-20.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-21.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-22.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-23.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-24.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-25.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-26.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<p>Note that in the 4 last datasets we have censored observations with <span class="math inline">t &gt; t_{max}</span> so they are excluded from the calculation of the brier scores as we integrate up to the <code>t_max</code> time horizon cutoff. Therefore only observations that have experienced the event contribute to the scores (but the estimation of the censoring distribution using the Kaplan-Meier uses all observations of a train set).</p>
+</section>
 </section>
 <section id="investigate-inflation-of-proper-isbs" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="investigate-inflation-of-proper-isbs">Investigate inflation of proper ISBS</h2>
@@ -605,11 +692,11 @@ Note
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>inflated_data <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">"inflated_data.rds"</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>task <span class="ot">=</span> inflated_data<span class="sc">$</span>task</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>part <span class="ot">=</span> inflated_data<span class="sc">$</span>part</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>task</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>inflated_data <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">"inflated_data.rds"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>task <span class="ot">=</span> inflated_data<span class="sc">$</span>task</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>part <span class="ot">=</span> inflated_data<span class="sc">$</span>part</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>task</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;TaskSurv:mgus&gt; (176 x 9)
@@ -624,41 +711,41 @@ Note
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>task_train <span class="ot">=</span> task<span class="sc">$</span><span class="fu">clone</span>()<span class="sc">$</span><span class="fu">filter</span>(<span class="at">rows =</span> part<span class="sc">$</span>train)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>task_test  <span class="ot">=</span> task<span class="sc">$</span><span class="fu">clone</span>()<span class="sc">$</span><span class="fu">filter</span>(<span class="at">rows =</span> part<span class="sc">$</span>test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>task_train <span class="ot">=</span> task<span class="sc">$</span><span class="fu">clone</span>()<span class="sc">$</span><span class="fu">filter</span>(<span class="at">rows =</span> part<span class="sc">$</span>train)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>task_test  <span class="ot">=</span> task<span class="sc">$</span><span class="fu">clone</span>()<span class="sc">$</span><span class="fu">filter</span>(<span class="at">rows =</span> part<span class="sc">$</span>test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Kaplan-Meier of the training survival data:</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-9_85bb87dc3b3c5b6c94c058cc8105bd79">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-11_0598590cc85ec7527c912c8457369e65">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(task_train) <span class="sc">+</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Kaplan-Meier (train data)"</span>,</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Time-to-event distribution"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(task_train) <span class="sc">+</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Kaplan-Meier (train data)"</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Time-to-event distribution"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Kaplan-Meier of the training censoring data:</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-10_cfc66cd267aeb7039790ba99a51af020">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-12_2a995b0576867b182d9eb3a33febb0d2">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(task_train, <span class="at">reverse =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Kaplan-Meier (train data)"</span>,</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">subtitle =</span> <span class="st">"Censoring distribution"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(task_train, <span class="at">reverse =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Kaplan-Meier (train data)"</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">subtitle =</span> <span class="st">"Censoring distribution"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Estimates of the censoring distribution <span class="math inline">G_{KM}(t)</span> (values from the above figure):</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>km_train <span class="ot">=</span> task_train<span class="sc">$</span><span class="fu">kaplan</span>(<span class="at">reverse =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>km_tbl <span class="ot">=</span> <span class="fu">tibble</span>(<span class="at">time =</span> km_train<span class="sc">$</span>time, <span class="at">surv =</span> km_train<span class="sc">$</span>surv)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(km_tbl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>km_train <span class="ot">=</span> task_train<span class="sc">$</span><span class="fu">kaplan</span>(<span class="at">reverse =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>km_tbl <span class="ot">=</span> <span class="fu">tibble</span>(<span class="at">time =</span> km_train<span class="sc">$</span>time, <span class="at">surv =</span> km_train<span class="sc">$</span>surv)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(km_tbl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 2
@@ -689,14 +776,14 @@ Important
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>max_time <span class="ot">=</span> <span class="fu">max</span>(km_tbl<span class="sc">$</span>time) <span class="co"># max time point</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>test_times  <span class="ot">=</span> task_test<span class="sc">$</span><span class="fu">times</span>()</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>test_status <span class="ot">=</span> task_test<span class="sc">$</span><span class="fu">status</span>()</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># get the id of the observation in the test data</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>id <span class="ot">=</span> <span class="fu">which</span>(test_times <span class="sc">&gt;=</span> max_time <span class="sc">&amp;</span> test_status <span class="sc">==</span> <span class="dv">1</span>)</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>max_time <span class="ot">=</span> <span class="fu">max</span>(km_tbl<span class="sc">$</span>time) <span class="co"># max time point</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>test_times  <span class="ot">=</span> task_test<span class="sc">$</span><span class="fu">times</span>()</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>test_status <span class="ot">=</span> task_test<span class="sc">$</span><span class="fu">status</span>()</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># get the id of the observation in the test data</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>id <span class="ot">=</span> <span class="fu">which</span>(test_times <span class="sc">&gt;=</span> max_time <span class="sc">&amp;</span> test_status <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 14</code></pre>
@@ -708,17 +795,17 @@ Important
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>cox <span class="ot">=</span> <span class="fu">lrn</span>(<span class="st">"surv.coxph"</span>)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">=</span> cox<span class="sc">$</span><span class="fu">train</span>(task, part<span class="sc">$</span>train)<span class="sc">$</span><span class="fu">predict</span>(task, part<span class="sc">$</span>test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>cox <span class="ot">=</span> <span class="fu">lrn</span>(<span class="st">"surv.coxph"</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">=</span> cox<span class="sc">$</span><span class="fu">train</span>(task, part<span class="sc">$</span>train)<span class="sc">$</span><span class="fu">predict</span>(task, part<span class="sc">$</span>test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>We calculate the ISBS (improper) and RISBS (proper) scores:</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>graf_improper <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">proper =</span> <span class="cn">FALSE</span>, <span class="at">id =</span> <span class="st">"graf.improper"</span>)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>graf_proper   <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">proper =</span> <span class="cn">TRUE</span>,  <span class="at">id =</span> <span class="st">"graf.proper"</span>)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>p<span class="sc">$</span><span class="fu">score</span>(graf_improper, <span class="at">task =</span> task, <span class="at">train_set =</span> part<span class="sc">$</span>train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>graf_improper <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">proper =</span> <span class="cn">FALSE</span>, <span class="at">id =</span> <span class="st">"graf.improper"</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>graf_proper   <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">proper =</span> <span class="cn">TRUE</span>,  <span class="at">id =</span> <span class="st">"graf.proper"</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>p<span class="sc">$</span><span class="fu">score</span>(graf_improper, <span class="at">task =</span> task, <span class="at">train_set =</span> part<span class="sc">$</span>train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>graf.improper 
@@ -726,7 +813,7 @@ Important
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>p<span class="sc">$</span><span class="fu">score</span>(graf_proper  , <span class="at">task =</span> task, <span class="at">train_set =</span> part<span class="sc">$</span>train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>p<span class="sc">$</span><span class="fu">score</span>(graf_proper  , <span class="at">task =</span> task, <span class="at">train_set =</span> part<span class="sc">$</span>train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>graf.proper 
@@ -738,7 +825,7 @@ Important
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>graf_proper<span class="sc">$</span>scores</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>graf_proper<span class="sc">$</span>scores</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1]   0.08994417   0.02854219   0.04214266   0.15578719   0.05364692
@@ -754,7 +841,7 @@ Important
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>graf_improper<span class="sc">$</span>scores</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>graf_improper<span class="sc">$</span>scores</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] 0.08994417 0.02854219 0.04214266 0.15578719 0.05364692 0.12969150
@@ -769,7 +856,7 @@ Important
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>graf_proper<span class="sc">$</span>scores[id]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>graf_proper<span class="sc">$</span>scores[id]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 367.1023</code></pre>
@@ -779,8 +866,8 @@ Important
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>t_max <span class="ot">=</span> <span class="fu">as.integer</span>(<span class="fu">quantile</span>(task_train<span class="sc">$</span><span class="fu">unique_event_times</span>(), <span class="fl">0.95</span>))</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>t_max</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>t_max <span class="ot">=</span> <span class="fu">as.integer</span>(<span class="fu">quantile</span>(task_train<span class="sc">$</span><span class="fu">unique_event_times</span>(), <span class="fl">0.95</span>))</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>t_max</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 10080</code></pre>
@@ -790,8 +877,8 @@ Important
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>graf_proper_tmax <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">proper =</span> <span class="cn">TRUE</span>, <span class="at">t_max =</span> t_max)</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>p<span class="sc">$</span><span class="fu">score</span>(graf_proper_tmax, <span class="at">task =</span> task, <span class="at">train_set =</span> part<span class="sc">$</span>train) <span class="co"># ISBS</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>graf_proper_tmax <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">proper =</span> <span class="cn">TRUE</span>, <span class="at">t_max =</span> t_max)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>p<span class="sc">$</span><span class="fu">score</span>(graf_proper_tmax, <span class="at">task =</span> task, <span class="at">train_set =</span> part<span class="sc">$</span>train) <span class="co"># ISBS</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>surv.graf 
@@ -802,7 +889,7 @@ Important
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>graf_proper_tmax<span class="sc">$</span>scores[id]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>graf_proper_tmax<span class="sc">$</span>scores[id]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.141502</code></pre>

@@ -246,7 +246,7 @@ Note
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li><a href="https://github.com/bblodfon/scoring-rules-2024/blob/main/generate.R">Code</a> to generate the simulated datasets.</li>
+<li><a href="https://github.com/bblodfon/scoring-rules-2024/blob/main/generate.R">Code</a> to generate the simulated datasets. For directly getting the <code>res.rds</code> object, contact the author via a GitHub issue.</li>
 </ul>
 <p>We simulate datasets with <strong>varying characteristics</strong>:</p>
 <ol type="1">
@@ -294,7 +294,7 @@ Organization of Results
 </section>
 <section id="prop.-hazards-and-independent-censoring" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="prop.-hazards-and-independent-censoring">Prop. Hazards and Independent Censoring</h3>
-<p>For each combo of number of observations (<code>n_obs</code>) and proportion of censoring (<code>cens_prop</code>) variables (<span class="math inline">100</span> simulated datasets per combo), we calculate the following summary stats: <strong>Pearson correlation</strong>, <strong>mean absolute difference</strong> and its standard deviation, <strong>root mean square error (RMSE)</strong>:</p>
+<p>For each combo of number of observations (<code>n_obs</code>) and proportion of censoring (<code>cens_prop</code>) variables (<span class="math inline">100</span> simulated datasets per combo), we calculate the following summary stats between RISBS and ISBS: <strong>Pearson correlation</strong>, <strong>mean absolute difference</strong> and its standard deviation, <strong>root mean square error (RMSE)</strong>:</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -413,7 +413,7 @@ Organization of Results
 </section>
 <section id="prop.-hazards-and-dependent-censoring" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="prop.-hazards-and-dependent-censoring">Prop. Hazards and Dependent Censoring</h3>
-<p>For each combo of number of observations (<code>n_obs</code>) and proportion of censoring (<code>cens_prop</code>) variables (<span class="math inline">100</span> simulated datasets per combo), we calculate the following summary stats: <strong>Pearson correlation</strong>, <strong>mean absolute difference</strong> and its standard deviation, <strong>root mean square error (RMSE)</strong>:</p>
+<p>For each combo of number of observations (<code>n_obs</code>) and proportion of censoring (<code>cens_prop</code>) variables (<span class="math inline">100</span> simulated datasets per combo), we calculate the following summary stats between RISBS and ISBS: <strong>Pearson correlation</strong>, <strong>mean absolute difference</strong> and its standard deviation, <strong>root mean square error (RMSE)</strong>:</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -532,7 +532,7 @@ Organization of Results
 </section>
 <section id="non-prop.-hazards-and-independent-censoring" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="non-prop.-hazards-and-independent-censoring">Non-Prop. Hazards and Independent Censoring</h3>
-<p>For each combo of number of observations (<code>n_obs</code>) and proportion of censoring (<code>cens_prop</code>) variables (<span class="math inline">100</span> simulated datasets per combo), we calculate the following summary stats: <strong>Pearson correlation</strong>, <strong>mean absolute difference</strong> and its standard deviation, <strong>root mean square error (RMSE)</strong>:</p>
+<p>For each combo of number of observations (<code>n_obs</code>) and proportion of censoring (<code>cens_prop</code>) variables (<span class="math inline">100</span> simulated datasets per combo), we calculate the following summary stats between RISBS and ISBS: <strong>Pearson correlation</strong>, <strong>mean absolute difference</strong> and its standard deviation, <strong>root mean square error (RMSE)</strong>:</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -651,7 +651,7 @@ Organization of Results
 </section>
 <section id="non-prop.-hazards-and-dependent-censoring" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="non-prop.-hazards-and-dependent-censoring">Non-Prop. Hazards and Dependent Censoring</h3>
-<p>For each combo of number of observations (<code>n_obs</code>) and proportion of censoring (<code>cens_prop</code>) variables (<span class="math inline">100</span> simulated datasets per combo), we calculate the following summary stats: <strong>Pearson correlation</strong>, <strong>mean absolute difference</strong> and its standard deviation, <strong>root mean square error (RMSE)</strong>:</p>
+<p>For each combo of number of observations (<code>n_obs</code>) and proportion of censoring (<code>cens_prop</code>) variables (<span class="math inline">100</span> simulated datasets per combo), we calculate the following summary stats between RISBS and ISBS: <strong>Pearson correlation</strong>, <strong>mean absolute difference</strong> and its standard deviation, <strong>root mean square error (RMSE)</strong>:</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -835,7 +835,8 @@ Note
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># see `run_bench.R`</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>bench_res <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">"bench_res.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Compressed file: https://github.com/bblodfon/scoring-rules-2024/blob/main/bench_res.rds</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>bench_res <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">"bench_res.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>We calculate the <strong>Pearson correlation</strong> and <strong>root mean square error (RMSE)</strong> between RISBS and ISBS scores per dataset (<span class="math inline">100</span> resamplings) and model:</p>
@@ -1327,7 +1328,7 @@ Important
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>p<span class="sc">$</span><span class="fu">score</span>(graf_proper  , <span class="at">task =</span> task, <span class="at">train_set =</span> part<span class="sc">$</span>train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>p<span class="sc">$</span><span class="fu">score</span>(graf_proper, <span class="at">task =</span> task, <span class="at">train_set =</span> part<span class="sc">$</span>train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>graf.proper 
@@ -1391,12 +1392,12 @@ Important
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>graf_proper_tmax <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">proper =</span> <span class="cn">TRUE</span>, <span class="at">t_max =</span> t_max)</span>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>graf_proper_tmax <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">id =</span> <span class="st">"graf.proper"</span>, <span class="at">proper =</span> <span class="cn">TRUE</span>, <span class="at">t_max =</span> t_max)</span>
 <span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>p<span class="sc">$</span><span class="fu">score</span>(graf_proper_tmax, <span class="at">task =</span> task, <span class="at">train_set =</span> part<span class="sc">$</span>train) <span class="co"># ISBS</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>surv.graf 
-0.1436484 </code></pre>
+<pre><code>graf.proper 
+  0.1436484 </code></pre>
 </div>
 </div>
 <p>The score for the specific observation that had experienced the event at (or beyond) the latest training time point is now:</p>

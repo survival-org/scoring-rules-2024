@@ -82,7 +82,7 @@ We will divide the presentation of simulation data results in **4 sub-sections**
 
 ### Prop. Hazards and Independent Censoring {-}
 
-For each combo of number of observations (`n_obs`) and proportion of censoring (`cens_prop`) variables ($100$ simulated datasets per combo), we calculate the following summary stats: **Pearson correlation**, **mean absolute difference** and its standard deviation, **root mean square error (RMSE)**:
+For each combo of number of observations (`n_obs`) and proportion of censoring (`cens_prop`) variables ($100$ simulated datasets per combo), we calculate the following summary stats between RISBS and ISBS: **Pearson correlation**, **mean absolute difference** and its standard deviation, **root mean square error (RMSE)**:
 ```{r}
 res_ph_ind = 
   res |> 
@@ -174,7 +174,7 @@ Heatmap(km_mat, name = "RMSE", cluster_rows = FALSE, cluster_columns = FALSE,
 
 ### Prop. Hazards and Dependent Censoring {-}
 
-For each combo of number of observations (`n_obs`) and proportion of censoring (`cens_prop`) variables ($100$ simulated datasets per combo), we calculate the following summary stats: **Pearson correlation**, **mean absolute difference** and its standard deviation, **root mean square error (RMSE)**:
+For each combo of number of observations (`n_obs`) and proportion of censoring (`cens_prop`) variables ($100$ simulated datasets per combo), we calculate the following summary stats between RISBS and ISBS: **Pearson correlation**, **mean absolute difference** and its standard deviation, **root mean square error (RMSE)**:
 ```{r}
 res_ph_dep = 
   res |> 
@@ -265,7 +265,7 @@ Heatmap(km_mat, name = "RMSE", cluster_rows = FALSE, cluster_columns = FALSE,
 
 ### Non-Prop. Hazards and Independent Censoring {-}
 
-For each combo of number of observations (`n_obs`) and proportion of censoring (`cens_prop`) variables ($100$ simulated datasets per combo), we calculate the following summary stats: **Pearson correlation**, **mean absolute difference** and its standard deviation, **root mean square error (RMSE)**:
+For each combo of number of observations (`n_obs`) and proportion of censoring (`cens_prop`) variables ($100$ simulated datasets per combo), we calculate the following summary stats between RISBS and ISBS: **Pearson correlation**, **mean absolute difference** and its standard deviation, **root mean square error (RMSE)**:
 ```{r}
 res_noph_ind = 
   res |> 
@@ -356,7 +356,7 @@ Heatmap(km_mat, name = "RMSE", cluster_rows = FALSE, cluster_columns = FALSE,
 
 ### Non-Prop. Hazards and Dependent Censoring {-}
 
-For each combo of number of observations (`n_obs`) and proportion of censoring (`cens_prop`) variables ($100$ simulated datasets per combo), we calculate the following summary stats: **Pearson correlation**, **mean absolute difference** and its standard deviation, **root mean square error (RMSE)**:
+For each combo of number of observations (`n_obs`) and proportion of censoring (`cens_prop`) variables ($100$ simulated datasets per combo), we calculate the following summary stats between RISBS and ISBS: **Pearson correlation**, **mean absolute difference** and its standard deviation, **root mean square error (RMSE)**:
 ```{r}
 res_noph_dep = 
   res |> 
@@ -708,7 +708,7 @@ We calculate the ISBS (improper) and RISBS (proper) scores:
 graf_improper = msr("surv.graf", proper = FALSE, id = "graf.improper")
 graf_proper   = msr("surv.graf", proper = TRUE,  id = "graf.proper")
 p$score(graf_improper, task = task, train_set = part$train)
-p$score(graf_proper  , task = task, train_set = part$train)
+p$score(graf_proper, task = task, train_set = part$train)
 ```
 
 As we can see there is **huge difference** between the two versions of the score.
@@ -738,7 +738,7 @@ t_max
 
 Integrating up to `t_max`, the proper RISBS score is:
 ```{r}
-graf_proper_tmax = msr("surv.graf", proper = TRUE, t_max = t_max)
+graf_proper_tmax = msr("surv.graf", id = "graf.proper", proper = TRUE, t_max = t_max)
 p$score(graf_proper_tmax, task = task, train_set = part$train) # ISBS
 ```
 

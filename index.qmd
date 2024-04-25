@@ -708,7 +708,7 @@ We calculate the ISBS (improper) and RISBS (proper) scores:
 graf_improper = msr("surv.graf", proper = FALSE, id = "graf.improper")
 graf_proper   = msr("surv.graf", proper = TRUE,  id = "graf.proper")
 p$score(graf_improper, task = task, train_set = part$train)
-p$score(graf_proper  , task = task, train_set = part$train)
+p$score(graf_proper, task = task, train_set = part$train)
 ```
 
 As we can see there is **huge difference** between the two versions of the score.
@@ -738,7 +738,7 @@ t_max
 
 Integrating up to `t_max`, the proper RISBS score is:
 ```{r}
-graf_proper_tmax = msr("surv.graf", proper = TRUE, t_max = t_max)
+graf_proper_tmax = msr("surv.graf", id = "graf.proper", proper = TRUE, t_max = t_max)
 p$score(graf_proper_tmax, task = task, train_set = part$train) # ISBS
 ```
 

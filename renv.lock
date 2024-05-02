@@ -3,6 +3,26 @@
     "Version": "4.2.1",
     "Repositories": [
       {
+        "Name": "BioCsoft",
+        "URL": "https://bioconductor.org/packages/3.16/bioc"
+      },
+      {
+        "Name": "BioCann",
+        "URL": "https://bioconductor.org/packages/3.16/data/annotation"
+      },
+      {
+        "Name": "BioCexp",
+        "URL": "https://bioconductor.org/packages/3.16/data/experiment"
+      },
+      {
+        "Name": "BioCworkflows",
+        "URL": "https://bioconductor.org/packages/3.16/workflows"
+      },
+      {
+        "Name": "BioCbooks",
+        "URL": "https://bioconductor.org/packages/3.16/books"
+      },
+      {
         "Name": "CRAN",
         "URL": "https://packagemanager.posit.co/cran/latest"
       }
@@ -47,8 +67,7 @@
     "ComplexHeatmap": {
       "Package": "ComplexHeatmap",
       "Version": "2.14.0",
-      "Source": "Repository",
-      "Repository": "https://bioconductor.org/packages/3.16/bioc",
+      "Source": "Bioconductor",
       "Requirements": [
         "GetoptLong",
         "GlobalOptions",

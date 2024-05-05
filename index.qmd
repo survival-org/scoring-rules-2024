@@ -457,7 +457,7 @@ Heatmap(km_mat, name = "RMSE", cluster_rows = FALSE, cluster_columns = FALSE,
   - `cens_prop`: Proportion of censoring
   - `admin_cens_prop`: Proportion of censored observations that are censored administratively, i.e. at the last censoring time
   - `dep_cens_prop`: Proportion of significant coefficients (adjusted `p < 0.05`) to predict censoring status using a logistic regression model
-  - `prop_haz`: If the dataset satisfies the proportional hazards assumption (`p > 0.05` using a global Schoenfeld test)
+  - `prop_haz`: If the dataset satisfies the proportional hazards assumption (`p > 0.05` using the Grambsch-Therneau test [@Grambsch1994])
 - [R script](https://github.com/bblodfon/scoring-rules-2024/blob/main/run_bench.R) used to run the benchmark
 :::
 

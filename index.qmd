@@ -100,9 +100,9 @@ res_ph_ind =
     km_diff_sd    = sd(abs(km_proper - km_improper)),
     cox_diff_sd   = sd(abs(cox_proper - cox_improper)),
     aft_diff_sd   = sd(abs(aft_proper - aft_improper)),
-    km_rmse  = sqrt(mean(km_proper - km_improper)^2),
-    cox_rmse = sqrt(mean(cox_proper - cox_improper)^2),
-    aft_rmse = sqrt(mean(aft_proper - aft_improper)^2),
+    km_rmse  = sqrt(mean((km_proper - km_improper)^2)),
+    cox_rmse = sqrt(mean((cox_proper - cox_improper)^2)),
+    aft_rmse = sqrt(mean((aft_proper - aft_improper)^2))
 )
 
 res_ph_ind |>
@@ -192,9 +192,9 @@ res_ph_dep =
     km_diff_sd    = sd(abs(km_proper - km_improper)),
     cox_diff_sd   = sd(abs(cox_proper - cox_improper)),
     aft_diff_sd   = sd(abs(aft_proper - aft_improper)),
-    km_rmse  = sqrt(mean(km_proper - km_improper)^2),
-    cox_rmse = sqrt(mean(cox_proper - cox_improper)^2),
-    aft_rmse = sqrt(mean(aft_proper - aft_improper)^2),
+    km_rmse  = sqrt(mean((km_proper - km_improper)^2)),
+    cox_rmse = sqrt(mean((cox_proper - cox_improper)^2)),
+    aft_rmse = sqrt(mean((aft_proper - aft_improper)^2))
 )
 
 res_ph_dep |>
@@ -283,9 +283,9 @@ res_noph_ind =
     km_diff_sd    = sd(abs(km_proper - km_improper)),
     cox_diff_sd   = sd(abs(cox_proper - cox_improper)),
     aft_diff_sd   = sd(abs(aft_proper - aft_improper)),
-    km_rmse  = sqrt(mean(km_proper - km_improper)^2),
-    cox_rmse = sqrt(mean(cox_proper - cox_improper)^2),
-    aft_rmse = sqrt(mean(aft_proper - aft_improper)^2),
+    km_rmse  = sqrt(mean((km_proper - km_improper)^2)),
+    cox_rmse = sqrt(mean((cox_proper - cox_improper)^2)),
+    aft_rmse = sqrt(mean((aft_proper - aft_improper)^2))
 )
 
 res_noph_ind |>
@@ -374,9 +374,9 @@ res_noph_dep =
     km_diff_sd    = sd(abs(km_proper - km_improper)),
     cox_diff_sd   = sd(abs(cox_proper - cox_improper)),
     aft_diff_sd   = sd(abs(aft_proper - aft_improper)),
-    km_rmse  = sqrt(mean(km_proper - km_improper)^2),
-    cox_rmse = sqrt(mean(cox_proper - cox_improper)^2),
-    aft_rmse = sqrt(mean(aft_proper - aft_improper)^2),
+    km_rmse  = sqrt(mean((km_proper - km_improper)^2)),
+    cox_rmse = sqrt(mean((cox_proper - cox_improper)^2)),
+    aft_rmse = sqrt(mean((aft_proper - aft_improper)^2))
 )
 
 res_noph_dep |>
@@ -507,9 +507,9 @@ score_corrs =
     km_cor  = cor(km_proper, km_improper),
     cox_cor = cor(cox_proper, cox_improper),
     aft_cor = cor(aft_proper, aft_improper),
-    km_rmse  = sqrt(mean(km_proper - km_improper)^2),
-    cox_rmse = sqrt(mean(cox_proper - cox_improper)^2),
-    aft_rmse = sqrt(mean(aft_proper - aft_improper)^2),
+    km_rmse  = sqrt(mean((km_proper - km_improper)^2)),
+    cox_rmse = sqrt(mean((cox_proper - cox_improper)^2)),
+    aft_rmse = sqrt(mean((aft_proper - aft_improper)^2))
   ) |> 
   arrange(desc(cox_cor))
 

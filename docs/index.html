@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="John Zobolas">
-<meta name="dcterms.date" content="2024-04-25">
+<meta name="dcterms.date" content="2024-05-05">
 <meta name="description" content="Explore the relationship between proper and improper Integrated Brier Score in the validation of survival models">
 
 <title>Benchmark results analysis</title>
@@ -207,7 +207,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 25, 2024</p>
+      <p class="date">May 5, 2024</p>
     </div>
   </div>
   
@@ -792,7 +792,7 @@ Note
 <li><code>cens_prop</code>: Proportion of censoring</li>
 <li><code>admin_cens_prop</code>: Proportion of censored observations that are censored administratively, i.e.&nbsp;at the last censoring time</li>
 <li><code>dep_cens_prop</code>: Proportion of significant coefficients (adjusted <code>p &lt; 0.05</code>) to predict censoring status using a logistic regression model</li>
-<li><code>prop_haz</code>: If the dataset satisfies the proportional hazards assumption (<code>p &gt; 0.05</code> using a global Schoenfeld test)</li>
+<li><code>prop_haz</code>: If the dataset satisfies the proportional hazards assumption (<code>p &gt; 0.05</code> using the Grambsch-Therneau test <span class="citation" data-cites="Grambsch1994">(<a href="#ref-Grambsch1994" role="doc-biblioref">Grambsch and Therneau 1994</a>)</span>)</li>
 </ul></li>
 <li><a href="https://github.com/bblodfon/scoring-rules-2024/blob/main/run_bench.R">R script</a> used to run the benchmark</li>
 </ul>
@@ -1434,6 +1434,9 @@ Suggestion when calculating time-integrated scoring rules
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-Graf1999" class="csl-entry" role="listitem">
 Graf, Erika, Claudia Schmoor, Willi Sauerbrei, and Martin Schumacher. 1999. <span>“<span class="nocase">Assessment and comparison of prognostic classification schemes for survival data</span>.”</span> <em>Statistics in Medicine</em> 18 (17-18): 2529–45. <a href="https://doi.org/10.1002/(SICI)1097-0258(19990915/30)18:17/18<2529::AID-SIM274>3.0.CO;2-5">https://doi.org/10.1002/(SICI)1097-0258(19990915/30)18:17/18&lt;2529::AID-SIM274&gt;3.0.CO;2-5</a>.
+</div>
+<div id="ref-Grambsch1994" class="csl-entry" role="listitem">
+Grambsch, Patricia M, and Terry M. Therneau. 1994. <span>“<span class="nocase">Proportional hazards tests and diagnostics based on weighted residuals</span>.”</span> <em>Biometrika</em> 81 (3): 515–26. <a href="https://doi.org/10.1093/biomet/81.3.515">https://doi.org/10.1093/biomet/81.3.515</a>.
 </div>
 <div id="ref-Rindt2022" class="csl-entry" role="listitem">
 Rindt, David, Robert Hu, David Steinsaltz, and Dino Sejdinovic. 2022. <span>“<span class="nocase">Survival regression with proper scoring rules and monotonic neural networks</span>.”</span> In <em>Proceedings of the 25th International Conference on Artificial Intelligence and Statistics</em>, edited by Gustau Camps-Valls, Francisco J R Ruiz, and Isabel Valera, 151:1190–1205. Proceedings of Machine Learning Research. PMLR. <a href="https://proceedings.mlr.press/v151/rindt22a.html">https://proceedings.mlr.press/v151/rindt22a.html</a>.

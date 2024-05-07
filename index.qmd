@@ -469,7 +469,7 @@ Each resampling was stratified using the `status` variable so that the proportio
 
 We trained 3 models in each respective train set, namely the **Kaplan-Meier**, the **Cox Proportional Hazards** (CoxPH) model and an **Accelerated Failure Time** (AFT) model with Weibull distribution for the time-to-event output variable.
 We tested the performance of each model in each respective test set using the **ISBS** and **RISBS** measures, integrating up to the $80\%$ quantile of the event times of each train set.
-We kept also the brier scores for each specific observation (*per-observation* scores) in all respective test sets.
+We kept also the brier scores for each specific observation (*observation-wise* scores) in all respective test sets.
 
 ### Datasets table {-}
 
@@ -569,9 +569,9 @@ for (id in score_corrs$task_id) {
 }
 ```
 
-### RISBS vs ISBS (per-observation scores) {-}
+### RISBS vs ISBS (observation-wise scores) {-}
 
-Scatter plots of RISBS vs ISBS *per-observation* scores per dataset.
+Scatter plots of RISBS vs ISBS *observation-wise* scores per dataset.
 Every figure has a total of dots equal to ($100$ resamplings) x (number of test observations in each resampling).
 Datasets are ordered by *decreasing proportion of censoring* after applying the $80\%$ quantile `t_max` cutoff in each full dataset.
 
@@ -878,7 +878,7 @@ p$score(graf_proper, task = task, train_set = part$train)
 ```
 
 As we can see there is **huge difference** between the two versions of the score.
-We check the *per-observation* scores (integrated across all time points):
+We check the *observation-wise* scores (integrated across all time points):
 
 Observation-wise RISBS scores:
 ```{r}

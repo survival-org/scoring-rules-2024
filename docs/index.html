@@ -169,7 +169,7 @@ div.csl-indent {
   <li><a href="#datasets-table" id="toc-datasets-table" class="nav-link" data-scroll-target="#datasets-table">Datasets table</a></li>
   <li><a href="#benchmarking-stats" id="toc-benchmarking-stats" class="nav-link" data-scroll-target="#benchmarking-stats">Benchmarking stats</a></li>
   <li><a href="#risbs-vs-isbs" id="toc-risbs-vs-isbs" class="nav-link" data-scroll-target="#risbs-vs-isbs">RISBS vs ISBS</a></li>
-  <li><a href="#risbs-vs-isbs-per-observation-scores" id="toc-risbs-vs-isbs-per-observation-scores" class="nav-link" data-scroll-target="#risbs-vs-isbs-per-observation-scores">RISBS vs ISBS (per-observation scores)</a></li>
+  <li><a href="#risbs-vs-isbs-observation-wise-scores" id="toc-risbs-vs-isbs-observation-wise-scores" class="nav-link" data-scroll-target="#risbs-vs-isbs-observation-wise-scores">RISBS vs ISBS (observation-wise scores)</a></li>
   <li><a href="#figures-for-paper" id="toc-figures-for-paper" class="nav-link" data-scroll-target="#figures-for-paper">Figures for paper</a></li>
   </ul></li>
   <li><a href="#investigate-inflation-of-proper-isbs" id="toc-investigate-inflation-of-proper-isbs" class="nav-link" data-scroll-target="#investigate-inflation-of-proper-isbs">Investigate inflation of proper ISBS</a></li>
@@ -802,7 +802,7 @@ Note
 <section id="introduction-1" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="introduction-1">Introduction</h3>
 <p>We used a total of <span class="math inline">26</span> real-word, low-dimensional datasets (fewer features than observations) for benchmarking, some of which are freely available via various <code>R</code> packages. For each dataset, we performed a simple train/test resampling (80%/20%) <span class="math inline">100</span> times. Each resampling was stratified using the <code>status</code> variable so that the proportion of censoring remains the same in each respective train and test set.</p>
-<p>We trained 3 models in each respective train set, namely the <strong>Kaplan-Meier</strong>, the <strong>Cox Proportional Hazards</strong> (CoxPH) model and an <strong>Accelerated Failure Time</strong> (AFT) model with Weibull distribution for the time-to-event output variable. We tested the performance of each model in each respective test set using the <strong>ISBS</strong> and <strong>RISBS</strong> measures, integrating up to the <span class="math inline">80\%</span> quantile of the event times of each train set. We kept also the brier scores for each specific observation (<em>per-observation</em> scores) in all respective test sets.</p>
+<p>We trained 3 models in each respective train set, namely the <strong>Kaplan-Meier</strong>, the <strong>Cox Proportional Hazards</strong> (CoxPH) model and an <strong>Accelerated Failure Time</strong> (AFT) model with Weibull distribution for the time-to-event output variable. We tested the performance of each model in each respective test set using the <strong>ISBS</strong> and <strong>RISBS</strong> measures, integrating up to the <span class="math inline">80\%</span> quantile of the event times of each train set. We kept also the brier scores for each specific observation (<em>observation-wise</em> scores) in all respective test sets.</p>
 </section>
 <section id="datasets-table" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="datasets-table">Datasets table</h3>
@@ -1048,9 +1048,9 @@ Note
 </div>
 </div>
 </section>
-<section id="risbs-vs-isbs-per-observation-scores" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="risbs-vs-isbs-per-observation-scores">RISBS vs ISBS (per-observation scores)</h3>
-<p>Scatter plots of RISBS vs ISBS <em>per-observation</em> scores per dataset. Every figure has a total of dots equal to (<span class="math inline">100</span> resamplings) x (number of test observations in each resampling). Datasets are ordered by <em>decreasing proportion of censoring</em> after applying the <span class="math inline">80\%</span> quantile <code>t_max</code> cutoff in each full dataset.</p>
+<section id="risbs-vs-isbs-observation-wise-scores" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="risbs-vs-isbs-observation-wise-scores">RISBS vs ISBS (observation-wise scores)</h3>
+<p>Scatter plots of RISBS vs ISBS <em>observation-wise</em> scores per dataset. Every figure has a total of dots equal to (<span class="math inline">100</span> resamplings) x (number of test observations in each resampling). Datasets are ordered by <em>decreasing proportion of censoring</em> after applying the <span class="math inline">80\%</span> quantile <code>t_max</code> cutoff in each full dataset.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -1582,7 +1582,7 @@ Important
    10.64584 </code></pre>
 </div>
 </div>
-<p>As we can see there is <strong>huge difference</strong> between the two versions of the score. We check the <em>per-observation</em> scores (integrated across all time points):</p>
+<p>As we can see there is <strong>huge difference</strong> between the two versions of the score. We check the <em>observation-wise</em> scores (integrated across all time points):</p>
 <p>Observation-wise RISBS scores:</p>
 <div class="cell">
 <details>

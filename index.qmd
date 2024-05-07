@@ -634,6 +634,172 @@ for (id in ids) {
 Note that in the 4 last datasets we have censored observations with $t > t_{max}$ so they are excluded from the calculation of the brier scores as we integrate up to the `t_max` time horizon cutoff.
 Therefore only observations that have experienced the event contribute to the scores (but the estimation of the censoring distribution using the Kaplan-Meier uses all observations of a train set).
 
+### Figures for paper {-}
+
+Results only for the cox model and two datasets:
+
+::: {.panel-tabset}
+
+#### VETERAN
+```{r, warning=FALSE}
+# RISBS vs ISBS
+scores = 
+  bench_res |>
+  filter(task_id == "veteran") |> 
+  select(cox_proper, cox_improper) # 100 resamplings
+RMSE = sqrt(mean((scores$cox_proper - scores$cox_improper)^2))
+mean(abs(scores$cox_proper - scores$cox_improper))
+sd(abs(scores$cox_proper - scores$cox_improper))
+
+p1 = ggpubr::ggscatter(data = scores, x = "cox_proper", y = "cox_improper",
+  xlab = "RISBS (proper)", ylab = "ISBS (improper)",
+  shape = 21, size = 2, alpha = 0.8,
+  add = "reg.line",  # Add regression line
+  add.params = list(color = "blue", fill = "lightgray"), # Customize regr. line
+  conf.int = TRUE, # Add confidence interval
+  cor.coef = TRUE, # Add Pearson's correlation coefficient
+  cor.coef.size = 8,
+  cor.coeff.args = list(method = "pearson", label.sep = "\n"), 
+  ggtheme = theme_classic(base_size = 18)
+) +
+labs(title = "VETERAN") +
+theme(plot.title = element_text(hjust = 0.5)) +
+annotate("text", size = 8, x = 0.175, y = 0.12, hjust = 0,
+          label = paste0("RMSE = ", round(RMSE, digits = 3)))
+p1
+# ggsave(filename = "p1.pdf", width = 7, height = 5)
+
+# per observation scores
+obs_scores = 
+  bench_res |>
+  filter(task_id == "veteran") |>
+  select(cox_proper_scores, cox_improper_scores, test_status) |> # `test_status` is the censoring status for coloring
+  rename(proper_scores = cox_proper_scores, improper_scores = cox_improper_scores) |>
+  unnest(cols = everything()) |>
+  pivot_longer(cols = ends_with("scores"), names_to = c("type", ".value"), names_pattern = "(.*)_(.*)") |>
+  pivot_wider(names_from = type, values_from = scores, values_fn = list) |> 
+  unnest(cols = everything()) |>
+  rename(Status = test_status) |>
+  mutate(Status = as.factor(case_when(Status == 0 ~ "Censored", TRUE ~ "Event")))
+
+# 18 - 28 test observations after `t_max` cutoff per resampling (28 is 137 * 20%)
+status = bench_res |> filter(task_id == "veteran") |> pull(test_status)
+map(status, length) |> unlist() |> summary()
+
+# truth: 2143 events, 180 censored
+obs_scores$Status |> table()
+
+RMSE_all = sqrt(mean((obs_scores$proper - obs_scores$improper)^2))
+RMSE_event = sqrt(mean((
+  obs_scores |> filter(Status == "Event") |> pull(proper) - 
+  obs_scores |> filter(Status == "Event") |> pull(improper))^2))
+RMSE_cens = sqrt(mean((
+  obs_scores |> filter(Status == "Censored") |> pull(proper) - 
+  obs_scores |> filter(Status == "Censored") |> pull(improper))^2))
+
+p2 = ggpubr::ggscatter(data = obs_scores, x = "proper", y = "improper",
+  xlab = "RISBS (proper)", ylab = "ISBS (improper)",
+  color = "Status", shape = 21, size = 3, alpha = 0.8,
+  palette = c("Censored" = "#377eb8", "Event" = "#e41a1c"),
+  add = "reg.line",  # Add regression line
+  add.params = list(color = "black"), # Customize regr. line
+  cor.coef = TRUE, # Add Pearson's correlation coefficient
+  cor.coef.size = 8,
+  cor.coeff.args = list(method = "pearson"),
+  ggtheme = theme_classic(base_size = 18)
+) +
+labs(title = "VETERAN") +
+theme(legend.position = "none") +
+theme(plot.title = element_text(hjust = 0.5)) +
+annotate("text", size = 6, x = 0.35, y = c(0.25, 0.2, 0.15), hjust = 0,
+          label = c(paste0("RMSE (all) = ", round(RMSE_all, digits = 3)), 
+                    paste0("RMSE (Event) = ", round(RMSE_event, digits = 3)),
+                    paste0("RMSE (Censored) = ", round(RMSE_cens, digits = 3))))
+p2
+# ggsave(filename = "p2.pdf", width = 7, height = 5)
+```
+
+#### NAFLD
+```{r, warning=FALSE}
+# RISBS vs ISBS
+scores = 
+  bench_res |>
+  filter(task_id == "nafld1") |> 
+  select(cox_proper, cox_improper) # 100 resamplings
+RMSE = sqrt(mean((scores$cox_proper - scores$cox_improper)^2))
+mean(abs(scores$cox_proper - scores$cox_improper))
+sd(abs(scores$cox_proper - scores$cox_improper))
+
+p3 = ggpubr::ggscatter(data = scores, x = "cox_proper", y = "cox_improper",
+  xlab = "RISBS (proper)", ylab = "ISBS (improper)",
+  shape = 21, size = 2, alpha = 0.8,
+  add = "reg.line",  # Add regression line
+  add.params = list(color = "blue", fill = "lightgray"), # Customize regr. line
+  conf.int = TRUE, # Add confidence interval
+  cor.coef = TRUE, # Add Pearson's correlation coefficient
+  cor.coef.size = 8,
+  cor.coeff.args = list(method = "pearson", label.sep = "\n"), 
+  ggtheme = theme_classic(base_size = 18)
+) +
+labs(title = "NAFLD") +
+theme(plot.title = element_text(hjust = 0.5)) +
+annotate("text", size = 8, x = 0.044, y = 0.04, hjust = 0,
+          label = paste0("RMSE = ", round(RMSE, digits = 3)))
+p3
+# ggsave(filename = "p3.pdf", width = 7, height = 5)
+  
+# per observation scores
+obs_scores = 
+  bench_res |>
+  filter(task_id == "nafld1") |>
+  select(cox_proper_scores, cox_improper_scores, test_status) |> # `test_status` is the censoring status for coloring
+  rename(proper_scores = cox_proper_scores, improper_scores = cox_improper_scores) |>
+  unnest(cols = everything()) |>
+  pivot_longer(cols = ends_with("scores"), names_to = c("type", ".value"), names_pattern = "(.*)_(.*)") |>
+  pivot_wider(names_from = type, values_from = scores, values_fn = list) |> 
+  unnest(cols = everything()) |>
+  rename(Status = test_status) |>
+  mutate(Status = as.factor(case_when(Status == 0 ~ "Censored", TRUE ~ "Event")))
+
+# 509 - 597 test observations after `t_max` cutoff per resampling (it should 
+# have been 800 = 4000 * 20%, so now we got less observations contributing to 
+# the scores and given 92% censoring, we know that most of these are censored obs :)
+status = bench_res |> filter(task_id == "nafld1") |> pull(test_status)
+map(status, length) |> unlist() |> summary()
+
+# truth: 5181 events, 50194 censored
+obs_scores$Status |> table()
+
+RMSE_all = sqrt(mean((obs_scores$proper - obs_scores$improper)^2))
+RMSE_event = sqrt(mean((
+  obs_scores |> filter(Status == "Event") |> pull(proper) - 
+  obs_scores |> filter(Status == "Event") |> pull(improper))^2))
+RMSE_cens = sqrt(mean((
+  obs_scores |> filter(Status == "Censored") |> pull(proper) - 
+  obs_scores |> filter(Status == "Censored") |> pull(improper))^2))
+
+p4 = ggpubr::ggscatter(data = obs_scores, x = "proper", y = "improper",
+  xlab = "RISBS (proper)", ylab = "ISBS (improper)",
+  color = "Status", shape = 21, size = 3, alpha = 0.8,
+  palette = c("Censored" = "#377eb8", "Event" = "#e41a1c"),
+  add = "reg.line",  # Add regression line
+  add.params = list(color = "black"), # Customize regr. line
+  cor.coef = TRUE, # Add Pearson's correlation coefficient
+  cor.coef.size = 8,
+  cor.coeff.args = list(method = "pearson"),
+  ggtheme = theme_classic(base_size = 18)
+) +
+labs(title = "NAFLD") +
+theme(plot.title = element_text(hjust = 0.5)) +
+annotate("text", size = 5, x = 0.4, y = c(0.22, 0.16, 0.10), hjust = 0,
+          label = c(paste0("RMSE (all) = ", round(RMSE_all, digits = 3)), 
+                    paste0("RMSE (Event) = ", round(RMSE_event, digits = 3)),
+                    paste0("RMSE (Censored) = ", round(RMSE_cens, digits = 3))))
+p4
+# ggsave(filename = "p4.pdf", width = 7, height = 5)
+```
+:::
+
 ## Investigate inflation of proper ISBS {-}
 
 :::{.callout-note}

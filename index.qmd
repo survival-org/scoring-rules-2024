@@ -535,6 +535,7 @@ score_corrs |>
 ### RISBS vs ISBS {-}
 
 Scatter plots of RISBS vs ISBS scores per dataset ($100$ dots/resamplings per figure).
+We add the regression line in each plot.
 Datasets are ordered by decreasing correlation between the two metrics:
 
 ```{r, cache=TRUE}
@@ -573,6 +574,7 @@ for (id in score_corrs$task_id) {
 
 Scatter plots of RISBS vs ISBS *observation-wise* scores per dataset.
 Every figure has a total of dots equal to ($100$ resamplings) x (number of test observations in each resampling).
+We draw the reference $y = x$ line in each plot.
 Datasets are ordered by *decreasing proportion of censoring* after applying the $80\%$ quantile `t_max` cutoff in each full dataset.
 
 ```{r}
@@ -619,13 +621,11 @@ for (id in ids) {
       ylab = "ISBS (improper)",
       color = "Status", shape = 21, size = 2, alpha = 0.8,
       palette = c("Censored" = "#377eb8", "Event" = "#e41a1c"),
-      add = "reg.line",  # Add regression line
-      add.params = list(color = "blue", fill = "lightgray"), # Customize regr. line
-      conf.int = TRUE, # Add confidence interval
       cor.coef = TRUE, # Add Pearson's correlation coefficient
       cor.coeff.args = list(method = "pearson", label.sep = "\n")
     ) +
     labs(title = id) +
+    geom_abline(slope = 1, size = 0.8) +
     theme(panel.spacing = unit(1, "cm"))
   print(p)
 }
@@ -701,8 +701,6 @@ p2 = ggpubr::ggscatter(data = obs_scores, x = "proper", y = "improper",
   xlab = "RISBS (proper)", ylab = "ISBS (improper)",
   color = "Status", shape = 21, size = 3, alpha = 0.8,
   palette = c("Censored" = "#377eb8", "Event" = "#e41a1c"),
-  add = "reg.line",  # Add regression line
-  add.params = list(color = "black"), # Customize regr. line
   cor.coef = TRUE, # Add Pearson's correlation coefficient
   cor.coef.size = 8,
   cor.coeff.args = list(method = "pearson"),
@@ -710,6 +708,7 @@ p2 = ggpubr::ggscatter(data = obs_scores, x = "proper", y = "improper",
 ) +
 labs(title = "VETERAN") +
 theme(legend.position = "none") +
+geom_abline(slope = 1, size = 0.8) +
 theme(plot.title = element_text(hjust = 0.5)) +
 annotate("text", size = 6, x = 0.35, y = c(0.25, 0.2, 0.15), hjust = 0,
           label = c(paste0("RMSE (all) = ", round(RMSE_all, digits = 3)), 
@@ -782,14 +781,13 @@ p4 = ggpubr::ggscatter(data = obs_scores, x = "proper", y = "improper",
   xlab = "RISBS (proper)", ylab = "ISBS (improper)",
   color = "Status", shape = 21, size = 3, alpha = 0.8,
   palette = c("Censored" = "#377eb8", "Event" = "#e41a1c"),
-  add = "reg.line",  # Add regression line
-  add.params = list(color = "black"), # Customize regr. line
   cor.coef = TRUE, # Add Pearson's correlation coefficient
   cor.coef.size = 8,
   cor.coeff.args = list(method = "pearson"),
   ggtheme = theme_classic(base_size = 18)
 ) +
 labs(title = "NAFLD") +
+geom_abline(slope = 1, size = 0.8) +
 theme(plot.title = element_text(hjust = 0.5)) +
 annotate("text", size = 5, x = 0.4, y = c(0.22, 0.16, 0.10), hjust = 0,
           label = c(paste0("RMSE (all) = ", round(RMSE_all, digits = 3)), 

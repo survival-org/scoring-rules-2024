@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="John Zobolas">
-<meta name="dcterms.date" content="2024-05-07">
+<meta name="dcterms.date" content="2024-05-10">
 <meta name="description" content="Explore the relationship between proper and improper Integrated Brier Score in the validation of survival models">
 
 <title>Benchmark results analysis</title>
@@ -208,7 +208,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 7, 2024</p>
+      <p class="date">May 10, 2024</p>
     </div>
   </div>
   
@@ -937,7 +937,7 @@ Note
 </section>
 <section id="risbs-vs-isbs" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="risbs-vs-isbs">RISBS vs ISBS</h3>
-<p>Scatter plots of RISBS vs ISBS scores per dataset (<span class="math inline">100</span> dots/resamplings per figure). Datasets are ordered by decreasing correlation between the two metrics:</p>
+<p>Scatter plots of RISBS vs ISBS scores per dataset (<span class="math inline">100</span> dots/resamplings per figure). We add the regression line in each plot. Datasets are ordered by decreasing correlation between the two metrics:</p>
 <div class="cell" data-hash="index_cache/html/unnamed-chunk-23_dd1a0c7063015aae99a2f09cd2c5fc02">
 <details>
 <summary>Code</summary>
@@ -1050,7 +1050,7 @@ Note
 </section>
 <section id="risbs-vs-isbs-observation-wise-scores" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="risbs-vs-isbs-observation-wise-scores">RISBS vs ISBS (observation-wise scores)</h3>
-<p>Scatter plots of RISBS vs ISBS <em>observation-wise</em> scores per dataset. Every figure has a total of dots equal to (<span class="math inline">100</span> resamplings) x (number of test observations in each resampling). Datasets are ordered by <em>decreasing proportion of censoring</em> after applying the <span class="math inline">80\%</span> quantile <code>t_max</code> cutoff in each full dataset.</p>
+<p>Scatter plots of RISBS vs ISBS <em>observation-wise</em> scores per dataset. Every figure has a total of dots equal to (<span class="math inline">100</span> resamplings) x (number of test observations in each resampling). We draw the reference <span class="math inline">y = x</span> line in each plot. Datasets are ordered by <em>decreasing proportion of censoring</em> after applying the <span class="math inline">80\%</span> quantile <code>t_max</code> cutoff in each full dataset.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -1067,7 +1067,7 @@ Note
 <span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cens_props) <span class="ot">=</span> task_tbl<span class="sc">$</span>task_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-25_7c418bc70a710b07a589fcce6043c510">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-25_93d3b03cfccc4a4742300e2be03f3af3">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>ids <span class="ot">=</span> <span class="fu">names</span>(<span class="fu">sort</span>(cens_props, <span class="at">decreasing =</span> <span class="cn">TRUE</span>))</span>
@@ -1096,16 +1096,14 @@ Note
 <span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">ylab =</span> <span class="st">"ISBS (improper)"</span>,</span>
 <span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">color =</span> <span class="st">"Status"</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>,</span>
 <span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">palette =</span> <span class="fu">c</span>(<span class="st">"Censored"</span> <span class="ot">=</span> <span class="st">"#377eb8"</span>, <span class="st">"Event"</span> <span class="ot">=</span> <span class="st">"#e41a1c"</span>),</span>
-<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>      <span class="at">add =</span> <span class="st">"reg.line"</span>,  <span class="co"># Add regression line</span></span>
-<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>      <span class="at">add.params =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">fill =</span> <span class="st">"lightgray"</span>), <span class="co"># Customize regr. line</span></span>
-<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a>      <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="co"># Add confidence interval</span></span>
-<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a>      <span class="at">cor.coef =</span> <span class="cn">TRUE</span>, <span class="co"># Add Pearson's correlation coefficient</span></span>
-<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a>      <span class="at">cor.coeff.args =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"pearson"</span>, <span class="at">label.sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb25-33"><a href="#cb25-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> id) <span class="sc">+</span></span>
-<span id="cb25-34"><a href="#cb25-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">panel.spacing =</span> <span class="fu">unit</span>(<span class="dv">1</span>, <span class="st">"cm"</span>))</span>
-<span id="cb25-35"><a href="#cb25-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(p)</span>
-<span id="cb25-36"><a href="#cb25-36" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>      <span class="at">cor.coef =</span> <span class="cn">TRUE</span>, <span class="co"># Add Pearson's correlation coefficient</span></span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>      <span class="at">cor.coeff.args =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"pearson"</span>, <span class="at">label.sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> id) <span class="sc">+</span></span>
+<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">panel.spacing =</span> <span class="fu">unit</span>(<span class="dv">1</span>, <span class="st">"cm"</span>))</span>
+<span id="cb25-33"><a href="#cb25-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(p)</span>
+<span id="cb25-34"><a href="#cb25-34" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="768"></p>
@@ -1287,21 +1285,20 @@ Censored    Event
 <span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"RISBS (proper)"</span>, <span class="at">ylab =</span> <span class="st">"ISBS (improper)"</span>,</span>
 <span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">color =</span> <span class="st">"Status"</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>,</span>
 <span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">palette =</span> <span class="fu">c</span>(<span class="st">"Censored"</span> <span class="ot">=</span> <span class="st">"#377eb8"</span>, <span class="st">"Event"</span> <span class="ot">=</span> <span class="st">"#e41a1c"</span>),</span>
-<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">add =</span> <span class="st">"reg.line"</span>,  <span class="co"># Add regression line</span></span>
-<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">add.params =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">"black"</span>), <span class="co"># Customize regr. line</span></span>
-<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">cor.coef =</span> <span class="cn">TRUE</span>, <span class="co"># Add Pearson's correlation coefficient</span></span>
-<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">cor.coef.size =</span> <span class="dv">8</span>,</span>
-<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">cor.coeff.args =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"pearson"</span>),</span>
-<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">ggtheme =</span> <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">18</span>)</span>
-<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
-<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a><span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"VETERAN"</span>) <span class="sc">+</span></span>
-<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a><span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
-<span id="cb35-22"><a href="#cb35-22" aria-hidden="true" tabindex="-1"></a><span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)) <span class="sc">+</span></span>
-<span id="cb35-23"><a href="#cb35-23" aria-hidden="true" tabindex="-1"></a><span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">size =</span> <span class="dv">6</span>, <span class="at">x =</span> <span class="fl">0.35</span>, <span class="at">y =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.2</span>, <span class="fl">0.15</span>), <span class="at">hjust =</span> <span class="dv">0</span>,</span>
-<span id="cb35-24"><a href="#cb35-24" aria-hidden="true" tabindex="-1"></a>          <span class="at">label =</span> <span class="fu">c</span>(<span class="fu">paste0</span>(<span class="st">"RMSE (all) = "</span>, <span class="fu">round</span>(RMSE_all, <span class="at">digits =</span> <span class="dv">3</span>)), </span>
-<span id="cb35-25"><a href="#cb35-25" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">paste0</span>(<span class="st">"RMSE (Event) = "</span>, <span class="fu">round</span>(RMSE_event, <span class="at">digits =</span> <span class="dv">3</span>)),</span>
-<span id="cb35-26"><a href="#cb35-26" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">paste0</span>(<span class="st">"RMSE (Censored) = "</span>, <span class="fu">round</span>(RMSE_cens, <span class="at">digits =</span> <span class="dv">3</span>))))</span>
-<span id="cb35-27"><a href="#cb35-27" aria-hidden="true" tabindex="-1"></a>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">cor.coef =</span> <span class="cn">TRUE</span>, <span class="co"># Add Pearson's correlation coefficient</span></span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">cor.coef.size =</span> <span class="dv">8</span>,</span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">cor.coeff.args =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"pearson"</span>),</span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">ggtheme =</span> <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">18</span>)</span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a><span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"VETERAN"</span>) <span class="sc">+</span></span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a><span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a><span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a><span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb35-22"><a href="#cb35-22" aria-hidden="true" tabindex="-1"></a><span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">size =</span> <span class="dv">6</span>, <span class="at">x =</span> <span class="fl">0.35</span>, <span class="at">y =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.2</span>, <span class="fl">0.15</span>), <span class="at">hjust =</span> <span class="dv">0</span>,</span>
+<span id="cb35-23"><a href="#cb35-23" aria-hidden="true" tabindex="-1"></a>          <span class="at">label =</span> <span class="fu">c</span>(<span class="fu">paste0</span>(<span class="st">"RMSE (all) = "</span>, <span class="fu">round</span>(RMSE_all, <span class="at">digits =</span> <span class="dv">3</span>)), </span>
+<span id="cb35-24"><a href="#cb35-24" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">paste0</span>(<span class="st">"RMSE (Event) = "</span>, <span class="fu">round</span>(RMSE_event, <span class="at">digits =</span> <span class="dv">3</span>)),</span>
+<span id="cb35-25"><a href="#cb35-25" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">paste0</span>(<span class="st">"RMSE (Censored) = "</span>, <span class="fu">round</span>(RMSE_cens, <span class="at">digits =</span> <span class="dv">3</span>))))</span>
+<span id="cb35-26"><a href="#cb35-26" aria-hidden="true" tabindex="-1"></a>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-26-2.png" class="img-fluid" width="672"></p>
@@ -1407,20 +1404,19 @@ Censored    Event
 <span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"RISBS (proper)"</span>, <span class="at">ylab =</span> <span class="st">"ISBS (improper)"</span>,</span>
 <span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">color =</span> <span class="st">"Status"</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>,</span>
 <span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">palette =</span> <span class="fu">c</span>(<span class="st">"Censored"</span> <span class="ot">=</span> <span class="st">"#377eb8"</span>, <span class="st">"Event"</span> <span class="ot">=</span> <span class="st">"#e41a1c"</span>),</span>
-<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">add =</span> <span class="st">"reg.line"</span>,  <span class="co"># Add regression line</span></span>
-<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">add.params =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">"black"</span>), <span class="co"># Customize regr. line</span></span>
-<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">cor.coef =</span> <span class="cn">TRUE</span>, <span class="co"># Add Pearson's correlation coefficient</span></span>
-<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">cor.coef.size =</span> <span class="dv">8</span>,</span>
-<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">cor.coeff.args =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"pearson"</span>),</span>
-<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">ggtheme =</span> <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">18</span>)</span>
-<span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
-<span id="cb46-20"><a href="#cb46-20" aria-hidden="true" tabindex="-1"></a><span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"NAFLD"</span>) <span class="sc">+</span></span>
-<span id="cb46-21"><a href="#cb46-21" aria-hidden="true" tabindex="-1"></a><span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)) <span class="sc">+</span></span>
-<span id="cb46-22"><a href="#cb46-22" aria-hidden="true" tabindex="-1"></a><span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">size =</span> <span class="dv">5</span>, <span class="at">x =</span> <span class="fl">0.4</span>, <span class="at">y =</span> <span class="fu">c</span>(<span class="fl">0.22</span>, <span class="fl">0.16</span>, <span class="fl">0.10</span>), <span class="at">hjust =</span> <span class="dv">0</span>,</span>
-<span id="cb46-23"><a href="#cb46-23" aria-hidden="true" tabindex="-1"></a>          <span class="at">label =</span> <span class="fu">c</span>(<span class="fu">paste0</span>(<span class="st">"RMSE (all) = "</span>, <span class="fu">round</span>(RMSE_all, <span class="at">digits =</span> <span class="dv">3</span>)), </span>
-<span id="cb46-24"><a href="#cb46-24" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">paste0</span>(<span class="st">"RMSE (Event) = "</span>, <span class="fu">round</span>(RMSE_event, <span class="at">digits =</span> <span class="dv">3</span>)),</span>
-<span id="cb46-25"><a href="#cb46-25" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">paste0</span>(<span class="st">"RMSE (Censored) = "</span>, <span class="fu">round</span>(RMSE_cens, <span class="at">digits =</span> <span class="dv">3</span>))))</span>
-<span id="cb46-26"><a href="#cb46-26" aria-hidden="true" tabindex="-1"></a>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">cor.coef =</span> <span class="cn">TRUE</span>, <span class="co"># Add Pearson's correlation coefficient</span></span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">cor.coef.size =</span> <span class="dv">8</span>,</span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">cor.coeff.args =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">"pearson"</span>),</span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">ggtheme =</span> <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">18</span>)</span>
+<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a><span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"NAFLD"</span>) <span class="sc">+</span></span>
+<span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a><span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb46-20"><a href="#cb46-20" aria-hidden="true" tabindex="-1"></a><span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb46-21"><a href="#cb46-21" aria-hidden="true" tabindex="-1"></a><span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">size =</span> <span class="dv">5</span>, <span class="at">x =</span> <span class="fl">0.4</span>, <span class="at">y =</span> <span class="fu">c</span>(<span class="fl">0.22</span>, <span class="fl">0.16</span>, <span class="fl">0.10</span>), <span class="at">hjust =</span> <span class="dv">0</span>,</span>
+<span id="cb46-22"><a href="#cb46-22" aria-hidden="true" tabindex="-1"></a>          <span class="at">label =</span> <span class="fu">c</span>(<span class="fu">paste0</span>(<span class="st">"RMSE (all) = "</span>, <span class="fu">round</span>(RMSE_all, <span class="at">digits =</span> <span class="dv">3</span>)), </span>
+<span id="cb46-23"><a href="#cb46-23" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">paste0</span>(<span class="st">"RMSE (Event) = "</span>, <span class="fu">round</span>(RMSE_event, <span class="at">digits =</span> <span class="dv">3</span>)),</span>
+<span id="cb46-24"><a href="#cb46-24" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">paste0</span>(<span class="st">"RMSE (Censored) = "</span>, <span class="fu">round</span>(RMSE_cens, <span class="at">digits =</span> <span class="dv">3</span>))))</span>
+<span id="cb46-25"><a href="#cb46-25" aria-hidden="true" tabindex="-1"></a>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-27-2.png" class="img-fluid" width="672"></p>

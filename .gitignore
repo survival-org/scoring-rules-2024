@@ -5,7 +5,9 @@ os
 sys
 sysconfig
 .Rprofile
+.Rhistory
 .Rproj.user/
 /.quarto/
 /index_files/
 /index_cache/
+

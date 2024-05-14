@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="John Zobolas">
-<meta name="dcterms.date" content="2024-05-10">
+<meta name="dcterms.date" content="2024-05-14">
 <meta name="description" content="Explore the relationship between proper and improper Integrated Brier Score in the validation of survival models">
 
 <title>Benchmark results analysis</title>
@@ -172,7 +172,6 @@ div.csl-indent {
   <li><a href="#risbs-vs-isbs-observation-wise-scores" id="toc-risbs-vs-isbs-observation-wise-scores" class="nav-link" data-scroll-target="#risbs-vs-isbs-observation-wise-scores">RISBS vs ISBS (observation-wise scores)</a></li>
   <li><a href="#figures-for-paper" id="toc-figures-for-paper" class="nav-link" data-scroll-target="#figures-for-paper">Figures for paper</a></li>
   </ul></li>
-  <li><a href="#investigate-inflation-of-proper-isbs" id="toc-investigate-inflation-of-proper-isbs" class="nav-link" data-scroll-target="#investigate-inflation-of-proper-isbs">Investigate inflation of proper ISBS</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/bblodfon/scoring-rules-2024/blob/main/index.qmd" class="toc-action">View source</a></p></div></div></nav>
@@ -208,7 +207,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 10, 2024</p>
+      <p class="date">May 14, 2024</p>
     </div>
   </div>
   
@@ -1430,242 +1429,6 @@ Censored    Event
 </div>
 </div>
 </section>
-</section>
-<section id="investigate-inflation-of-proper-isbs" class="level2 unnumbered">
-<h2 class="unnumbered anchored" data-anchor-id="investigate-inflation-of-proper-isbs">Investigate inflation of proper ISBS</h2>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>In this section we investigate an example where the <strong>proper ISBS gets inflated</strong> (i.e.&nbsp;too large value for the score, compared to the improper version) and show how we can avoid such a thing from happening when evaluating model performance.</p>
-</div>
-</div>
-<p>Let’s use a dataset where in a particular train/test resampling the issue occurs:</p>
-<div class="cell">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>inflated_data <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">"inflated_data.rds"</span>)</span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>task <span class="ot">=</span> inflated_data<span class="sc">$</span>task</span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>part <span class="ot">=</span> inflated_data<span class="sc">$</span>part</span>
-<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>task</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>&lt;TaskSurv:mgus&gt; (176 x 9)
-* Target: time, status
-* Properties: -
-* Features (7):
-  - dbl (6): age, alb, creat, dxyr, hgb, mspike
-  - fct (1): sex</code></pre>
-</div>
-</div>
-<p>Separate train and test data:</p>
-<div class="cell">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>task_train <span class="ot">=</span> task<span class="sc">$</span><span class="fu">clone</span>()<span class="sc">$</span><span class="fu">filter</span>(<span class="at">rows =</span> part<span class="sc">$</span>train)</span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>task_test  <span class="ot">=</span> task<span class="sc">$</span><span class="fu">clone</span>()<span class="sc">$</span><span class="fu">filter</span>(<span class="at">rows =</span> part<span class="sc">$</span>test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<p>Kaplan-Meier of the training survival data:</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-30_8ddf7ef83121c775272d9718b17b7a27">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(task_train) <span class="sc">+</span></span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Kaplan-Meier (train data)"</span>,</span>
-<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Time-to-event distribution"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>Kaplan-Meier of the training censoring data:</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-31_e8f2bffef6acb72eb98d94ab33e125ec">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(task_train, <span class="at">reverse =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Kaplan-Meier (train data)"</span>,</span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">subtitle =</span> <span class="st">"Censoring distribution"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>Estimates of the censoring distribution <span class="math inline">G_{KM}(t)</span> (values from the above figure):</p>
-<div class="cell">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>km_train <span class="ot">=</span> task_train<span class="sc">$</span><span class="fu">kaplan</span>(<span class="at">reverse =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>km_tbl <span class="ot">=</span> <span class="fu">tibble</span>(<span class="at">time =</span> km_train<span class="sc">$</span>time, <span class="at">surv =</span> km_train<span class="sc">$</span>surv)</span>
-<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(km_tbl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 2
-   time  surv
-  &lt;dbl&gt; &lt;dbl&gt;
-1 12140 0.75 
-2 12313 0.625
-3 12319 0.5  
-4 12349 0.25 
-5 12689 0.125
-6 13019 0    </code></pre>
-</div>
-</div>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Important
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>As we can see from the above figures and table, due to having <em>at least one censored observation at the last time point</em>, <span class="math inline">G_{KM}(t_{max}) = 0</span> for <span class="math inline">t_{max} = 13019</span>.</p>
-</div>
-</div>
-<p>Is there an observation <strong>on the test set</strong> that has died (<code>status</code> = <span class="math inline">1</span>) on that last time point (or after)?</p>
-<div class="cell">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>max_time <span class="ot">=</span> <span class="fu">max</span>(km_tbl<span class="sc">$</span>time) <span class="co"># max time point</span></span>
-<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>test_times  <span class="ot">=</span> task_test<span class="sc">$</span><span class="fu">times</span>()</span>
-<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>test_status <span class="ot">=</span> task_test<span class="sc">$</span><span class="fu">status</span>()</span>
-<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a><span class="co"># get the id of the observation in the test data</span></span>
-<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>id <span class="ot">=</span> <span class="fu">which</span>(test_times <span class="sc">&gt;=</span> max_time <span class="sc">&amp;</span> test_status <span class="sc">==</span> <span class="dv">1</span>)</span>
-<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 14</code></pre>
-</div>
-</div>
-<p>Yes there is such observation!</p>
-<p>In <code>mlr3proba</code> using <code>proper = TRUE</code> for the RISBS calculation, this observation will be weighted by <span class="math inline">1/0</span> according to the formula. Practically, to avoid division by zero, a small value <code>eps = 0.001</code> will be used.</p>
-<p>Let’s train a simple Cox model on the train set and calculate its predictions on the test set:</p>
-<div class="cell">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>cox <span class="ot">=</span> <span class="fu">lrn</span>(<span class="st">"surv.coxph"</span>)</span>
-<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">=</span> cox<span class="sc">$</span><span class="fu">train</span>(task, part<span class="sc">$</span>train)<span class="sc">$</span><span class="fu">predict</span>(task, part<span class="sc">$</span>test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<p>We calculate the ISBS (improper) and RISBS (proper) scores:</p>
-<div class="cell">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>graf_improper <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">proper =</span> <span class="cn">FALSE</span>, <span class="at">id =</span> <span class="st">"graf.improper"</span>)</span>
-<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>graf_proper   <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">proper =</span> <span class="cn">TRUE</span>,  <span class="at">id =</span> <span class="st">"graf.proper"</span>)</span>
-<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>p<span class="sc">$</span><span class="fu">score</span>(graf_improper, <span class="at">task =</span> task, <span class="at">train_set =</span> part<span class="sc">$</span>train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>graf.improper 
-    0.1493429 </code></pre>
-</div>
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>p<span class="sc">$</span><span class="fu">score</span>(graf_proper, <span class="at">task =</span> task, <span class="at">train_set =</span> part<span class="sc">$</span>train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>graf.proper 
-   10.64584 </code></pre>
-</div>
-</div>
-<p>As we can see there is <strong>huge difference</strong> between the two versions of the score. We check the <em>observation-wise</em> scores (integrated across all time points):</p>
-<p>Observation-wise RISBS scores:</p>
-<div class="cell">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>graf_proper<span class="sc">$</span>scores</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code> [1]   0.08994417   0.02854219   0.04214266   0.15578719   0.05364692
- [6]   0.12969150   0.06463256   0.32033549   2.43262450   0.11602432
-[11]   0.03228501   0.10172088   0.14652850 367.10227335   0.18004727
-[16]   0.21991511   0.09070024   0.03507389   0.19856844   0.07925747
-[21]   0.07732517   0.06982001   0.19468406   0.05267402   0.02419841
-[26]   0.17645640   0.07633691   0.04379196   0.07839955   0.06684222
-[31]   0.05457688   0.02874430   0.04071108   0.00000000   0.00000000</code></pre>
-</div>
-</div>
-<p>Observation-wise ISBS scores:</p>
-<div class="cell">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>graf_improper<span class="sc">$</span>scores</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code> [1] 0.08994417 0.02854219 0.04214266 0.15578719 0.05364692 0.12969150
- [7] 0.06463256 0.32033549 0.62971109 0.11602432 0.03228501 0.10172088
-[13] 0.14652850 1.07969258 0.16743979 0.21991511 0.09070024 0.03507389
-[19] 0.19856844 0.07925747 0.07732517 0.06982001 0.19468406 0.05267402
-[25] 0.02419841 0.16199516 0.07633691 0.04379196 0.07839955 0.06684222
-[31] 0.05457688 0.02874430 0.04071108 0.03512466 0.46541333</code></pre>
-</div>
-</div>
-<p>It is <strong>the one observation that we identified earlier</strong> that causes the inflation of the RISBS score - it’s pretty much an outlier compared to all other values:</p>
-<div class="cell">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>graf_proper<span class="sc">$</span>scores[id]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 367.1023</code></pre>
-</div>
-</div>
-<p>By setting <code>t_max</code> (time horizon to evaluate the measure up to) to the <span class="math inline">95\%</span> quantile of the event times, we can solve the inflation problem of the proper RISBS score, since we will divide by a value larger than zero from the above table of <span class="math inline">G_{KM}(t)</span> values. The <code>t_max</code> time point is:</p>
-<div class="cell">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>t_max <span class="ot">=</span> <span class="fu">as.integer</span>(<span class="fu">quantile</span>(task_train<span class="sc">$</span><span class="fu">unique_event_times</span>(), <span class="fl">0.95</span>))</span>
-<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>t_max</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 10080</code></pre>
-</div>
-</div>
-<p>Integrating up to <code>t_max</code>, the proper RISBS score is:</p>
-<div class="cell">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>graf_proper_tmax <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">id =</span> <span class="st">"graf.proper"</span>, <span class="at">proper =</span> <span class="cn">TRUE</span>, <span class="at">t_max =</span> t_max)</span>
-<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>p<span class="sc">$</span><span class="fu">score</span>(graf_proper_tmax, <span class="at">task =</span> task, <span class="at">train_set =</span> part<span class="sc">$</span>train) <span class="co"># ISBS</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>graf.proper 
-  0.1436484 </code></pre>
-</div>
-</div>
-<p>The score for the specific observation that had experienced the event at (or beyond) the latest training time point is now:</p>
-<div class="cell">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>graf_proper_tmax<span class="sc">$</span>scores[id]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.141502</code></pre>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip callout-titled" title="Suggestion when calculating time-integrated scoring rules">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Suggestion when calculating time-integrated scoring rules
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>To avoid the inflation of RISBS and generally have a more robust estimation of both RISBS and ISBS scoring rules, we advise to set the <code>t_max</code> argument (time horizon). This can be either study-driven or based on a meaningful quantile of the distribution of (usually event) times in your dataset (e.g.&nbsp;<span class="math inline">80\%</span>).</p>
-</div>
-</div>
 </section>
 <section id="references" class="level2">
 

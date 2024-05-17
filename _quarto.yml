@@ -3,6 +3,6 @@ project:
   output-dir: docs
 
 website:
-  repo-url: https://github.com/bblodfon/scoring-rules-2024/
+  repo-url: https://github.com/survival-org/scoring-rules-2024/
   repo-branch: main
   repo-actions: source

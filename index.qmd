@@ -43,7 +43,7 @@ library(circlize)
 ## Simulated Data Results {-}
 
 :::{.callout-note}
-- [Code](https://github.com/bblodfon/scoring-rules-2024/blob/main/generate.R) to generate the simulated datasets.
+- [Code](https://github.com/survival-org/scoring-rules-2024/blob/main/generate.R) to generate the simulated datasets.
 For directly getting the `res.rds` object, contact the author via a GitHub issue.
 
 We simulate datasets with **varying characteristics**:
@@ -448,8 +448,8 @@ Heatmap(km_mat, name = "RMSE", cluster_rows = FALSE, cluster_columns = FALSE,
 ## Real-world Data Results {-}
 
 :::{.callout-note}
-- [Compressed data files](https://github.com/bblodfon/scoring-rules-2024/tree/main/data)
-- [R script](https://github.com/bblodfon/scoring-rules-2024/blob/main/prepare_tasks.R) used to translate the datasets into `mlr3` tasks and extract useful info, namely:
+- [Compressed data files](https://github.com/survival-org/scoring-rules-2024/tree/main/data)
+- [R script](https://github.com/survival-org/scoring-rules-2024/blob/main/prepare_tasks.R) used to translate the datasets into `mlr3` tasks and extract useful info, namely:
   - `n_obs`: Number of observations
   - `n_vars`: Number of total variables
   - `n_factors`: Number of factor/categorical variables
@@ -458,7 +458,7 @@ Heatmap(km_mat, name = "RMSE", cluster_rows = FALSE, cluster_columns = FALSE,
   - `admin_cens_prop`: Proportion of censored observations that are censored administratively, i.e. at the last censoring time
   - `dep_cens_prop`: Proportion of significant coefficients (adjusted `p < 0.05`) to predict censoring status using a logistic regression model
   - `prop_haz`: If the dataset satisfies the proportional hazards assumption (`p > 0.05` using the Grambsch-Therneau test [@Grambsch1994])
-- [R script](https://github.com/bblodfon/scoring-rules-2024/blob/main/run_bench.R) used to run the benchmark
+- [R script](https://github.com/survival-org/scoring-rules-2024/blob/main/run_bench.R) used to run the benchmark
 :::
 
 ### Introduction {-}
@@ -493,7 +493,7 @@ task_tbl |>
 Get the benchmark results:
 ```{r}
 # see `run_bench.R`
-# Compressed file: https://github.com/bblodfon/scoring-rules-2024/blob/main/bench_res.rds
+# Compressed file: https://github.com/survival-org/scoring-rules-2024/blob/main/bench_res.rds
 bench_res = readRDS(file = "bench_res.rds")
 ```
 

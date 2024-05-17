@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="John Zobolas">
-<meta name="dcterms.date" content="2024-05-14">
+<meta name="dcterms.date" content="2024-05-17">
 <meta name="description" content="Explore the relationship between proper and improper Integrated Brier Score in the validation of survival models">
 
 <title>Benchmark results analysis</title>
@@ -174,7 +174,7 @@ div.csl-indent {
   </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/bblodfon/scoring-rules-2024/blob/main/index.qmd" class="toc-action">View source</a></p></div></div></nav>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/survival-org/scoring-rules-2024/blob/main/index.qmd" class="toc-action">View source</a></p></div></div></nav>
 </nav>
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
@@ -207,7 +207,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 14, 2024</p>
+      <p class="date">May 17, 2024</p>
     </div>
   </div>
   
@@ -246,7 +246,7 @@ Note
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li><a href="https://github.com/bblodfon/scoring-rules-2024/blob/main/generate.R">Code</a> to generate the simulated datasets. For directly getting the <code>res.rds</code> object, contact the author via a GitHub issue.</li>
+<li><a href="https://github.com/survival-org/scoring-rules-2024/blob/main/generate.R">Code</a> to generate the simulated datasets. For directly getting the <code>res.rds</code> object, contact the author via a GitHub issue.</li>
 </ul>
 <p>We simulate datasets with <strong>varying characteristics</strong>:</p>
 <ol type="1">
@@ -782,8 +782,8 @@ Note
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li><a href="https://github.com/bblodfon/scoring-rules-2024/tree/main/data">Compressed data files</a></li>
-<li><a href="https://github.com/bblodfon/scoring-rules-2024/blob/main/prepare_tasks.R">R script</a> used to translate the datasets into <code>mlr3</code> tasks and extract useful info, namely:
+<li><a href="https://github.com/survival-org/scoring-rules-2024/tree/main/data">Compressed data files</a></li>
+<li><a href="https://github.com/survival-org/scoring-rules-2024/blob/main/prepare_tasks.R">R script</a> used to translate the datasets into <code>mlr3</code> tasks and extract useful info, namely:
 <ul>
 <li><code>n_obs</code>: Number of observations</li>
 <li><code>n_vars</code>: Number of total variables</li>
@@ -794,7 +794,7 @@ Note
 <li><code>dep_cens_prop</code>: Proportion of significant coefficients (adjusted <code>p &lt; 0.05</code>) to predict censoring status using a logistic regression model</li>
 <li><code>prop_haz</code>: If the dataset satisfies the proportional hazards assumption (<code>p &gt; 0.05</code> using the Grambsch-Therneau test <span class="citation" data-cites="Grambsch1994">(<a href="#ref-Grambsch1994" role="doc-biblioref">Grambsch and Therneau 1994</a>)</span>)</li>
 </ul></li>
-<li><a href="https://github.com/bblodfon/scoring-rules-2024/blob/main/run_bench.R">R script</a> used to run the benchmark</li>
+<li><a href="https://github.com/survival-org/scoring-rules-2024/blob/main/run_bench.R">R script</a> used to run the benchmark</li>
 </ul>
 </div>
 </div>
@@ -835,7 +835,7 @@ Note
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># see `run_bench.R`</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Compressed file: https://github.com/bblodfon/scoring-rules-2024/blob/main/bench_res.rds</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Compressed file: https://github.com/survival-org/scoring-rules-2024/blob/main/bench_res.rds</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>bench_res <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">"bench_res.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>

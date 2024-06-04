@@ -4,14 +4,14 @@
     "href": "index.html",
     "title": "Benchmark results analysis",
     "section": "",
-    "text": "We benchmark the two versions of the survival brier score (Graf et al. 1999), namely the Integrated Survival Brier Score (ISBS) and the proposed re-weighted version (RISBS) (see documentation details for their respective formulas). The first (ISBS) is not a proper scoring rule (Rindt et al. 2022), the second (RISBS) is (Sonabend 2022). Our goal is to assess whether these scores exhibit differences in simulated and real-world datasets, and if so, to understand the reasons behind these differences.\nLoad libraries:\n\n\nCode\nlibrary(tidyverse)\nlibrary(mlr3proba)\nlibrary(DT)\nlibrary(ggpubr)\nlibrary(ComplexHeatmap)\nlibrary(circlize)"
+    "text": "We benchmark the two versions of the survival brier score (Graf et al. 1999), namely the Integrated Survival Brier Score (ISBS) and the proposed re-weighted version (RISBS) (see documentation details for their respective formulas). The first (ISBS) is not a proper scoring rule (Rindt et al. 2022), the second (RISBS) is (Sonabend et al. 2024). Our goal is to assess whether these scores exhibit differences in simulated and real-world datasets, and if so, to understand the reasons behind these differences.\nLoad libraries:\n\n\nCode\nlibrary(tidyverse)\nlibrary(mlr3proba)\nlibrary(DT)\nlibrary(ggpubr)\nlibrary(ComplexHeatmap)\nlibrary(circlize)"
   },
   {
     "objectID": "index.html#aim",
     "href": "index.html#aim",
     "title": "Benchmark results analysis",
     "section": "",
-    "text": "We benchmark the two versions of the survival brier score (Graf et al. 1999), namely the Integrated Survival Brier Score (ISBS) and the proposed re-weighted version (RISBS) (see documentation details for their respective formulas). The first (ISBS) is not a proper scoring rule (Rindt et al. 2022), the second (RISBS) is (Sonabend 2022). Our goal is to assess whether these scores exhibit differences in simulated and real-world datasets, and if so, to understand the reasons behind these differences.\nLoad libraries:\n\n\nCode\nlibrary(tidyverse)\nlibrary(mlr3proba)\nlibrary(DT)\nlibrary(ggpubr)\nlibrary(ComplexHeatmap)\nlibrary(circlize)"
+    "text": "We benchmark the two versions of the survival brier score (Graf et al. 1999), namely the Integrated Survival Brier Score (ISBS) and the proposed re-weighted version (RISBS) (see documentation details for their respective formulas). The first (ISBS) is not a proper scoring rule (Rindt et al. 2022), the second (RISBS) is (Sonabend et al. 2024). Our goal is to assess whether these scores exhibit differences in simulated and real-world datasets, and if so, to understand the reasons behind these differences.\nLoad libraries:\n\n\nCode\nlibrary(tidyverse)\nlibrary(mlr3proba)\nlibrary(DT)\nlibrary(ggpubr)\nlibrary(ComplexHeatmap)\nlibrary(circlize)"
   },
   {
     "objectID": "index.html#simulated-data-results",

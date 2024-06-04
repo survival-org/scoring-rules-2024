@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="John Zobolas">
-<meta name="dcterms.date" content="2024-05-17">
+<meta name="dcterms.date" content="2024-06-04">
 <meta name="description" content="Explore the relationship between proper and improper Integrated Brier Score in the validation of survival models">
 
 <title>Benchmark results analysis</title>
@@ -207,7 +207,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 17, 2024</p>
+      <p class="date">June 4, 2024</p>
     </div>
   </div>
   
@@ -219,7 +219,7 @@ div.csl-indent {
 
 <section id="aim" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="aim">Aim</h2>
-<p>We benchmark the two versions of the survival brier score <span class="citation" data-cites="Graf1999">(<a href="#ref-Graf1999" role="doc-biblioref">Graf et al. 1999</a>)</span>, namely the <strong>Integrated Survival Brier Score (ISBS)</strong> and the proposed <strong>re-weighted version (RISBS)</strong> (see <a href="https://mlr3proba.mlr-org.com/reference/mlr_measures_surv.graf.html#details">documentation details</a> for their respective formulas). The first (ISBS) is not a proper scoring rule <span class="citation" data-cites="Rindt2022">(<a href="#ref-Rindt2022" role="doc-biblioref">Rindt et al. 2022</a>)</span>, the second (RISBS) is <span class="citation" data-cites="Sonabend2022">(<a href="#ref-Sonabend2022" role="doc-biblioref">Sonabend 2022</a>)</span>. Our goal is to assess whether these scores exhibit differences in simulated and real-world datasets, and if so, to understand the reasons behind these differences.</p>
+<p>We benchmark the two versions of the survival brier score <span class="citation" data-cites="Graf1999">(<a href="#ref-Graf1999" role="doc-biblioref">Graf et al. 1999</a>)</span>, namely the <strong>Integrated Survival Brier Score (ISBS)</strong> and the proposed <strong>re-weighted version (RISBS)</strong> (see <a href="https://mlr3proba.mlr-org.com/reference/mlr_measures_surv.graf.html#details">documentation details</a> for their respective formulas). The first (ISBS) is not a proper scoring rule <span class="citation" data-cites="Rindt2022">(<a href="#ref-Rindt2022" role="doc-biblioref">Rindt et al. 2022</a>)</span>, the second (RISBS) is <span class="citation" data-cites="Sonabend2024">(<a href="#ref-Sonabend2024" role="doc-biblioref">Sonabend et al. 2024</a>)</span>. Our goal is to assess whether these scores exhibit differences in simulated and real-world datasets, and if so, to understand the reasons behind these differences.</p>
 <p>Load libraries:</p>
 <div class="cell" data-result="false">
 <details>
@@ -1447,8 +1447,8 @@ Grambsch, Patricia M, and Terry M. Therneau. 1994. <span>“<span class="nocase"
 <div id="ref-Rindt2022" class="csl-entry" role="listitem">
 Rindt, David, Robert Hu, David Steinsaltz, and Dino Sejdinovic. 2022. <span>“<span class="nocase">Survival regression with proper scoring rules and monotonic neural networks</span>.”</span> In <em>Proceedings of the 25th International Conference on Artificial Intelligence and Statistics</em>, edited by Gustau Camps-Valls, Francisco J R Ruiz, and Isabel Valera, 151:1190–1205. Proceedings of Machine Learning Research. PMLR. <a href="https://proceedings.mlr.press/v151/rindt22a.html">https://proceedings.mlr.press/v151/rindt22a.html</a>.
 </div>
-<div id="ref-Sonabend2022" class="csl-entry" role="listitem">
-Sonabend, Raphael. 2022. <span>“<span class="nocase">Scoring rules in survival analysis</span>.”</span> <a href="https://doi.org/10.48550/arxiv.2212.05260">https://doi.org/10.48550/arxiv.2212.05260</a>.
+<div id="ref-Sonabend2024" class="csl-entry" role="listitem">
+Sonabend, Raphael, John Zobolas, Phillip Kopper, Lukas Burk, and Andreas Bender. 2024. <span>“<span class="nocase">Examining properness in the external validation of survival models with squared and logarithmic losses</span>.”</span> <a href="https://doi.org/10.48550/arXiv.2212.05260">https://doi.org/10.48550/arXiv.2212.05260</a>.
 </div>
 </div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

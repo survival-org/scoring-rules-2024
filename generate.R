@@ -1,12 +1,14 @@
 #' Generate the simulated data
-suppressPackageStartupMessages(library(tidyverse))
-library(survival)
-suppressPackageStartupMessages(library(coxed))
-library(mlr3proba)
-library(mlr3extralearners)
-library(progressr)
-suppressPackageStartupMessages(library(pracma))
-suppressPackageStartupMessages(library(future.apply))
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(survival)
+  library(coxed)
+  library(mlr3proba)
+  library(mlr3extralearners)
+  library(progressr)
+  library(pracma)
+  library(future.apply)
+})
 
 #' Parameters of interest:
 #' 1) independent (random) vs dependent censoring (`cens_dep`)

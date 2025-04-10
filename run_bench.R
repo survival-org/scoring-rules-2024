@@ -1,145 +1,132 @@
 #' Compare ISBS proper vs improper on some real-world datasets
-suppressPackageStartupMessages(library(tidyverse))
-library(mlr3proba)
-library(mlr3extralearners)
-library(progressr)
-library(future.apply)
+#'
+#' Run: `Rscript run_bench.R`
+suppressPackageStartupMessages({
+  library(tibble)
+  library(dplyr)
+  library(mlr3proba)
+  library(mlr3extralearners)
+  library(progressr)
+  library(future.apply)
+})
 
-#' see `prepare_tasks.R`
+#' see `prepare_tasks.R` for converting datasets from saved files to `mlr3` tasks
 task_tbl = readRDS(file = "task_tbl.rds")
 
-# whether to keep the data and train/test partition
-keep_data = FALSE
+# logging
+lgr::get_logger("mlr3")$set_threshold("warn")
 
 # Progress bars
 options(progressr.enable = TRUE)
 handlers(global = TRUE)
 handlers("progress")
 
-# use all available CPUs
+# parallelization
 future::plan("multicore", workers = 10)
 
-# how many times to split to train and test set each dataset?
-n_rsmps = 100
+# how many times to train/test split each dataset?
+n_rsmps = 5
+
+# models
+learners = c("cox", "aft", "rsf")
+
+# Construct the grid for rsmp_id for each dataset
+bm_grid = lapply(seq_len(nrow(task_tbl)), function(i) {
+  task_id = task_tbl[i, ]$id
+  expand.grid(
+    task_id = task_id,
+    lrn_id = learners,
+    rsmp_id = 1:n_rsmps,
+    stringsAsFactors = FALSE
+  )
+}) |> bind_rows()
 
 with_progress({
-  row_seq = seq_len(nrow(task_tbl))
+  row_seq = seq_len(nrow(bm_grid))
   p = progressor(along = row_seq)
 
   bench_res = future.apply::future_lapply(row_seq, function(i) {
     set.seed(i)
-    task = task_tbl[i, ]$task[[1]]
-    p(sprintf("task = %s", task$id))
 
-    # define Kaplan-Meier, CoxPH and AFT-Weibull models
-    kaplan = lrn("surv.kaplan")
-    cox = lrn("surv.coxph")
-    aft = lrn("surv.parametric", form = "aft", dist = "weibull", discrete = TRUE)
+    # Task
+    task_id = bm_grid[i, "task_id"]
+    task = task_tbl |> filter(id == task_id) |> pull(task)
+    task = task[[1]]$clone()
+    # Resampling iteration id
+    rsmp_id = bm_grid[i, "rsmp_id"]
+    # Learner
+    lrn_id = bm_grid[i, "lrn_id"]
+
+    # print message
+    p(sprintf("Task: %s, Learner: %s, Resampling Iteration: %s", task_id, lrn_id, rsmp_id))
+
+    # create mlr3 learner (CoxPH, AFT-Weibull or RSF)
+    if (lrn_id == "cox") {
+      learner = lrn("surv.coxph")
+    } else if (lrn_id == "aft") {
+      learner = lrn("surv.parametric", form = "aft", dist = "weibull", discrete = TRUE)
+    } else if (lrn_id == "rsf") {
+      learner = lrn("surv.ranger", num.trees = 500, splitrule = "logrank")
+      learner$timeout = c(train = 25, predict = 5)
+    }
 
     # add encapsulation for capturing errors
-    kaplan$encapsulate = c(train = "evaluate", predict = "evaluate")
-    cox$encapsulate    = c(train = "evaluate", predict = "evaluate")
-    aft$encapsulate    = c(train = "evaluate", predict = "evaluate")
+    suppressWarnings(learner$encapsulate(method = "evaluate", fallback = lrn("surv.kaplan")))
 
-    # split each dataset a number of times to train/test sets (repeated holdout)
-    lapply(1:n_rsmps, function(rsmp_num) {
-      part = partition(task, ratio = 0.8) # by default stratified
+    # split dataset to train/test sets
+    task$set_col_roles(cols = "status", add_to = "stratum")
+    part = partition(task, ratio = 0.8) # by default stratified
 
-      # train
-      kaplan$train(task, row_ids = part$train)
-      cox$train(task, row_ids = part$train)
-      aft$train(task, row_ids = part$train)
+    # train learner
+    learner$train(task, row_ids = part$train)
 
-      # Integrated Survival Brier Score (improper) and re-weighted version (proper)
-      # Use 80% quantile of event times in the train set as time horizon
-      event_times = task$unique_event_times(rows = part$train)
-      t_max = unname(quantile(event_times, probs = 0.8))
-      graf_improper = msr("surv.graf", proper = FALSE, id = "graf.improper", t_max = t_max)
-      graf_proper   = msr("surv.graf", proper = TRUE,  id = "graf.proper", t_max = t_max)
+    # if training had no errors
+    if (length(learner$errors) == 0) {
+      # Define metrics: ISBS (improper) and RISBS (proper)
+      # Use 80% quantile of outcome times in the train set as time horizon
+      train_times = task$times(rows = part$train)
+      t_max = unname(quantile(train_times, probs = 0.8))
+      graf_improper = msr("surv.graf", proper = FALSE, id = "graf.improper",
+                          t_max = t_max, eps = 0.01)
+      graf_proper = msr("surv.graf", proper = TRUE, id = "graf.proper",
+                        t_max = t_max, eps = 0.01)
 
-      # keep censoring status of the test observations with t <= t_max
-      times  = task$times (rows = part$test)
-      status = task$status(rows = part$test)
-      test_status = status[times <= t_max]
+      # Preprocessing step: keep test observations with time points strictly smaller
+      # than the max time point in the training data to minimize effects of extrapolation
+      #test_times = task$times(rows = part$test)
+      #part$test = part$test[test_times < max(train_times)]
 
-      # evaluate graf proper and improper on the test set
-      # using various models, but check if training succeeded first
+      # keep censoring status of the test observations
+      test_times = task$times(rows = part$test)
+      test_status = task$status(rows = part$test)
+      # test_status = test_status[test_times <= t_max] # with t <= t_max
 
-      # Kaplan-Meier
-      if (length(kaplan$errors) == 0) {
-        # predict
-        pred_kaplan = kaplan$predict(task, row_ids = part$test)
+      # predict on the test set
+      pred = learner$predict(task, row_ids = part$test)
 
-        # calculate graf scores
-        km_proper = pred_kaplan$score(graf_proper, task = task, train_set = part$train)
-        km_improper = pred_kaplan$score(graf_improper, task = task, train_set = part$train)
-        km_proper_scores = graf_proper$scores
-        km_improper_scores = graf_improper$scores
-      } else {
-        km_proper = NA
-        km_improper = NA
-        km_proper_scores = NA
-        km_improper_scores = NA
-      }
+      # PROPER score + obs-wise scores
+      risbs = unname(pred$score(graf_proper, task = task, train_set = part$train))
+      risbs_scores = graf_proper$scores
 
-      # Cox
-      if (length(cox$errors) == 0) {
-        # predict
-        pred_cox = cox$predict(task, row_ids = part$test)
+      # IMPROPER score + obs-wise scores
+      isbs = unname(pred$score(graf_improper, task = task, train_set = part$train))
+      isbs_scores = graf_improper$scores
 
-        # calculate graf scores
-        cox_proper = pred_cox$score(graf_proper, task = task, train_set = part$train)
-        cox_improper = pred_cox$score(graf_improper, task = task, train_set = part$train)
-        cox_proper_scores = graf_proper$scores
-        cox_improper_scores = graf_improper$scores
-      } else {
-        cox_proper = NA
-        cox_improper = NA
-        cox_proper_scores = NA
-        cox_improper_scores = NA
-      }
-
-      # AFT
-      if (length(aft$errors) == 0) {
-        # predict
-        pred_aft = aft$predict(task, row_ids = part$test)
-
-        # calculate graf scores
-        aft_proper = pred_aft$score(graf_proper, task = task, train_set = part$train)
-        aft_improper = pred_aft$score(graf_improper, task = task, train_set = part$train)
-        aft_proper_scores = graf_proper$scores
-        aft_improper_scores = graf_improper$scores
-      } else {
-        aft_proper = NA
-        aft_improper = NA
-        aft_proper_scores = NA
-        aft_improper_scores = NA
-      }
-
-      tibble(
-        # task info
-        task_id = task$id,
-        # task = list(task),
-        # part = list(part),
+      tibble::tibble(
+        task_id = task_id,
+        lrn_id = lrn_id,
+        rsmp_id = rsmp_id,
         test_status = list(test_status),
-        # KM
-        km_proper = km_proper,
-        km_improper = km_improper,
-        km_proper_scores = list(km_proper_scores),
-        km_improper_scores = list(km_improper_scores),
-        # Cox
-        cox_proper = cox_proper,
-        cox_improper = cox_improper,
-        cox_proper_scores = list(cox_proper_scores),
-        cox_improper_scores = list(cox_improper_scores),
-        # AFT
-        aft_proper = aft_proper,
-        aft_improper = aft_improper,
-        aft_proper_scores = list(aft_proper_scores),
-        aft_improper_scores = list(aft_improper_scores)
+        risbs = risbs,
+        risbs_scores = list(risbs_scores),
+        isbs = isbs,
+        isbs_scores = list(isbs_scores)
       )
-    }) |> bind_rows()
+    } else {
+
+    }
   }, future.seed = TRUE) |> bind_rows()
 })
 
-saveRDS(bench_res, file = "bench_res_tmax.rds")
+cat("------------\nSaving results\n")
+saveRDS(bench_res, file = "bench_res5.rds")

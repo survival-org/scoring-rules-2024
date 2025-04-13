@@ -1,8 +1,0 @@
-project:
-  type: website
-  output-dir: docs
-
-website:
-  repo-url: https://github.com/survival-org/scoring-rules-2024/
-  repo-branch: main
-  repo-actions: source

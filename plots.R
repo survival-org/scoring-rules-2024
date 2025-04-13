@@ -3,7 +3,7 @@ library(dplyr)
 library(tidyr)
 
 # Data ----
-res_true_c = readRDS("res_iters10000_sims1000_0.rds")
+res_true_c = readRDS("results/res_iters10000_sims1000_0.rds")
 res = res_true_c |>
   select(!matches("shape|scale")) |> # remove columns
   mutate(cens_bin = cut(prop_cens, breaks = seq(0, 1, by = 0.2), include.lowest = TRUE)) |>
@@ -11,7 +11,7 @@ res = res_true_c |>
   select(!c("prop_cens", "tv_dist"))
 res |> count(n, name = "iters")
 
-# res_est_c = readRDS("res_iters10000_sims1000_1.rds")
+# res_est_c = readRDS("results/res_iters10000_sims1000_1.rds")
 
 # Violation stats ----
 # Define a violation threshold

@@ -44,13 +44,6 @@ get_pdf = function(fit, new_times, inter_type = "linear") {
 }
 
 # SCORES ----
-# ignores censoring, not practically useful
-# rsbs = function(pred_shape, pred_scale, t, delta, tstar, cens_shape, cens_scale, eps = 1e-3) {
-#   uncens = t[delta == 1]
-#
-#   mean(((as.numeric(uncens <= tstar) - pweibull(tstar, pred_shape, pred_scale))^2) / pmax(eps, pweibull(uncens, cens_shape, cens_scale, FALSE)))
-# }
-
 sbs = function(pred_shape, pred_scale, t, delta, tstar, cens_shape, cens_scale, cens_fit = NULL, eps = 1e-5) {
   out = numeric(length(t))
 
@@ -65,6 +58,30 @@ sbs = function(pred_shape, pred_scale, t, delta, tstar, cens_shape, cens_scale, 
     # use estimated censoring distribution
     out[lhs] = pweibull(tstar, pred_shape, pred_scale, FALSE)^2 / pmax(eps, get_surv(cens_fit, new_times = t[lhs]))
     out[rhs] = pweibull(tstar, pred_shape, pred_scale)^2 / pmax(eps, get_surv(cens_fit, new_times = tstar))
+  }
+
+  mean(pmax(out, eps))
+}
+
+rsbs = function(pred_shape, pred_scale, t, delta, tstar, cens_shape, cens_scale, cens_fit = NULL, eps = 1e-5) {
+  out = numeric(length(t))
+
+  # LHS => uncensored
+  lhs = delta == 1
+  out[lhs] = (as.numeric(t > tstar) - pweibull(tstar, pred_shape, pred_scale, FALSE))^2
+
+  # RHS => censored and t > tau*
+  rhs = delta == 0 & t > tstar
+  out[rhs] = pweibull(tstar, pred_shape, pred_scale)^2
+
+  # LHS: divide by survival at outcome time (censoring distr)
+  # RHS: divide by density at outcome time (censoring distr)
+  if (is.null(cens_fit)) {
+    out[lhs] = out[lhs] / pmax(eps, pweibull(t[lhs], cens_shape, cens_scale, FALSE))
+    out[rhs] = out[rhs] / pmax(eps, dweibull(t[rhs], cens_shape, cens_scale))
+  } else {
+    out[lhs] = out[lhs] / pmax(eps, get_surv(cens_fit, new_times = t[lhs]))
+    out[rhs] = out[rhs] / pmax(eps, get_pdf(cens_fit, new_times = t[rhs]))
   }
 
   mean(pmax(out, eps))
@@ -179,6 +196,15 @@ run = function(surv_shape, cens_shape, pred_shape,
       # SBS at 90% quantile observed time
       sbs(surv_shape, surv_scale, obs_t, obs_d, tau_90, cens_shape, cens_scale, fit),
       sbs(pred_shape, pred_scale, obs_t, obs_d, tau_90, cens_shape, cens_scale, fit),
+      # rSBS at median observed time
+      rsbs(surv_shape, surv_scale, obs_t, obs_d, tau_median, cens_shape, cens_scale, fit),
+      rsbs(pred_shape, pred_scale, obs_t, obs_d, tau_median, cens_shape, cens_scale, fit),
+      # rSBS at 10% quantile observed time
+      rsbs(surv_shape, surv_scale, obs_t, obs_d, tau_10, cens_shape, cens_scale, fit),
+      rsbs(pred_shape, pred_scale, obs_t, obs_d, tau_10, cens_shape, cens_scale, fit),
+      # rSBS at 90% quantile observed time
+      rsbs(surv_shape, surv_scale, obs_t, obs_d, tau_90, cens_shape, cens_scale, fit),
+      rsbs(pred_shape, pred_scale, obs_t, obs_d, tau_90, cens_shape, cens_scale, fit),
       # RCLL
       RCLL(surv_shape, surv_scale, obs_t, obs_d, cens_shape, cens_scale, fit, FALSE),
       RCLL(pred_shape, pred_scale, obs_t, obs_d, cens_shape, cens_scale, fit, FALSE),
@@ -199,9 +225,12 @@ run = function(surv_shape, cens_shape, pred_shape,
     SBS_median = means[1] - means[2],
     SBS_q10 = means[3] - means[4],
     SBS_q90 = means[5] - means[6],
-    RCLL = means[7] - means[8],
-    rRCLL = means[9] - means[10],
-    prop_cens = means[11],
+    rSBS_median = means[7] - means[8],
+    rSBS_q10 = means[9] - means[10],
+    rSBS_q90 = means[11] - means[12],
+    RCLL = means[13] - means[14],
+    rRCLL = means[15] - means[16],
+    prop_cens = means[17],
     tv_dist = tv_distance_weibull(shape1 = surv_shape, scale1 = surv_scale,
                                   shape2 = pred_shape, scale2 = pred_scale)
   )
@@ -256,11 +285,15 @@ run_experiment = function(num_iters = 20, num_simulations = 1000, num_samples = 
         pred_scale = pred_scale,
         # mean proportion of censoring
         prop_cens = result$prop_cens,
+        # total variational distance between Y and Y_hat
         tv_dist = result$tv_dist,
-        # score mean differences (score(Y) - score(S))
+        # score mean differences (score(Y) - score(Y_hat))
         SBS_median_diff = result$SBS_median,
         SBS_q10_diff = result$SBS_q10,
         SBS_q90_diff = result$SBS_q90,
+        rSBS_median_diff = result$rSBS_median,
+        rSBS_q10_diff = result$rSBS_q10,
+        rSBS_q90_diff = result$rSBS_q90,
         RCLL_diff = result$RCLL,
         rRCLL_diff = result$rRCLL
       )

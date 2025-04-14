@@ -68,7 +68,7 @@ rsbs = function(pred_shape, pred_scale, t, delta, tstar, cens_shape, cens_scale,
 
   # LHS => uncensored
   lhs = delta == 1
-  out[lhs] = (as.numeric(t > tstar) - pweibull(tstar, pred_shape, pred_scale, FALSE))^2
+  out[lhs] = (as.numeric(t[lhs] > tstar) - pweibull(tstar, pred_shape, pred_scale, FALSE))^2
 
   # RHS => censored and t > tau*
   rhs = delta == 0 & t > tstar
@@ -84,7 +84,10 @@ rsbs = function(pred_shape, pred_scale, t, delta, tstar, cens_shape, cens_scale,
     out[rhs] = out[rhs] / pmax(eps, get_pdf(cens_fit, new_times = t[rhs]))
   }
 
-  mean(pmax(out, eps))
+  n = sum(1/pmax(eps, pweibull(t[lhs], cens_shape, cens_scale, FALSE))) +
+      sum(1/pmax(eps, dweibull(t[rhs], cens_shape, cens_scale)))
+  sum(pmax(out, eps))/n
+  #mean(pmax(out, eps))
 }
 
 RCLL = function(pred_shape, pred_scale, t, delta, cens_shape, cens_scale, cens_fit = NULL, proper = FALSE, eps = 1e-5) {

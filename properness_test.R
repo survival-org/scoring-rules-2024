@@ -1,6 +1,6 @@
 #' Testing properness of scoring rules
-#' Execute: Rscript properness_test.R 20 1000 50 FALSE 2434234
-#' CMD arguments are: `n_iters n_sims n_samples cens_estimate seed`
+#' Execute: `Rscript properness_test.R 20 1000 50 FALSE 2434234`
+#' CMD arguments are: `n_sims n_distrs n_samples cens_estimate seed`
 
 library(parallel)
 library(tibble)
@@ -161,12 +161,12 @@ tv_distance_weibull = function(shape1, scale1, shape2, scale2, n_points = 500) {
 
 run = function(surv_shape, cens_shape, pred_shape,
                surv_scale, cens_scale, pred_scale,
-               num_simulations, num_samples, estimate_cens) {
+               num_distrs, num_samples, estimate_cens) {
 
   #num_cores = detectCores() - 1
   num_cores = 60
 
-  x = mclapply(seq.int(num_simulations), function(i) {
+  x = mclapply(seq.int(num_distrs), function(i) {
     # True event & censoring times
     true_y = rweibull(num_samples, surv_shape, surv_scale)
     true_c = rweibull(num_samples, cens_shape, cens_scale)
@@ -199,15 +199,6 @@ run = function(surv_shape, cens_shape, pred_shape,
       # SBS at 90% quantile observed time
       sbs(surv_shape, surv_scale, obs_t, obs_d, tau_90, cens_shape, cens_scale, fit),
       sbs(pred_shape, pred_scale, obs_t, obs_d, tau_90, cens_shape, cens_scale, fit),
-      # rSBS at median observed time
-      rsbs(surv_shape, surv_scale, obs_t, obs_d, tau_median, cens_shape, cens_scale, fit),
-      rsbs(pred_shape, pred_scale, obs_t, obs_d, tau_median, cens_shape, cens_scale, fit),
-      # rSBS at 10% quantile observed time
-      rsbs(surv_shape, surv_scale, obs_t, obs_d, tau_10, cens_shape, cens_scale, fit),
-      rsbs(pred_shape, pred_scale, obs_t, obs_d, tau_10, cens_shape, cens_scale, fit),
-      # rSBS at 90% quantile observed time
-      rsbs(surv_shape, surv_scale, obs_t, obs_d, tau_90, cens_shape, cens_scale, fit),
-      rsbs(pred_shape, pred_scale, obs_t, obs_d, tau_90, cens_shape, cens_scale, fit),
       # RCLL
       RCLL(surv_shape, surv_scale, obs_t, obs_d, cens_shape, cens_scale, fit, FALSE),
       RCLL(pred_shape, pred_scale, obs_t, obs_d, cens_shape, cens_scale, fit, FALSE),
@@ -216,6 +207,9 @@ run = function(surv_shape, cens_shape, pred_shape,
       RCLL(pred_shape, pred_scale, obs_t, obs_d, cens_shape, cens_scale, fit, TRUE),
       # censoring proportion
       prop_cens
+      # rSBS at median observed time
+      #rsbs(surv_shape, surv_scale, obs_t, obs_d, tau_median, cens_shape, cens_scale, fit),
+      #rsbs(pred_shape, pred_scale, obs_t, obs_d, tau_median, cens_shape, cens_scale, fit)
     )
   }, mc.cores = num_cores)
 
@@ -228,20 +222,20 @@ run = function(surv_shape, cens_shape, pred_shape,
     SBS_median = means[1] - means[2],
     SBS_q10 = means[3] - means[4],
     SBS_q90 = means[5] - means[6],
-    rSBS_median = means[7] - means[8],
-    rSBS_q10 = means[9] - means[10],
-    rSBS_q90 = means[11] - means[12],
-    RCLL = means[13] - means[14],
-    rRCLL = means[15] - means[16],
-    prop_cens = means[17],
-    tv_dist = tv_distance_weibull(shape1 = surv_shape, scale1 = surv_scale,
-                                  shape2 = pred_shape, scale2 = pred_scale)
+    RCLL = means[7] - means[8],
+    rRCLL = means[9] - means[10],
+    prop_cens = means[11],
+    tv_dist = tv_distance_weibull(
+      shape1 = surv_shape, scale1 = surv_scale,
+      shape2 = pred_shape, scale2 = pred_scale
+    )
+    #rSBS_median = means[12] - means[13]
   )
 }
 
-run_experiment = function(num_iters = 20, num_simulations = 1000, num_samples = 1000, estimate_cens = FALSE, seed = NULL) {
-  cat(sprintf("#Iterations: %i, #Simulations: %i, #Samples: %i, Estimate Censoring = %s\n\n",
-              num_iters, num_simulations, num_samples, estimate_cens))
+run_experiment = function(num_sims = 20, num_distrs = 1000, num_samples = 1000, estimate_cens = FALSE, seed = NULL) {
+  cat(sprintf("#Simulations: %i, #Distributions: %i, #Samples: %i, Estimate Censoring = %s\n\n",
+              num_sims, num_distrs, num_samples, estimate_cens))
 
   # set global seed
   set.seed(seed)
@@ -249,13 +243,12 @@ run_experiment = function(num_iters = 20, num_simulations = 1000, num_samples = 
   lower = 0.5
   upper = 5
 
-  iterations = seq.int(num_iters)
+  simulations = seq.int(num_sims)
   with_progress({
-    p = progressor(along = iterations)
+    p = progressor(along = simulations)
 
-    res = lapply(iterations, function(i) {
-      p(sprintf("Iteration %i", i))
-      #p()
+    res = lapply(simulations, function(i) {
+      p(sprintf("Simulation %i", i))
 
       # Specify parameters for {Y,C,S}
       surv_shape = runif(1, lower, upper)
@@ -269,12 +262,12 @@ run_experiment = function(num_iters = 20, num_simulations = 1000, num_samples = 
       result = run(
         surv_shape, cens_shape, pred_shape,
         surv_scale, cens_scale, pred_scale,
-        num_simulations, num_samples, estimate_cens
+        num_distrs, num_samples, estimate_cens
       )
 
       tibble::tibble(
-        # iteration number
-        iter = i,
+        # simulation number
+        sim = i,
         # number of samples
         n = num_samples,
         # Y
@@ -294,11 +287,9 @@ run_experiment = function(num_iters = 20, num_simulations = 1000, num_samples = 
         SBS_median_diff = result$SBS_median,
         SBS_q10_diff = result$SBS_q10,
         SBS_q90_diff = result$SBS_q90,
-        rSBS_median_diff = result$rSBS_median,
-        rSBS_q10_diff = result$rSBS_q10,
-        rSBS_q90_diff = result$rSBS_q90,
         RCLL_diff = result$RCLL,
-        rRCLL_diff = result$rRCLL
+        rRCLL_diff = result$rRCLL,
+        rSBS_median_diff = result$rSBS_median
       )
     })
   })
@@ -315,20 +306,20 @@ handlers("progress")
 args = commandArgs(trailingOnly = TRUE)
 
 # Parse arguments
-n_iters = as.integer(args[1])
-n_sims = as.integer(args[2])
-n_samp = as.integer(args[3])
+num_sims = as.integer(args[1])
+num_distrs = as.integer(args[2])
+num_samples = as.integer(args[3])
 estimate_cens = as.logical(args[4]) # Accepts "TRUE" or "FALSE"
 seed = as.integer(args[5])
 
-#' n_iters = 10000 # try this number of different distribution choices for {Y,C,S}
-#' n_sims = 2500 # how many times to repeat the sampling of the {Y,C,S} distributions
-#' n_samp = 10 # how many samples to draw from the distributions
+#' n_sims = 10000 # number of independent simulations (different distribution choices for {Y,C,S})
+#' n_distrs = 1000 # number of random sampled distributions
+#' n_samp = 50 # how many samples to draw from the distributions
 #' whether to use an estimated censoring distribution (via Kaplan-Meier) or the true {C} in scores
 #' estimate_cens = FALSE
 #' seed = 20240402 # seed for reproducibility
 
-res = run_experiment(n_iters, n_sims, n_samp, estimate_cens, seed = seed)
+res = run_experiment(num_sims, num_distrs, num_samples, estimate_cens, seed = seed)
 
 # SAVE RESULTS ----
-saveRDS(res, file = sprintf("res_iters%s_sims%s_n%s_%i.rds", n_iters, n_sims, n_samp, estimate_cens))
+saveRDS(res, file = sprintf("res_sims%s_distrs%s_n%s_%i.rds", num_sims, num_distrs, num_samples, estimate_cens))

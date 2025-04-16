@@ -20,12 +20,16 @@ threshold = 1e-04
 all_stats = res |>
   group_by(n) |>
   summarize(
+    total = n(),
     SBS_median_n_violations = sum(SBS_median_diff > threshold),
     SBS_median_violation_rate = mean(SBS_median_diff > threshold),
+    SBS_median_diff_mean = mean(SBS_median_diff[SBS_median_diff > threshold]),
     SBS_q10_n_violations = sum(SBS_q10_diff > threshold),
     SBS_q10_violation_rate = mean(SBS_q10_diff > threshold),
+    SBS_q10_diff_mean = mean(SBS_q10_diff[SBS_q10_diff > threshold]),
     SBS_q90_n_violations = sum(SBS_q90_diff > threshold),
     SBS_q90_violation_rate = mean(SBS_q90_diff > threshold),
+    SBS_q90_diff_mean = mean(SBS_q90_diff[SBS_q90_diff > threshold]),
     RCLL_n_violations = sum(RCLL_diff > threshold),
     RCLL_violation_rate = mean(RCLL_diff > threshold),
     rRCLL_n_violations = sum(rRCLL_diff > threshold),

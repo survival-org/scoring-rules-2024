@@ -5,43 +5,7 @@
 library(parallel)
 library(tibble)
 library(progressr)
-
-# HELPER G(t) ESTIMATION FUNCTIONS ----
-# `fit` => survfit obj
-# `new_times` => can be duplicated and unordered
-get_surv = function(fit, new_times, inter_type = "linear") {
-  stopifnot(inter_type %in% c("linear", "constant"))
-
-  surv = fit$surv
-  times = fit$time
-
-  stats::approx(x = times, y = surv, xout = new_times, yleft = 1,
-                method = inter_type, rule = 2)$y
-}
-
-# `fit` => survfit obj
-# `new_times` => can be duplicated and unordered
-get_pdf = function(fit, new_times, inter_type = "linear") {
-  stopifnot(inter_type %in% c("linear", "constant"))
-
-  # unique sorted requested times
-  utimes = sort(unique(new_times))
-
-  # Create a mapping of `new_times` to `utimes`
-  indx = match(new_times, utimes)
-
-  # get survival on `utimes`
-  surv = get_surv(fit, new_times = utimes, inter_type = inter_type)
-
-  # F = 1 - S
-  cdf = 1 - surv
-
-  # f(t) = dF/dt = F(t+1) - F(t) / {t+1} - {t}
-  pdf = c(cdf[1], diff(cdf) / diff(utimes))
-
-  # return density at `new_times`
-  pdf[indx]
-}
+source("helper.R")
 
 # SCORES ----
 sbs = function(pred_shape, pred_scale, t, delta, tstar, cens_shape, cens_scale, cens_fit = NULL, eps = 1e-5) {
@@ -56,38 +20,27 @@ sbs = function(pred_shape, pred_scale, t, delta, tstar, cens_shape, cens_scale, 
     out[rhs] = pweibull(tstar, pred_shape, pred_scale)^2 / pmax(eps, pweibull(tstar, cens_shape, cens_scale, FALSE))
   } else {
     # use estimated censoring distribution
-    out[lhs] = pweibull(tstar, pred_shape, pred_scale, FALSE)^2 / pmax(eps, get_surv(cens_fit, new_times = t[lhs]))
-    out[rhs] = pweibull(tstar, pred_shape, pred_scale)^2 / pmax(eps, get_surv(cens_fit, new_times = tstar))
+    out[lhs] = pweibull(tstar, pred_shape, pred_scale, FALSE)^2 / pmax(eps, interp_surv(cens_fit, new_times = t[lhs]))
+    out[rhs] = pweibull(tstar, pred_shape, pred_scale)^2 / pmax(eps, interp_surv(cens_fit, new_times = tstar))
   }
 
   mean(pmax(out, eps))
 }
 
-rsbs = function(pred_shape, pred_scale, t, delta, tstar, cens_shape, cens_scale, cens_fit = NULL, eps = 1e-5) {
-  out = numeric(length(t))
+isbs = function(pred_shape, pred_scale, t, delta, cens_shape, cens_scale, cens_fit = NULL, eps = 1e-5) {
+  # create 50 times between 5% and 95% quantile of the given (observed) times
+  n = 50
+  q5 = quantile(t, 0.05)
+  q95 = quantile(t, 0.95)
+  times = seq(q5, q95, length.out = n) # time points to evaluate SBS(t*)
 
-  # LHS => uncensored
-  lhs = delta == 1
-  out[lhs] = (as.numeric(t[lhs] > tstar) - pweibull(tstar, pred_shape, pred_scale, FALSE))^2
+  # get SBS(t*)
+  scores = vapply(times, function(tstar) {
+    sbs(pred_shape, pred_scale, t, delta, tstar, cens_shape, cens_scale, cens_fit = cens_fit, eps = eps)
+  }, numeric(1))
 
-  # RHS => censored and t > tau*
-  rhs = delta == 0 & t > tstar
-  out[rhs] = pweibull(tstar, pred_shape, pred_scale)^2
-
-  # LHS: divide by survival at outcome time (censoring distr)
-  # RHS: divide by density at outcome time (censoring distr)
-  if (is.null(cens_fit)) {
-    out[lhs] = out[lhs] / pmax(eps, pweibull(t[lhs], cens_shape, cens_scale, FALSE))
-    out[rhs] = out[rhs] / pmax(eps, dweibull(t[rhs], cens_shape, cens_scale))
-  } else {
-    out[lhs] = out[lhs] / pmax(eps, get_surv(cens_fit, new_times = t[lhs]))
-    out[rhs] = out[rhs] / pmax(eps, get_pdf(cens_fit, new_times = t[rhs]))
-  }
-
-  n = sum(1/pmax(eps, pweibull(t[lhs], cens_shape, cens_scale, FALSE))) +
-      sum(1/pmax(eps, dweibull(t[rhs], cens_shape, cens_scale)))
-  sum(pmax(out, eps))/n
-  #mean(pmax(out, eps))
+  # calculate ISBS via trapezoidal integration rule + normalize for time range
+  sum(diff(times) * (scores[-n] + scores[-1]) / 2) / (max(times) - min(times))
 }
 
 RCLL = function(pred_shape, pred_scale, t, delta, cens_shape, cens_scale, cens_fit = NULL, proper = FALSE, eps = 1e-5) {
@@ -100,7 +53,7 @@ RCLL = function(pred_shape, pred_scale, t, delta, cens_shape, cens_scale, cens_f
     if (is.null(cens_fit)) {
       out[delta] = out[delta] / pmax(eps, pweibull(t[delta], cens_shape, cens_scale, FALSE))
     } else {
-      out[delta] = out[delta] / pmax(eps, get_surv(cens_fit, new_times = t[delta]))
+      out[delta] = out[delta] / pmax(eps, interp_surv(cens_fit, new_times = t[delta]))
     }
   }
 
@@ -111,7 +64,7 @@ RCLL = function(pred_shape, pred_scale, t, delta, cens_shape, cens_scale, cens_f
     if (is.null(cens_fit)) {
       out[!delta] = out[!delta] / pmax(eps, dweibull(t[!delta], cens_shape, cens_scale))
     } else {
-      out[!delta] = out[!delta] / pmax(eps, get_pdf(cens_fit, new_times = t[!delta]))
+      out[!delta] = out[!delta] / pmax(eps, interp_pdf(cens_fit, new_times = t[!delta]))
     }
   }
 
@@ -205,11 +158,11 @@ run = function(surv_shape, cens_shape, pred_shape,
       # rRCLL
       RCLL(surv_shape, surv_scale, obs_t, obs_d, cens_shape, cens_scale, fit, TRUE),
       RCLL(pred_shape, pred_scale, obs_t, obs_d, cens_shape, cens_scale, fit, TRUE),
+      # ISBS
+      isbs(surv_shape, surv_scale, obs_t, obs_d, cens_shape, cens_scale, fit),
+      isbs(pred_shape, pred_scale, obs_t, obs_d, cens_shape, cens_scale, fit),
       # censoring proportion
       prop_cens
-      # rSBS at median observed time
-      #rsbs(surv_shape, surv_scale, obs_t, obs_d, tau_median, cens_shape, cens_scale, fit),
-      #rsbs(pred_shape, pred_scale, obs_t, obs_d, tau_median, cens_shape, cens_scale, fit)
     )
   }, mc.cores = num_cores)
 
@@ -224,12 +177,12 @@ run = function(surv_shape, cens_shape, pred_shape,
     SBS_q90 = means[5] - means[6],
     RCLL = means[7] - means[8],
     rRCLL = means[9] - means[10],
-    prop_cens = means[11],
+    ISBS = means[11] - means[12],
+    prop_cens = means[13],
     tv_dist = tv_distance_weibull(
       shape1 = surv_shape, scale1 = surv_scale,
       shape2 = pred_shape, scale2 = pred_scale
     )
-    #rSBS_median = means[12] - means[13]
   )
 }
 
@@ -287,6 +240,7 @@ run_experiment = function(num_sims = 20, num_distrs = 1000, num_samples = 1000, 
         SBS_median_diff = result$SBS_median,
         SBS_q10_diff = result$SBS_q10,
         SBS_q90_diff = result$SBS_q90,
+        ISBS_diff = result$ISBS,
         RCLL_diff = result$RCLL,
         rRCLL_diff = result$rRCLL,
         rSBS_median_diff = result$rSBS_median
@@ -312,12 +266,11 @@ num_samples = as.integer(args[3])
 estimate_cens = as.logical(args[4]) # Accepts "TRUE" or "FALSE"
 seed = as.integer(args[5])
 
-#' n_sims = 10000 # number of independent simulations (different distribution choices for {Y,C,S})
-#' n_distrs = 1000 # number of random sampled distributions
-#' n_samp = 50 # how many samples to draw from the distributions
-#' whether to use an estimated censoring distribution (via Kaplan-Meier) or the true {C} in scores
-#' estimate_cens = FALSE
-#' seed = 20240402 # seed for reproducibility
+#' `n_sims` = 10000 # number of independent simulations (different distribution choices for {Y,C,S})
+#' `n_distrs` = 1000 # number of random sampled distributions
+#' `n_samp` = 50 # how many samples to draw from the distributions
+#' `estimate_cens` = FALSE # whether to use an estimated censoring distribution (via Kaplan-Meier) or the true {C} in scores
+#' `seed` = 20240402 # seed for reproducibility
 
 res = run_experiment(num_sims, num_distrs, num_samples, estimate_cens, seed = seed)
 

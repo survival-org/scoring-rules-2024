@@ -28,11 +28,11 @@ sbs = function(pred_shape, pred_scale, t, delta, tstar, cens_shape, cens_scale, 
 }
 
 isbs = function(pred_shape, pred_scale, t, delta, cens_shape, cens_scale, cens_fit = NULL, eps = 1e-5) {
-  # create 50 times between 5% and 95% quantile of the given (observed) times
+  # create 50 times between 5% and 80% quantile of the given (observed) times
   n = 50
   q5 = quantile(t, 0.05)
-  q95 = quantile(t, 0.95)
-  times = seq(q5, q95, length.out = n) # time points to evaluate SBS(t*)
+  q80 = quantile(t, 0.80)
+  times = seq(q5, q80, length.out = n) # time points to evaluate SBS(t*)
 
   # get SBS(t*)
   scores = vapply(times, function(tstar) {

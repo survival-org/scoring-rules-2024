@@ -1,0 +1,120 @@
+---
+title: "Supplementary Material"
+author: "[John Zobolas](https://github.com/bblodfon)"
+date: last-modified
+description: "Supporting information for paper 'Examining  properness in the external validation of survival models with squared and logarithmic losses'"
+format:
+  html:
+    date: last-modified
+    code-block-bg: true
+    code-copy: true
+    code-fold: true
+    code-overflow: wrap
+    code-block-border-left: true
+    toc: true
+    toc-location: left
+    html-math-method: katex
+    page-layout: full
+execute:
+  freeze: true
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = FALSE)
+```
+
+## Degenerate Model Exploits ISBS Scoring Rule {-}
+
+This section demonstrates how a deliberately simple, uninformative survival model—the *degenerate model*—can outperform established methods under the Integrated Survival Brier Score (ISBS).
+The model entirely ignores covariates and instead outputs a flat survival function that drops from 1 to 0 at a fixed quantile of observed times.
+
+While this model is intentionally unrealistic, its performance exposes a key weakness in ISBS: it can be minimized by predictions that offer no individualization or clinical utility.
+This reinforces our theoretical findings that ISBS is not a proper scoring rule.
+
+Below, we define the degenerate model in `mlr3proba`, tune it over the quantile cutoff, and compare its ISBS score to Cox, Kaplan-Meier, and Random Survival Forest (RSF) learners on the `survival::rats` dataset.
+
+Load libraries:
+```{r, message=FALSE}
+library(R6)
+library(mlr3proba)
+library(mlr3extralearners)
+library(mlr3tuning)
+```
+
+Define the degenerate model:
+```{r}
+LearnerSurvDegenerate = R6Class("LearnerSurvDegenerate",
+  inherit = LearnerSurv,
+  public = list(
+    initialize = function() {
+      super$initialize(
+        id = "surv.degenerate",
+        predict_types = c("distr"),
+        feature_types = c("logical", "integer", "numeric", "character", "factor", "ordered"),
+        properties = "missings",
+        packages = c("survival", "distr6"),
+        label = "Degenerate Estimator",
+        param_set = ps(
+           quantile = p_dbl(0, 1)
+        )
+      )
+    }
+  ),
+
+  private = list(
+    .train = function(task) {
+      list(time = task$truth()[,1L]) # store observed times
+    },
+
+    .predict = function(task) {
+      quantile_ps = self$param_set$values$quantile
+      times = sort(unique(self$model$time))
+      surv = matrix(nrow = task$nrow, ncol = length(times))
+
+      q_t = quantile(seq.int(length(times)), quantile_ps)[[1]]
+      
+      # same S for all test observations, sharp drop from 1 to 0 at q_t
+      surv[, 1:floor(q_t)] = 1
+      surv[, ceiling(q_t):ncol(surv)] = 0
+      colnames(surv) = times
+      .surv_return(times = times, surv = surv)
+    }
+  )
+)
+```
+
+We tune the degenerate model to find the optimal quantile to switch the prediction at:
+```{r}
+l = LearnerSurvDegenerate$new()
+l$param_set$values$quantile = to_tune(0, 1)
+
+# ISBS
+m = msr("surv.graf")
+
+# Tune the quantile parameter of the degenerate model
+at = auto_tuner(
+  tuner = tnr("grid_search", resolution = 20),
+  learner = l,
+  resampling = rsmp("holdout"),
+  measure = m,
+)
+```
+
+In our benchmark experiment we compare to the Cox PH, Random Forest, and Kaplan-Meier using 3-fold outer cross-validation.
+```{r, results='hide'}
+# Seed for reproducibility
+set.seed(20250418)
+
+# Compare to Cox PH and Kaplan-Meier
+learners = c(lrns(c("surv.coxph", "surv.kaplan", "surv.rfsrc")), at)
+
+r = rsmp("cv", folds = 3)
+bm = benchmark(benchmark_grid(tasks = tsk("rats"), learners = learners, resamplings = r))
+```
+
+Finally score results:
+```{r}
+bm$aggregate(m)[,c(4,7)]
+```
+
+And we see the degenerate model performs the best.

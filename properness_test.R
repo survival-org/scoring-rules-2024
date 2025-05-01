@@ -19,9 +19,9 @@ sbs = function(pred_shape, pred_scale, t, delta, tstar, cens_shape, cens_scale, 
     out[lhs] = pweibull(tstar, pred_shape, pred_scale, FALSE)^2 / pmax(eps, pweibull(t[lhs], cens_shape, cens_scale, FALSE))
     out[rhs] = pweibull(tstar, pred_shape, pred_scale)^2 / pmax(eps, pweibull(tstar, cens_shape, cens_scale, FALSE))
   } else {
-    # use estimated censoring distribution
-    out[lhs] = pweibull(tstar, pred_shape, pred_scale, FALSE)^2 / pmax(eps, interp_surv(cens_fit, new_times = t[lhs]))
-    out[rhs] = pweibull(tstar, pred_shape, pred_scale)^2 / pmax(eps, interp_surv(cens_fit, new_times = tstar))
+    # use estimated censoring distribution (and constant interpolation)
+    out[lhs] = pweibull(tstar, pred_shape, pred_scale, FALSE)^2 / pmax(eps, interp_surv(cens_fit, new_times = t[lhs], inter_type = "constant"))
+    out[rhs] = pweibull(tstar, pred_shape, pred_scale)^2 / pmax(eps, interp_surv(cens_fit, new_times = tstar, inter_type = "constant"))
   }
 
   mean(pmax(out, eps))
@@ -44,12 +44,11 @@ isbs = function(pred_shape, pred_scale, t, delta, cens_shape, cens_scale, cens_f
 }
 
 RCLL = function(pred_shape, pred_scale, t, delta, cens_shape, cens_scale, cens_fit = NULL, proper = FALSE, eps = 1e-5) {
-
   out = numeric(length(t))
 
   out[delta] = dweibull(t[delta], pred_shape, pred_scale)
   if (proper) {
-    # divide by survival at outcome time (censoring distr)
+    # divide by survival at outcome time (censoring distr, linear interpolation)
     if (is.null(cens_fit)) {
       out[delta] = out[delta] / pmax(eps, pweibull(t[delta], cens_shape, cens_scale, FALSE))
     } else {
@@ -60,7 +59,7 @@ RCLL = function(pred_shape, pred_scale, t, delta, cens_shape, cens_scale, cens_f
   out[!delta] = pweibull(t[!delta], pred_shape, pred_scale, FALSE)
 
   if (proper) {
-    # divide by density at outcome time (censoring distr)
+    # divide by density at outcome time (censoring distr, linear interpolation)
     if (is.null(cens_fit)) {
       out[!delta] = out[!delta] / pmax(eps, dweibull(t[!delta], cens_shape, cens_scale))
     } else {

@@ -31,7 +31,7 @@ The model entirely ignores covariates and instead outputs a flat survival functi
 While this model is intentionally unrealistic, its performance exposes a key weakness in ISBS: it can be minimized by predictions that offer no individualization or clinical utility.
 This reinforces our theoretical findings that ISBS is not a proper scoring rule.
 
-Below, we define the degenerate model in `mlr3proba`, tune it over the quantile cutoff, and compare its ISBS score to Cox, Kaplan-Meier, and Random Survival Forest (RSF) learners on the `survival::rats` dataset.
+Below, we define the degenerate model in `mlr3proba`, tune it over the quantile cutoff with ISBS, and compare its ISBS score and other evaluation measures to Cox, Kaplan-Meier, and Random Survival Forest (RSF) learners on the `survival::rats` dataset.
 
 Load libraries:
 ```{r, message=FALSE}
@@ -112,9 +112,24 @@ r = rsmp("cv", folds = 3)
 bm = benchmark(benchmark_grid(tasks = tsk("rats"), learners = learners, resamplings = r))
 ```
 
-Finally score results:
+To evaluate the benchmark we use Harrell’s C, D-calibration, RCLL, the SBS evaluated at three quantiles, and the ISBS:
 ```{r}
-bm$aggregate(m)[,c(4,7)]
+q25 = quantile(tsk("rats")$times(), 0.25)
+q50 = quantile(tsk("rats")$times(), 0.50)
+q75 = quantile(tsk("rats")$times(), 0.75)
+
+measures = c(msrs(
+  c("surv.cindex", "surv.dcalib", "surv.rcll")),
+  msr("surv.graf", integrated = FALSE, times = q25, id = "SBS_q25"),
+  msr("surv.graf", integrated = FALSE, times = q50, id = "SBS_q0.5"),
+  msr("surv.graf", integrated = FALSE, times = q75, id = "SBS_q0.75"),
+  msr("surv.graf", id = "ISBS")
+)
 ```
 
-And we see the degenerate model performs the best.
+Finally score results:
+```{r}
+bm$aggregate(measures)[, c(4, 7:13)]
+```
+
+And we see the degenerate model performs the best with respect to ISBS and SBS at the 75% quantile of observed times, but worse with respect to all other measures.

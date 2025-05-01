@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="John Zobolas">
-<meta name="dcterms.date" content="2025-04-30">
+<meta name="dcterms.date" content="2025-05-01">
 <meta name="description" content="Supporting information for paper ‘Examining properness in the external validation of survival models with squared and logarithmic losses’">
 
 <title>Supplementary Material</title>
@@ -152,7 +152,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 30, 2025</p>
+      <p class="date">May 1, 2025</p>
     </div>
   </div>
   
@@ -168,7 +168,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="unnumbered anchored" data-anchor-id="degenerate-model-exploits-isbs-scoring-rule">Degenerate Model Exploits ISBS Scoring Rule</h2>
 <p>This section demonstrates how a deliberately simple, uninformative survival model—the <em>degenerate model</em>—can outperform established methods under the Integrated Survival Brier Score (ISBS). The model entirely ignores covariates and instead outputs a flat survival function that drops from 1 to 0 at a fixed quantile of observed times.</p>
 <p>While this model is intentionally unrealistic, its performance exposes a key weakness in ISBS: it can be minimized by predictions that offer no individualization or clinical utility. This reinforces our theoretical findings that ISBS is not a proper scoring rule.</p>
-<p>Below, we define the degenerate model in <code>mlr3proba</code>, tune it over the quantile cutoff, and compare its ISBS score to Cox, Kaplan-Meier, and Random Survival Forest (RSF) learners on the <code>survival::rats</code> dataset.</p>
+<p>Below, we define the degenerate model in <code>mlr3proba</code>, tune it over the quantile cutoff with ISBS, and compare its ISBS score and other evaluation measures to Cox, Kaplan-Meier, and Random Survival Forest (RSF) learners on the <code>survival::rats</code> dataset.</p>
 <p>Load libraries:</p>
 <div class="cell">
 <details class="code-fold">
@@ -256,22 +256,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>bm <span class="ot">=</span> <span class="fu">benchmark</span>(<span class="fu">benchmark_grid</span>(<span class="at">tasks =</span> <span class="fu">tsk</span>(<span class="st">"rats"</span>), <span class="at">learners =</span> learners, <span class="at">resamplings =</span> r))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+<p>To evaluate the benchmark we use Harrell’s C, D-calibration, RCLL, the SBS evaluated at three quantiles, and the ISBS:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>q25 <span class="ot">=</span> <span class="fu">quantile</span>(<span class="fu">tsk</span>(<span class="st">"rats"</span>)<span class="sc">$</span><span class="fu">times</span>(), <span class="fl">0.25</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>q50 <span class="ot">=</span> <span class="fu">quantile</span>(<span class="fu">tsk</span>(<span class="st">"rats"</span>)<span class="sc">$</span><span class="fu">times</span>(), <span class="fl">0.50</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>q75 <span class="ot">=</span> <span class="fu">quantile</span>(<span class="fu">tsk</span>(<span class="st">"rats"</span>)<span class="sc">$</span><span class="fu">times</span>(), <span class="fl">0.75</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>measures <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">msrs</span>(</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">"surv.cindex"</span>, <span class="st">"surv.dcalib"</span>, <span class="st">"surv.rcll"</span>)),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">integrated =</span> <span class="cn">FALSE</span>, <span class="at">times =</span> q25, <span class="at">id =</span> <span class="st">"SBS_q25"</span>),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">integrated =</span> <span class="cn">FALSE</span>, <span class="at">times =</span> q50, <span class="at">id =</span> <span class="st">"SBS_q0.5"</span>),</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">integrated =</span> <span class="cn">FALSE</span>, <span class="at">times =</span> q75, <span class="at">id =</span> <span class="st">"SBS_q0.75"</span>),</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">id =</span> <span class="st">"ISBS"</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
 <p>Finally score results:</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>bm<span class="sc">$</span><span class="fu">aggregate</span>(m)[,<span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">7</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>bm<span class="sc">$</span><span class="fu">aggregate</span>(measures)[, <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">7</span><span class="sc">:</span><span class="dv">13</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>              learner_id  surv.graf
-                  &lt;char&gt;      &lt;num&gt;
-1:            surv.coxph 0.06850171
-2:           surv.kaplan 0.07341427
-3:            surv.rfsrc 0.06500299
-4: surv.degenerate.tuned 0.06306716</code></pre>
+<pre><code>              learner_id surv.cindex  surv.dcalib surv.rcll    SBS_q25
+                  &lt;char&gt;       &lt;num&gt;        &lt;num&gt;     &lt;num&gt;      &lt;num&gt;
+1:            surv.coxph   0.7637313 4.629203e-01  3.626923 0.07522030
+2:           surv.kaplan   0.5000000 9.691005e-01  3.676610 0.07700273
+3:            surv.rfsrc   0.7516121 8.259461e-01  3.634021 0.07576037
+4: surv.degenerate.tuned   0.5000000 1.283224e+10 17.039130 0.08399497
+    SBS_q0.5 SBS_q0.75       ISBS
+       &lt;num&gt;     &lt;num&gt;      &lt;num&gt;
+1: 0.1091271  2.068774 0.06850171
+2: 0.1212525  2.327660 0.07341427
+3: 0.1084741  1.649696 0.06500299
+4: 0.1400008  0.000000 0.06306716</code></pre>
 </div>
 </div>
-<p>And we see the degenerate model performs the best.</p>
+<p>And we see the degenerate model performs the best with respect to ISBS and SBS at the 75% quantile of observed times, but worse with respect to all other measures.</p>
 
 
 </section>

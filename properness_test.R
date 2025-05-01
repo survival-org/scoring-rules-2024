@@ -169,14 +169,20 @@ run = function(surv_shape, cens_shape, pred_shape,
 
   # average over all simulations
   means = rowMeans(x)
+  # squared error over all simulations
+  se = apply(x, 1, sd) / sqrt(num_distrs)
 
   list(
     SBS_median = means[1] - means[2],
+    SBS_median_se = mean(se[1], se[2]),
     SBS_q10 = means[3] - means[4],
+    SBS_q10_se = mean(se[3], se[4]),
     SBS_q90 = means[5] - means[6],
+    SBS_q90_se = mean(se[5], se[6]),
     RCLL = means[7] - means[8],
     rRCLL = means[9] - means[10],
     ISBS = means[11] - means[12],
+    ISBS_se = mean(se[11], se[12]),
     prop_cens = means[13],
     tv_dist = tv_distance_weibull(
       shape1 = surv_shape, scale1 = surv_scale,
@@ -242,7 +248,11 @@ run_experiment = function(num_sims = 20, num_distrs = 1000, num_samples = 1000, 
         ISBS_diff = result$ISBS,
         RCLL_diff = result$RCLL,
         rRCLL_diff = result$rRCLL,
-        rSBS_median_diff = result$rSBS_median
+        # Average SEs of the scores using Y and Y_hat
+        SBS_median_se = result$SBS_median_se,
+        SBS_q10_se = result$SBS_q10_se,
+        SBS_q90_se = result$SBS_q90_se,
+        ISBS_se = result$ISBS_se
       )
     })
   })

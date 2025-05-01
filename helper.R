@@ -1,10 +1,22 @@
-# S(t)/f(t) ESTIMATION/INTERPOLATION FUNCTIONS (via Kaplan-Meier)
+# S(t)/f(t) ESTIMATION/INTERPOLATION FUNCTIONS (for Kaplan-Meier)
 
 #' Linearly interpolate (and extrapolate) a Kaplan-Meier survival curve
 #' @param fit survfit object
 #' @param new_times vector of times (unordered, possibly duplicated)
+#' @param inter_type type of interpolation to use (`linear` default vs `constant` otherwise)
 #' @return interpolated S(t) values
-interp_surv = function(fit, new_times) {
+interp_surv = function(fit, new_times, inter_type = "linear") {
+  stopifnot(inter_type %in% c("linear", "constant"))
+
+  # constant interpolation is easy
+  if (inter_type == "constant") {
+    surv = fit$surv
+    times = fit$time
+
+    return(stats::approx(x = times, y = surv, xout = new_times, yleft = 1,
+                         method = "constant", rule = 2)$y)
+  }
+
   # remove constant-interpolated values from Kaplan-Meier S(t) fit
   keep = !duplicated(fit$surv)
   surv = fit$surv[keep] # decreasing
@@ -57,8 +69,8 @@ interp_pdf = function(fit, new_times) {
   # Create a mapping of `new_times` to `utimes`
   indx = match(new_times, utimes)
 
-  # Interpolated survival function
-  surv = interp_surv(fit, utimes)
+  # Linearly interpolate survival function (to avoid pdf = 0 problems)
+  surv = interp_surv(fit, utimes, inter_type = "linear")
 
   # CDF = 1 - S
   cdf = 1 - surv

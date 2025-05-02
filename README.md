@@ -1,6 +1,6 @@
 # scoring-rules-2024
 
-Please check supplementary HTML report: https://survival-org.github.io/scoring-rules-2024/ which includes the results from simulation studies about properness of scoring rules in survival analysis (to be published).
+Check [supplementary HTML report](https://survival-org.github.io/scoring-rules-2024/) which includes the results from a simulation study about properness of scoring rules in survival analysis (to be published).
 
 Please see [this specific release](https://github.com/survival-org/scoring-rules-2024/releases) for the experiments and analyses mentioned in the arxiv paper (v2).
 

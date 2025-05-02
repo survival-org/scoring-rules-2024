@@ -56,7 +56,7 @@ res[sample(1:nrow(res), 10), ] |>
 The output columns are:
 
 - `sim`: simulation number ($k$ in the paper, in each simulation we draw $m = 1000$ times from each Weibull distribution)
-- `n`: sample size ($10 - 2500$)
+- `n`: sample size ($10 - 2000$)
 - `{surv|pred|cens|}_{scale|shape}` the scale and shape of the Weibull distributions for true, predicted and censoring times respectively
 - `prop_cens`: proportion of censoring in each simulation
 - `tv_dist`: the total variation distance between the true and the predicted Weibull distribution (closer to 0 means more similar distributions)

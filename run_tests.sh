@@ -12,6 +12,7 @@ fi
 for n in "$@"; do
   seed=$((n)) # Calculate seed as n (+ 1)
   echo "n = $n (seed = $seed)"
-  Rscript properness_test.R 10000 1000 "$n" TRUE "$seed"
+  # change below to TRUE to run the experiment with the Kaplan-Meier
+  # for estimating the censoring distribution
+  Rscript properness_test.R 10000 1000 "$n" FALSE "$seed"
 done
-

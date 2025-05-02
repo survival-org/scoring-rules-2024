@@ -1,7 +1,7 @@
 # S(t)/f(t) ESTIMATION/INTERPOLATION FUNCTIONS (for Kaplan-Meier)
 
 #' Linearly interpolate (and extrapolate) a Kaplan-Meier survival curve
-#' @param fit survfit object
+#' @param fit survfit object or a `list` with `surv` and `time` elements
 #' @param new_times vector of times (unordered, possibly duplicated)
 #' @param inter_type type of interpolation to use (`linear` default vs `constant` otherwise)
 #' @return interpolated S(t) values
@@ -59,7 +59,7 @@ interp_surv = function(fit, new_times, inter_type = "linear") {
 }
 
 #' PDF estimation from Kaplan-Meier survival curve
-#' @param fit survfit object
+#' @param fit survfit object or a `list` with `surv` and `time` elements
 #' @param new_times numeric vector (unordered, duplicated allowed)
 #' @return numeric vector of density values f(t)
 interp_pdf = function(fit, new_times) {

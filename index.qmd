@@ -240,11 +240,13 @@ We again observe that for a significant proportion of simulations, **the SE of t
 
 ## Degenerate Model Exploits ISBS Scoring Rule {-}
 
+:::{.callout-note}
 This section demonstrates how a deliberately simple, uninformative survival model—the *degenerate model*—can outperform established methods under the Integrated Survival Brier Score (ISBS).
 The model entirely ignores covariates and instead outputs a flat survival function that drops from 1 to 0 at a fixed quantile of observed times.
 
 While this model is intentionally unrealistic, its performance exposes a key weakness in ISBS: it can be minimized by predictions that offer no individualization or clinical utility.
 This reinforces our theoretical findings that ISBS is not a proper scoring rule.
+:::
 
 Below, we define the degenerate model in `mlr3proba`, tune it over the quantile cutoff with ISBS, and compare its ISBS score and other evaluation measures to Cox, Kaplan-Meier, and Random Survival Forest (RSF) learners on the `survival::rats` dataset.
 
@@ -344,7 +346,18 @@ measures = c(msrs(
 
 Finally score results:
 ```{r}
-bm$aggregate(measures)[, c(4, 7:13)]
+bm$aggregate(measures)[, c(4, 7:13)] |>
+  DT::datatable(
+    rownames = FALSE,
+    options = list(searching = FALSE)
+  ) |>
+  formatRound(columns = 2:8, digits = 5)
 ```
 
 And we see the degenerate model performs the best with respect to ISBS and SBS at the 75% quantile of observed times, but worse with respect to all other measures.
+
+## R session info {-}
+
+```{r}
+utils::sessionInfo()
+```

@@ -148,7 +148,9 @@ We observe that for a significant proportion of simulations, **the SE of the SBS
 
 :::{.callout-note}
 This sections refers to the results from the simulation experiments of Section 6.3 of the paper.
-The only difference with the previous section is that $S_C$ is now being estimated using the marginal Kaplan-Meier model via `survival::survfit()` instead of using the true Weibull censoring distribution.
+The only difference with the previous section is that $S_C(t)$ is now being estimated using the marginal Kaplan-Meier model via `survival::survfit()` instead of using the true Weibull censoring distribution (see [helper.R](https://github.com/survival-org/scoring-rules-2024/blob/main/helper.R).
+For SBS/ISBS we use constant interpolation of the censoring survival distribution $S_C(t)$.
+For rRCLL we use linear interpolation of of $S_C(t)$ to mitigate density estimation issues, i.e. for $f_C(t)$.
 
 Use [properness_test.R](https://github.com/survival-org/scoring-rules-2024/blob/main/properness_test.R) to run the experiments.
 To ran the script for different sample sizes `n`, use the [run_tests.sh](https://github.com/survival-org/scoring-rules-2024/blob/main/run_tests.sh) script changing to `estimate_cens` to `TRUE`.

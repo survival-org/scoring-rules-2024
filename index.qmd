@@ -60,7 +60,7 @@ The output columns are:
 - `{surv|pred|cens|}_{scale|shape}` the scale and shape of the Weibull distributions for true, predicted and censoring times respectively
 - `prop_cens`: proportion of censoring in each simulation
 - `tv_dist`: the total variation distance between the true and the predicted Weibull distribution (closer to 0 means more similar distributions)
-- `{score}_diff`: the mean score difference $\delta$ between true and predicted distribution. Scores used are the **SBS** at q10, q50 and q90 quantiles of observed times, the **ISBS** up to q80 quantile (50 equidistant time points), the **RCLL** and the **re-weighted rRCLL** (RCLL\*\* in the paper).
+- `{score}_diff`: the mean score difference $\delta$ between true and predicted distribution. Scores used are the **SBS** at the 10, 50 and 90 quantiles of observed times, the **ISBS** from the 5 up to the 80 quantile (50 equidistant time points), the **RCLL** and the **re-weighted rRCLL** (RCLL\*\* in the paper).
 - `{score}_se`: the mean of two squared errors for the (I)SBS scores (using the true and the predicted survival distribution) across the $m = 1000$ distributions.
 
 Calculate violation stats:
@@ -346,12 +346,15 @@ measures = c(msrs(
 
 Finally score results:
 ```{r}
-bm$aggregate(measures)[, c(4, 7:13)] |>
+df = bm$aggregate(measures)[, c(4, 7:13)]
+
+df |>
   DT::datatable(
     rownames = FALSE,
-    options = list(searching = FALSE)
+    options = list(searching = FALSE, order = list(list(7, "desc")))
   ) |>
-  formatRound(columns = 2:8, digits = 5)
+  formatRound(columns = 2:8, digits = 5) |>
+  formatStyle(columns = 'ISBS', background = styleColorBar(df$ISBS, 'lightblue'))
 ```
 
 And we see the degenerate model performs the best with respect to ISBS and SBS at the 75% quantile of observed times, but worse with respect to all other measures.

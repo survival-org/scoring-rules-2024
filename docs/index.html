@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="John Zobolas">
-<meta name="dcterms.date" content="2025-05-01">
+<meta name="dcterms.date" content="2025-05-02">
 <meta name="description" content="Supporting information for paper ‘Examining properness in the external validation of survival models with squared and logarithmic losses’">
 
 <title>Supplementary Material</title>
@@ -102,7 +102,60 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+<script src="site_libs/datatables-binding-0.33/datatables.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet">
+<script src="site_libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
+<link href="site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet">
+<script src="site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
 
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -117,7 +170,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#degenerate-model-exploits-isbs-scoring-rule" id="toc-degenerate-model-exploits-isbs-scoring-rule" class="nav-link active" data-scroll-target="#degenerate-model-exploits-isbs-scoring-rule">Degenerate Model Exploits ISBS Scoring Rule</a></li>
+  <li><a href="#theoretical-vs-practical-properness" id="toc-theoretical-vs-practical-properness" class="nav-link active" data-scroll-target="#theoretical-vs-practical-properness">Theoretical vs Practical Properness</a></li>
+  <li><a href="#estimating-censoring" id="toc-estimating-censoring" class="nav-link" data-scroll-target="#estimating-censoring">Estimating Censoring</a></li>
+  <li><a href="#degenerate-model-exploits-isbs-scoring-rule" id="toc-degenerate-model-exploits-isbs-scoring-rule" class="nav-link" data-scroll-target="#degenerate-model-exploits-isbs-scoring-rule">Degenerate Model Exploits ISBS Scoring Rule</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/survival-org/scoring-rules-2024/blob/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div></nav>
 </nav>
@@ -152,7 +207,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 1, 2025</p>
+      <p class="date">May 2, 2025</p>
     </div>
   </div>
   
@@ -164,6 +219,225 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<section id="theoretical-vs-practical-properness" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="theoretical-vs-practical-properness">Theoretical vs Practical Properness</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This sections refers to the results from the simulation experiments of Section 6.2 of the paper.</p>
+<p>Use <a href="https://github.com/survival-org/scoring-rules-2024/blob/main/properness_test.R">properness_test.R</a> to run the experiments. To ran the script for different sample sizes <code>n</code>, use the <a href="https://github.com/survival-org/scoring-rules-2024/blob/main/run_tests.sh">run_tests.sh</a> script. The output results table (merged for all <code>n</code>) is available <a href="https://github.com/survival-org/scoring-rules-2024/blob/main/results/res_sims10000_distrs1000_0.rds">here</a>.</p>
+</div>
+</div>
+<p>Load libraries:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DT)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Load results, and show 10 randomly selected simulations outputs:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">"results/res_sims10000_distrs1000_0.rds"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>res[<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(res), <span class="dv">10</span>), ] <span class="sc">|&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">rownames =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">options =</span> <span class="fu">list</span>(<span class="at">searching =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="dv">3</span><span class="sc">:</span><span class="dv">15</span>, <span class="at">digits =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">3</span>,<span class="dv">8</span>), <span class="fu">rep</span>(<span class="dv">4</span>,<span class="dv">5</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-fb2764dbce73f29db7db" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-fb2764dbce73f29db7db">{"x":{"filter":"none","vertical":false,"data":[[4346,1595,4448,9335,2018,9269,7642,483,2328,5119],[1000,250,1500,10,10,10,750,750,100,250],[2.430479981936514,4.936882162117399,0.697874384582974,3.885592660517432,3.988836830365472,3.04028244363144,3.11284927430097,2.96102297026664,1.764014573418535,1.072117470088415],[3.872740244143642,1.117557203629985,3.734164029592648,1.971607149229385,4.10317140747793,0.9162445581750944,1.787213171017356,3.274753911653534,3.017713385634124,0.6375207045348361],[4.159067175467499,1.926906008040532,4.748194193583913,3.197722223470919,4.828680888633244,4.202588981832378,3.293142600217834,3.295641993638128,3.437408254714683,3.418860984733328],[1.295496196486056,1.273404021630995,0.6954749736469239,1.475166029296815,2.60940838616807,4.217667533201165,3.428587895235978,1.575922317220829,4.707506417646073,1.515788998454809],[3.79421636974439,2.399530993658118,1.602360706892796,1.045229314826429,3.216372674680315,3.181005568476394,1.93967347801663,4.712104365113191,0.8274375889450312,1.134500311454758],[2.810378764988855,4.611947007128038,1.915535205160268,4.185505404835567,1.191717050620355,3.505678139394149,4.187777546001598,2.359946417622268,2.022895128349774,2.762161452090368],[0.940152,0.47842,0.7495373333333333,0.7497,0.8611,0.0023,0.1058346666666667,0.8994946666666667,0.22083,0.139],[0.3750317086890745,0.923288028397048,0.3539952231401552,0.6116033317543237,0.9434397056473801,0.9240859827454179,0.6361841457679824,0.4397847705511562,0.3256261348978621,0.5192907796165004],[-0.0003147456859946968,-0.03998395348710665,-0.01037262858674959,-0.004826788497723333,-0.8736493382383055,-0.2203287251936722,-0.1090834217829747,-2.472524789474961e-05,-0.04364215163920865,-0.1387867919521255],[-0.0001178189421968852,-8.877893027936339e-06,-0.0068197846524507,-0.02261834087575146,-0.8904570818498321,0.006489998345103692,-0.0021757072123091,-7.402796271281653e-05,-0.08473553206958964,-0.006355760987427531],[-2.582231377842858e-05,-0.5147386718531815,-0.004934740357238815,0.002054730484978617,-0.5131413086430471,-0.7436063229609453,-0.3755345964755374,-0.02286191168548515,0.001310846286942446,-0.290245841315751],[-0.0002216594741520708,-0.04713288980732536,-0.009653500005184751,-0.007555847767773474,-0.8604055556614036,-0.1862102623220343,-0.09104798385135929,-0.0006314357601772957,-0.05298956520159592,-0.1414880848758683],[-0.01085562261411382,-1.397441676675792,-0.1649296666220982,-0.2073603727120596,-7.259310502817237,-3.256037704753291,-0.9321964476507835,-0.03637669097164303,-0.299097210004611,-0.7269737085058749],[-0.0108556226179932,-1.397441676675792,-0.1649296666220982,-0.2073603727120597,-7.559646051012698,-3.256037704753291,-0.9321964476507836,-0.03637669212986588,-0.299097210004611,-0.7269737085058749]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>sim<\/th>\n      <th>n<\/th>\n      <th>surv_shape<\/th>\n      <th>surv_scale<\/th>\n      <th>cens_shape<\/th>\n      <th>cens_scale<\/th>\n      <th>pred_shape<\/th>\n      <th>pred_scale<\/th>\n      <th>prop_cens<\/th>\n      <th>tv_dist<\/th>\n      <th>SBS_median_diff<\/th>\n      <th>SBS_q10_diff<\/th>\n      <th>SBS_q90_diff<\/th>\n      <th>ISBS_diff<\/th>\n      <th>RCLL_diff<\/th>\n      <th>rRCLL_diff<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"searching":false,"columnDefs":[{"targets":2,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":3,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":5,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":7,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":8,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":9,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":10,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 4, 3, \",\", \".\", null);\n  }"},{"targets":11,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 4, 3, \",\", \".\", null);\n  }"},{"targets":12,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 4, 3, \",\", \".\", null);\n  }"},{"targets":13,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 4, 3, \",\", \".\", null);\n  }"},{"targets":14,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 4, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]},{"name":"sim","targets":0},{"name":"n","targets":1},{"name":"surv_shape","targets":2},{"name":"surv_scale","targets":3},{"name":"cens_shape","targets":4},{"name":"cens_scale","targets":5},{"name":"pred_shape","targets":6},{"name":"pred_scale","targets":7},{"name":"prop_cens","targets":8},{"name":"tv_dist","targets":9},{"name":"SBS_median_diff","targets":10},{"name":"SBS_q10_diff","targets":11},{"name":"SBS_q90_diff","targets":12},{"name":"ISBS_diff","targets":13},{"name":"RCLL_diff","targets":14},{"name":"rRCLL_diff","targets":15}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.columnDefs.3.render","options.columnDefs.4.render","options.columnDefs.5.render","options.columnDefs.6.render","options.columnDefs.7.render","options.columnDefs.8.render","options.columnDefs.9.render","options.columnDefs.10.render","options.columnDefs.11.render","options.columnDefs.12.render"],"jsHooks":[]}</script>
+</div>
+</div>
+<p>The output columns are:</p>
+<ul>
+<li><code>sim</code>: simulation number (<span class="math inline">k</span> in the paper, in each simulation we draw <span class="math inline">m = 1000</span> times from each Weibull distribution)</li>
+<li><code>n</code>: sample size (<span class="math inline">10 - 2500</span>)</li>
+<li><code>{surv|pred|cens|}_{scale|shape}</code> the scale and shape of the Weibull distributions for true, predicted and censoring times respectively</li>
+<li><code>prop_cens</code>: proportion of censoring in each simulation</li>
+<li><code>tv_dist</code>: the total variation distance between the true and the predicted Weibull distribution (closer to 0 means more similar distributions)</li>
+<li><code>{score}_diff</code>: the mean score difference <span class="math inline">\delta</span> between true and predicted distribution. Scores used are the <strong>SBS</strong> at q10, q50 and q90 quantiles of observed times, the <strong>ISBS</strong> up to q80 quantile (50 equidistant time points), the <strong>RCLL</strong> and the <strong>re-weighted rRCLL</strong> (RCLL** in the paper).</li>
+</ul>
+<p>Calculate some stats:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> res <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">matches</span>(<span class="st">"shape|scale"</span>)) <span class="sc">|&gt;</span> <span class="co"># remove columns</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">cens_bin =</span> <span class="fu">cut</span>(prop_cens, <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">by =</span> <span class="fl">0.2</span>), <span class="at">include.lowest =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">tv_dist_bin =</span> <span class="fu">cut</span>(tv_dist, <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">by =</span> <span class="fl">0.25</span>), <span class="at">include.lowest =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(<span class="st">"prop_cens"</span>, <span class="st">"tv_dist"</span>))</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a violation threshold</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>threshold <span class="ot">=</span> <span class="fl">1e-04</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># all_stats = res |&gt;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#   group_by(n) |&gt;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   summarize(</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#     total = n(),</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">#     SBS_median_n_violations = sum(SBS_median_diff &gt; threshold),</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#     SBS_median_violation_rate = mean(SBS_median_diff &gt; threshold),</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#     SBS_median_diff_mean = mean(SBS_median_diff[SBS_median_diff &gt; threshold]),</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#     SBS_q10_n_violations = sum(SBS_q10_diff &gt; threshold),</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">#     SBS_q10_violation_rate = mean(SBS_q10_diff &gt; threshold),</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">#     SBS_q10_diff_mean = mean(SBS_q10_diff[SBS_q10_diff &gt; threshold]),</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">#     SBS_q90_n_violations = sum(SBS_q90_diff &gt; threshold),</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">#     SBS_q90_violation_rate = mean(SBS_q90_diff &gt; threshold),</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co">#     SBS_q90_diff_mean = mean(SBS_q90_diff[SBS_q90_diff &gt; threshold]),</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co">#     ISBS_n_violations = sum(ISBS_diff &gt; threshold),</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co">#     ISBS_violation_rate = mean(ISBS_diff &gt; threshold),</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co">#     ISBS_diff_mean = mean(ISBS_diff[ISBS_diff &gt; threshold]),</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co">#     RCLL_n_violations = sum(RCLL_diff &gt; threshold),</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co">#     RCLL_violation_rate = mean(RCLL_diff &gt; threshold),</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co">#     rRCLL_n_violations = sum(rRCLL_diff &gt; threshold),</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="co">#     rRCLL_violation_rate = mean(rRCLL_diff &gt; threshold),</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="co">#     .groups = "drop"</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="co">#   )</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="estimating-censoring" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="estimating-censoring">Estimating Censoring</h2>
+<p>This sections shows the results from the simulation experiments of Section 6.3 of the paper. The only difference with the previous section is that <span class="math inline">S_C</span> is now being estimated using the marginal Kaplan-Meier model via <code>survival::survfit()</code> instead of using the true Weibull censoring distribution.</p>
+<p>Load results (same output columns as in the previous section), and show 10 randomly selected simulations outputs:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">"results/res_sims10000_distrs1000_1.rds"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>res[<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(res), <span class="dv">10</span>), ] <span class="sc">|&gt;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">rownames =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">options =</span> <span class="fu">list</span>(<span class="at">searching =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="dv">3</span><span class="sc">:</span><span class="dv">20</span>, <span class="at">digits =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">3</span>,<span class="dv">8</span>), <span class="fu">rep</span>(<span class="dv">4</span>,<span class="dv">10</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-722c35d2efb346e574c2" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-722c35d2efb346e574c2">{"x":{"filter":"none","vertical":false,"data":[[952,4780,628,7822,8157,3718,2499,1012,7862,8923],[1500,250,10,50,750,1000,10,50,1500,250],[1.98914548533503,3.483539929031394,4.267913654330187,2.818205462419428,3.616740297875367,3.900035477010533,4.479018553509377,4.418872064677998,4.597071093507111,4.669076604885049],[2.61021644459106,0.8734363000839949,4.833623093436472,4.489924171241,4.155002527637407,0.7038778954884037,2.720197004382499,3.435513350530528,3.281246246770024,2.045788943185471],[3.014547331258655,2.818634200957604,2.459755914052948,2.522184538422152,3.761776271276176,2.610247986740433,4.371121770469472,3.449045828427188,4.966945385443978,1.781636415282264],[1.889462576596998,3.211264087003656,3.580463219783269,1.056736370781437,1.957763713202439,2.477782066445798,4.827480442938395,0.8397085369797423,4.362233138293959,0.5820630533853546],[1.507131324382499,0.5034927662927657,3.175098723964766,4.962250873213634,4.677799972123466,3.829395721317269,1.364725232822821,3.213493458461016,1.928715533111244,3.273521960480139],[1.258276649867184,1.237463165773079,1.973491500597447,1.987676926655695,1.599145879270509,0.7994996380293742,2.553235912695527,3.265308406786062,3.467837575473823,2.575416082865559],[0.6517166666666666,0.022776,0.7479,0.98344,0.9389013333333334,0.033083,0.07050000000000001,0.99738,0.1981026666666667,0.98982],[0.4473344495515897,0.5885343580973554,0.8601390231531481,0.7857273006883625,0.893566343792393,0.1793277125622962,0.4910688651299365,0.1522292417391021,0.3863136924436252,0.3407848744614054],[-0.1931734161492382,-0.002235424382815099,-0.6790050913978299,-0.0001765895998275605,-0.5425650628823087,-0.02182109621825196,-0.003091444989692493,-5.709300640532812e-05,-0.005728364643860062,-5.24804752202626e-06],[-0.06281744308662532,-0.1273104835633828,-0.2689824852352803,-2.402173277894944e-06,-0.01700048815221465,-0.0009576759347667968,-0.1216165870153419,9.578792198532517e-08,-0.03733676765415428,8.450537230543352e-10],[-0.1533076454931497,-0.08063942168876199,-0.3087030876074668,-0.02771863301797785,-0.7554926369707646,-0.02336975073642766,-0.009415829030204964,-0.0004168471511971604,-0.02373200874264181,-0.0001022570793517558],[-0.1478280442301538,-0.0537707472151884,-0.5375673904692133,-0.0008274207789349779,-0.3493148636671141,-0.01423472011348509,-0.0390196034072802,-5.541279732200867e-05,-0.02039583836560296,-1.547637219549399e-05],[-0.4947854868613177,-1.3678770300006,-3.655080334997236,-0.04627504260447447,-2.28755063423533,-0.1012664316257719,-0.6342181643378063,-0.005958663548150273,-0.3326812493567719,-0.001971444407996847],[-0.4947833031287905,-1.3678770300006,-3.885796739279692,-0.04627504260447446,-2.331966099156261,-0.1012664316257719,-0.6342181643378062,-0.005958663548150334,-0.3326821157265307,-0.001971442363650988],[0.0001549607836333953,4.584643039389506e-05,0.002518088831810748,0.0005127668118476195,0.0002480622708381413,1.074478681647682e-05,0.0008332918588026836,0.0002118254875126473,2.74886252813641e-05,8.414840287630246e-05],[0.0001129871889547523,9.016230084211475e-05,0.0007642874670094623,0.0001749767114757933,9.542478064864287e-05,6.684626587055448e-05,0.000945159072618909,3.662754401763039e-05,7.814043793669237e-05,4.328911668821308e-06],[1.516703921340393e-05,7.040437620869019e-05,0.002615150975321211,0.001404907384826616,0.0005109154505791745,3.764865697432045e-05,0.001152721823786715,0.0007164737128491114,0.000107664639415746,0.0006867081332432477],[0.0001236638205525042,0.0001638044940634019,0.001667253652563709,0.0003686112835449451,0.0001614187148611666,8.910576689797571e-05,0.0008109525759211658,0.0001266012741862053,8.658615961918197e-05,7.335050755963941e-05]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>sim<\/th>\n      <th>n<\/th>\n      <th>surv_shape<\/th>\n      <th>surv_scale<\/th>\n      <th>cens_shape<\/th>\n      <th>cens_scale<\/th>\n      <th>pred_shape<\/th>\n      <th>pred_scale<\/th>\n      <th>prop_cens<\/th>\n      <th>tv_dist<\/th>\n      <th>SBS_median_diff<\/th>\n      <th>SBS_q10_diff<\/th>\n      <th>SBS_q90_diff<\/th>\n      <th>ISBS_diff<\/th>\n      <th>RCLL_diff<\/th>\n      <th>rRCLL_diff<\/th>\n      <th>SBS_median_se<\/th>\n      <th>SBS_q10_se<\/th>\n      <th>SBS_q90_se<\/th>\n      <th>ISBS_se<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"searching":false,"columnDefs":[{"targets":2,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":3,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":5,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":7,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":8,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":9,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":10,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 4, 3, \",\", \".\", null);\n  }"},{"targets":11,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 4, 3, \",\", \".\", null);\n  }"},{"targets":12,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 4, 3, \",\", \".\", null);\n  }"},{"targets":13,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 4, 3, \",\", \".\", null);\n  }"},{"targets":14,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 4, 3, \",\", \".\", null);\n  }"},{"targets":15,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 4, 3, \",\", \".\", null);\n  }"},{"targets":16,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 4, 3, \",\", \".\", null);\n  }"},{"targets":17,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 4, 3, \",\", \".\", null);\n  }"},{"targets":18,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 4, 3, \",\", \".\", null);\n  }"},{"targets":19,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 4, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]},{"name":"sim","targets":0},{"name":"n","targets":1},{"name":"surv_shape","targets":2},{"name":"surv_scale","targets":3},{"name":"cens_shape","targets":4},{"name":"cens_scale","targets":5},{"name":"pred_shape","targets":6},{"name":"pred_scale","targets":7},{"name":"prop_cens","targets":8},{"name":"tv_dist","targets":9},{"name":"SBS_median_diff","targets":10},{"name":"SBS_q10_diff","targets":11},{"name":"SBS_q90_diff","targets":12},{"name":"ISBS_diff","targets":13},{"name":"RCLL_diff","targets":14},{"name":"rRCLL_diff","targets":15},{"name":"SBS_median_se","targets":16},{"name":"SBS_q10_se","targets":17},{"name":"SBS_q90_se","targets":18},{"name":"ISBS_se","targets":19}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.columnDefs.3.render","options.columnDefs.4.render","options.columnDefs.5.render","options.columnDefs.6.render","options.columnDefs.7.render","options.columnDefs.8.render","options.columnDefs.9.render","options.columnDefs.10.render","options.columnDefs.11.render","options.columnDefs.12.render","options.columnDefs.13.render","options.columnDefs.14.render","options.columnDefs.15.render","options.columnDefs.16.render","options.columnDefs.17.render"],"jsHooks":[]}</script>
+</div>
+</div>
+<p>Calculate violation stats:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> res <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">matches</span>(<span class="st">"shape|scale"</span>)) <span class="sc">|&gt;</span> <span class="co"># remove columns</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">cens_bin =</span> <span class="fu">cut</span>(prop_cens, <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">by =</span> <span class="fl">0.2</span>), <span class="at">include.lowest =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">tv_dist_bin =</span> <span class="fu">cut</span>(tv_dist, <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">by =</span> <span class="fl">0.25</span>), <span class="at">include.lowest =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(<span class="st">"prop_cens"</span>, <span class="st">"tv_dist"</span>))</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>all_stats <span class="ot">=</span> res <span class="sc">|&gt;</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(n) <span class="sc">|&gt;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">total =</span> <span class="fu">n</span>(),</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">SBS_median_n_violations =</span> <span class="fu">sum</span>(SBS_median_diff <span class="sc">&gt;</span> threshold),</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">SBS_median_violation_rate =</span> <span class="fu">mean</span>(SBS_median_diff <span class="sc">&gt;</span> threshold),</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">SBS_median_diff_mean =</span> <span class="fu">mean</span>(SBS_median_diff[SBS_median_diff <span class="sc">&gt;</span> threshold]),</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">SBS_q10_n_violations =</span> <span class="fu">sum</span>(SBS_q10_diff <span class="sc">&gt;</span> threshold),</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">SBS_q10_violation_rate =</span> <span class="fu">mean</span>(SBS_q10_diff <span class="sc">&gt;</span> threshold),</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">SBS_q10_diff_mean =</span> <span class="fu">mean</span>(SBS_q10_diff[SBS_q10_diff <span class="sc">&gt;</span> threshold]),</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">SBS_q90_n_violations =</span> <span class="fu">sum</span>(SBS_q90_diff <span class="sc">&gt;</span> threshold),</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">SBS_q90_violation_rate =</span> <span class="fu">mean</span>(SBS_q90_diff <span class="sc">&gt;</span> threshold),</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">SBS_q90_diff_mean =</span> <span class="fu">mean</span>(SBS_q90_diff[SBS_q90_diff <span class="sc">&gt;</span> threshold]),</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">ISBS_n_violations =</span> <span class="fu">sum</span>(ISBS_diff <span class="sc">&gt;</span> threshold),</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">ISBS_violation_rate =</span> <span class="fu">mean</span>(ISBS_diff <span class="sc">&gt;</span> threshold),</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">ISBS_diff_mean =</span> <span class="fu">mean</span>(ISBS_diff[ISBS_diff <span class="sc">&gt;</span> threshold]),</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">RCLL_n_violations =</span> <span class="fu">sum</span>(RCLL_diff <span class="sc">&gt;</span> threshold),</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">RCLL_violation_rate =</span> <span class="fu">mean</span>(RCLL_diff <span class="sc">&gt;</span> threshold),</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">rRCLL_n_violations =</span> <span class="fu">sum</span>(rRCLL_diff <span class="sc">&gt;</span> threshold),</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">rRCLL_violation_rate =</span> <span class="fu">mean</span>(rRCLL_diff <span class="sc">&gt;</span> threshold),</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>No violations for (r)RCLL:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>all_stats <span class="sc">|&gt;</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(n <span class="sc">|</span> <span class="fu">contains</span>(<span class="st">"RCLL"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(<span class="at">rownames =</span> <span class="cn">FALSE</span>, <span class="at">options =</span> <span class="fu">list</span>(<span class="at">searching =</span> <span class="cn">FALSE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-6548f2038125a80a2f48" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-6548f2038125a80a2f48">{"x":{"filter":"none","vertical":false,"data":[[10,50,100,250,500,750,1000,1500,2000],[2,0,0,0,0,0,0,0,0],[0.0002,0,0,0,0,0,0,0,0],[2,0,0,0,0,0,0,0,0],[0.0002,0,0,0,0,0,0,0,0]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>n<\/th>\n      <th>RCLL_n_violations<\/th>\n      <th>RCLL_violation_rate<\/th>\n      <th>rRCLL_n_violations<\/th>\n      <th>rRCLL_violation_rate<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"searching":false,"columnDefs":[{"className":"dt-right","targets":[0,1,2,3,4]},{"name":"n","targets":0},{"name":"RCLL_n_violations","targets":1},{"name":"RCLL_violation_rate","targets":2},{"name":"rRCLL_n_violations","targets":3},{"name":"rRCLL_violation_rate","targets":4}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p>Violation stats for SBS at different <span class="math inline">\tau^*</span>:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>all_stats <span class="sc">|&gt;</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(n <span class="sc">|</span> <span class="fu">starts_with</span>(<span class="st">"SBS"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(<span class="at">rownames =</span> <span class="cn">FALSE</span>, <span class="at">options =</span> <span class="fu">list</span>(<span class="at">searching =</span> <span class="cn">FALSE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">7</span>,<span class="dv">10</span>), <span class="at">digits =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-f83230db6fc6b0897665" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-f83230db6fc6b0897665">{"x":{"filter":"none","vertical":false,"data":[[10,50,100,250,500,750,1000,1500,2000],[802,279,207,118,49,43,18,11,2],[0.08019999999999999,0.0279,0.0207,0.0118,0.0049,0.0043,0.0018,0.0011,0.0002],[0.005550290487903857,0.001587435042741466,0.0008661194808702131,0.0004160115380018974,0.0002829672460620677,0.0001902574830190981,0.0001416293530036845,0.0001254306052001649,0.000105609914279034],[4431,400,186,50,17,0,0,0,0],[0.4431,0.04,0.0186,0.005,0.0017,0,0,0,0],[0.00513955593260064,0.0006611534517221505,0.0003603494846365524,0.0001868668010022058,0.0001248072544596638,null,null,null,null],[908,357,257,153,87,69,36,22,5],[0.09080000000000001,0.0357,0.0257,0.0153,0.008699999999999999,0.0069,0.0036,0.0022,0.0005],[0.008524049317638761,0.002293171827849794,0.001274936062539522,0.0005663116119715647,0.0003387853328190032,0.0002231150841485864,0.0002226540644061213,0.0001565742866987849,0.0001336602821657595]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>n<\/th>\n      <th>SBS_median_n_violations<\/th>\n      <th>SBS_median_violation_rate<\/th>\n      <th>SBS_median_diff_mean<\/th>\n      <th>SBS_q10_n_violations<\/th>\n      <th>SBS_q10_violation_rate<\/th>\n      <th>SBS_q10_diff_mean<\/th>\n      <th>SBS_q90_n_violations<\/th>\n      <th>SBS_q90_violation_rate<\/th>\n      <th>SBS_q90_diff_mean<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"searching":false,"columnDefs":[{"targets":3,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 5, 3, \",\", \".\", null);\n  }"},{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 5, 3, \",\", \".\", null);\n  }"},{"targets":9,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 5, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[0,1,2,3,4,5,6,7,8,9]},{"name":"n","targets":0},{"name":"SBS_median_n_violations","targets":1},{"name":"SBS_median_violation_rate","targets":2},{"name":"SBS_median_diff_mean","targets":3},{"name":"SBS_q10_n_violations","targets":4},{"name":"SBS_q10_violation_rate","targets":5},{"name":"SBS_q10_diff_mean","targets":6},{"name":"SBS_q90_n_violations","targets":7},{"name":"SBS_q90_violation_rate","targets":8},{"name":"SBS_q90_diff_mean","targets":9}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render"],"jsHooks":[]}</script>
+</div>
+</div>
+<p>Violation stats for ISBS:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>all_stats <span class="sc">|&gt;</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(n <span class="sc">|</span> <span class="fu">starts_with</span>(<span class="st">"ISBS"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(<span class="at">rownames =</span> <span class="cn">FALSE</span>, <span class="at">options =</span> <span class="fu">list</span>(<span class="at">searching =</span> <span class="cn">FALSE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="dv">4</span>, <span class="at">digits =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-8433cb1057186853ecb9" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-8433cb1057186853ecb9">{"x":{"filter":"none","vertical":false,"data":[[10,50,100,250,500,750,1000,1500,2000],[391,20,1,0,0,0,0,0,0],[0.0391,0.002,0.0001,0,0,0,0,0,0],[0.001272662276416304,0.0001880854440157492,0.0001066731853407998,null,null,null,null,null,null]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>n<\/th>\n      <th>ISBS_n_violations<\/th>\n      <th>ISBS_violation_rate<\/th>\n      <th>ISBS_diff_mean<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"searching":false,"columnDefs":[{"targets":3,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 5, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[0,1,2,3]},{"name":"n","targets":0},{"name":"ISBS_n_violations","targets":1},{"name":"ISBS_violation_rate","targets":2},{"name":"ISBS_diff_mean","targets":3}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":["options.columnDefs.0.render"],"jsHooks":[]}</script>
+</div>
+</div>
+<p>We compare the average standard error of the scores across distributions (<span class="math inline">m=1000</span>) with the mean score difference (only for simulations that had violations):</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>measures <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"SBS_median"</span>, <span class="st">"SBS_q10"</span>, <span class="st">"SBS_q90"</span>, <span class="st">"ISBS"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># per measure</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>se_res <span class="ot">=</span> <span class="fu">lapply</span>(measures, <span class="cf">function</span>(measure) {</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  diff_col <span class="ot">=</span> <span class="fu">paste0</span>(measure, <span class="st">"_diff"</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  se_col <span class="ot">=</span> <span class="fu">paste0</span>(measure, <span class="st">"_se"</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  res <span class="sc">|&gt;</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(.data[[diff_col]] <span class="sc">&gt;</span> threshold) <span class="sc">|&gt;</span> <span class="co"># only simulation with violations</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">se_diff =</span> .data[[se_col]] <span class="sc">&gt;=</span> .data[[diff_col]]) <span class="sc">|&gt;</span> <span class="co"># do we have se &gt; delta_score?</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(n) <span class="sc">|&gt;</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">prop_se_gte_diff =</span> <span class="fu">mean</span>(se_diff), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">measure =</span> measure)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">|&gt;</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>() <span class="sc">|&gt;</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="fu">pivot_wider</span>(<span class="at">names_from =</span> measure, <span class="at">values_from =</span> prop_se_gte_diff, <span class="at">names_prefix =</span> <span class="st">"prop_"</span>)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>se_res <span class="sc">|&gt;</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(<span class="at">rownames =</span> <span class="cn">FALSE</span>, <span class="at">options =</span> <span class="fu">list</span>(<span class="at">searching =</span> <span class="cn">FALSE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-9df73c095876f26f03ce" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-9df73c095876f26f03ce">{"x":{"filter":"none","vertical":false,"data":[[10,50,100,250,500,750,1000,1500,2000],[0.3129675810473815,0.2688172043010753,0.285024154589372,0.2627118644067797,0.1836734693877551,0.1395348837209302,0.1666666666666667,0,0],[0.1448882870683819,0.4025,0.4731182795698925,0.36,0.1176470588235294,null,null,null,null],[0.144273127753304,0.1988795518207283,0.1828793774319066,0.2352941176470588,0.2758620689655172,0.3623188405797101,0.3611111111111111,0.2727272727272727,0.2],[0.578005115089514,1,1,null,null,null,null,null,null]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>n<\/th>\n      <th>prop_SBS_median<\/th>\n      <th>prop_SBS_q10<\/th>\n      <th>prop_SBS_q90<\/th>\n      <th>prop_ISBS<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"searching":false,"columnDefs":[{"targets":1,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":2,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":3,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[0,1,2,3,4]},{"name":"n","targets":0},{"name":"prop_SBS_median","targets":1},{"name":"prop_SBS_q10","targets":2},{"name":"prop_SBS_q90","targets":3},{"name":"prop_ISBS","targets":4}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.columnDefs.3.render"],"jsHooks":[]}</script>
+</div>
+</div>
+<p>We observe that for a significant proportion of simulations, <strong>the SE of the SBS/ISBS losses across distributions is larger or equal to the mean score difference</strong>, providing evidence that some of these violations are a result of the variability of the scores.</p>
+</section>
 <section id="degenerate-model-exploits-isbs-scoring-rule" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="degenerate-model-exploits-isbs-scoring-rule">Degenerate Model Exploits ISBS Scoring Rule</h2>
 <p>This section demonstrates how a deliberately simple, uninformative survival model—the <em>degenerate model</em>—can outperform established methods under the Integrated Survival Brier Score (ISBS). The model entirely ignores covariates and instead outputs a flat survival function that drops from 1 to 0 at a fixed quantile of observed times.</p>
@@ -173,111 +447,111 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(R6)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3proba)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3extralearners)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3tuning)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(R6)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3proba)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3extralearners)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3tuning)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Define the degenerate model:</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>LearnerSurvDegenerate <span class="ot">=</span> <span class="fu">R6Class</span>(<span class="st">"LearnerSurvDegenerate"</span>,</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">inherit =</span> LearnerSurv,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">public =</span> <span class="fu">list</span>(</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">initialize =</span> <span class="cf">function</span>() {</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>      super<span class="sc">$</span><span class="fu">initialize</span>(</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">id =</span> <span class="st">"surv.degenerate"</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">predict_types =</span> <span class="fu">c</span>(<span class="st">"distr"</span>),</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">feature_types =</span> <span class="fu">c</span>(<span class="st">"logical"</span>, <span class="st">"integer"</span>, <span class="st">"numeric"</span>, <span class="st">"character"</span>, <span class="st">"factor"</span>, <span class="st">"ordered"</span>),</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">properties =</span> <span class="st">"missings"</span>,</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">packages =</span> <span class="fu">c</span>(<span class="st">"survival"</span>, <span class="st">"distr6"</span>),</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">label =</span> <span class="st">"Degenerate Estimator"</span>,</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">param_set =</span> <span class="fu">ps</span>(</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>           <span class="at">quantile =</span> <span class="fu">p_dbl</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">private =</span> <span class="fu">list</span>(</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">.train =</span> <span class="cf">function</span>(task) {</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>      <span class="fu">list</span>(<span class="at">time =</span> task<span class="sc">$</span><span class="fu">truth</span>()[,<span class="dv">1</span>L]) <span class="co"># store observed times</span></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    },</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">.predict =</span> <span class="cf">function</span>(task) {</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>      quantile_ps <span class="ot">=</span> self<span class="sc">$</span>param_set<span class="sc">$</span>values<span class="sc">$</span>quantile</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>      times <span class="ot">=</span> <span class="fu">sort</span>(<span class="fu">unique</span>(self<span class="sc">$</span>model<span class="sc">$</span>time))</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>      surv <span class="ot">=</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> task<span class="sc">$</span>nrow, <span class="at">ncol =</span> <span class="fu">length</span>(times))</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>      q_t <span class="ot">=</span> <span class="fu">quantile</span>(<span class="fu">seq.int</span>(<span class="fu">length</span>(times)), quantile_ps)[[<span class="dv">1</span>]]</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>      <span class="co"># same S for all test observations, sharp drop from 1 to 0 at q_t</span></span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>      surv[, <span class="dv">1</span><span class="sc">:</span><span class="fu">floor</span>(q_t)] <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>      surv[, <span class="fu">ceiling</span>(q_t)<span class="sc">:</span><span class="fu">ncol</span>(surv)] <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>      <span class="fu">colnames</span>(surv) <span class="ot">=</span> times</span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>      <span class="fu">.surv_return</span>(<span class="at">times =</span> times, <span class="at">surv =</span> surv)</span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>LearnerSurvDegenerate <span class="ot">=</span> <span class="fu">R6Class</span>(<span class="st">"LearnerSurvDegenerate"</span>,</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">inherit =</span> LearnerSurv,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">public =</span> <span class="fu">list</span>(</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">initialize =</span> <span class="cf">function</span>() {</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>      super<span class="sc">$</span><span class="fu">initialize</span>(</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">id =</span> <span class="st">"surv.degenerate"</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">predict_types =</span> <span class="fu">c</span>(<span class="st">"distr"</span>),</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">feature_types =</span> <span class="fu">c</span>(<span class="st">"logical"</span>, <span class="st">"integer"</span>, <span class="st">"numeric"</span>, <span class="st">"character"</span>, <span class="st">"factor"</span>, <span class="st">"ordered"</span>),</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">properties =</span> <span class="st">"missings"</span>,</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">packages =</span> <span class="fu">c</span>(<span class="st">"survival"</span>, <span class="st">"distr6"</span>),</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">label =</span> <span class="st">"Degenerate Estimator"</span>,</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">param_set =</span> <span class="fu">ps</span>(</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>           <span class="at">quantile =</span> <span class="fu">p_dbl</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">private =</span> <span class="fu">list</span>(</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">.train =</span> <span class="cf">function</span>(task) {</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>      <span class="fu">list</span>(<span class="at">time =</span> task<span class="sc">$</span><span class="fu">truth</span>()[,<span class="dv">1</span>L]) <span class="co"># store observed times</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">.predict =</span> <span class="cf">function</span>(task) {</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>      quantile_ps <span class="ot">=</span> self<span class="sc">$</span>param_set<span class="sc">$</span>values<span class="sc">$</span>quantile</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>      times <span class="ot">=</span> <span class="fu">sort</span>(<span class="fu">unique</span>(self<span class="sc">$</span>model<span class="sc">$</span>time))</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>      surv <span class="ot">=</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> task<span class="sc">$</span>nrow, <span class="at">ncol =</span> <span class="fu">length</span>(times))</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>      q_t <span class="ot">=</span> <span class="fu">quantile</span>(<span class="fu">seq.int</span>(<span class="fu">length</span>(times)), quantile_ps)[[<span class="dv">1</span>]]</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>      <span class="co"># same S for all test observations, sharp drop from 1 to 0 at q_t</span></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>      surv[, <span class="dv">1</span><span class="sc">:</span><span class="fu">floor</span>(q_t)] <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>      surv[, <span class="fu">ceiling</span>(q_t)<span class="sc">:</span><span class="fu">ncol</span>(surv)] <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>      <span class="fu">colnames</span>(surv) <span class="ot">=</span> times</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>      <span class="fu">.surv_return</span>(<span class="at">times =</span> times, <span class="at">surv =</span> surv)</span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>We tune the degenerate model to find the optimal quantile to switch the prediction at:</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>l <span class="ot">=</span> LearnerSurvDegenerate<span class="sc">$</span><span class="fu">new</span>()</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>l<span class="sc">$</span>param_set<span class="sc">$</span>values<span class="sc">$</span>quantile <span class="ot">=</span> <span class="fu">to_tune</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ISBS</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>m <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.graf"</span>)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Tune the quantile parameter of the degenerate model</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>at <span class="ot">=</span> <span class="fu">auto_tuner</span>(</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">tuner =</span> <span class="fu">tnr</span>(<span class="st">"grid_search"</span>, <span class="at">resolution =</span> <span class="dv">20</span>),</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">learner =</span> l,</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">resampling =</span> <span class="fu">rsmp</span>(<span class="st">"holdout"</span>),</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">measure =</span> m,</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>l <span class="ot">=</span> LearnerSurvDegenerate<span class="sc">$</span><span class="fu">new</span>()</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>l<span class="sc">$</span>param_set<span class="sc">$</span>values<span class="sc">$</span>quantile <span class="ot">=</span> <span class="fu">to_tune</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ISBS</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>m <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.graf"</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Tune the quantile parameter of the degenerate model</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>at <span class="ot">=</span> <span class="fu">auto_tuner</span>(</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">tuner =</span> <span class="fu">tnr</span>(<span class="st">"grid_search"</span>, <span class="at">resolution =</span> <span class="dv">20</span>),</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">learner =</span> l,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">resampling =</span> <span class="fu">rsmp</span>(<span class="st">"holdout"</span>),</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">measure =</span> m,</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>In our benchmark experiment we compare to the Cox PH, Random Forest, and Kaplan-Meier using 3-fold outer cross-validation.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Seed for reproducibility</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">20250418</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare to Cox PH and Kaplan-Meier</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>learners <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">lrns</span>(<span class="fu">c</span>(<span class="st">"surv.coxph"</span>, <span class="st">"surv.kaplan"</span>, <span class="st">"surv.rfsrc"</span>)), at)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>r <span class="ot">=</span> <span class="fu">rsmp</span>(<span class="st">"cv"</span>, <span class="at">folds =</span> <span class="dv">3</span>)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>bm <span class="ot">=</span> <span class="fu">benchmark</span>(<span class="fu">benchmark_grid</span>(<span class="at">tasks =</span> <span class="fu">tsk</span>(<span class="st">"rats"</span>), <span class="at">learners =</span> learners, <span class="at">resamplings =</span> r))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Seed for reproducibility</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">20250418</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare to Cox PH and Kaplan-Meier</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>learners <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">lrns</span>(<span class="fu">c</span>(<span class="st">"surv.coxph"</span>, <span class="st">"surv.kaplan"</span>, <span class="st">"surv.rfsrc"</span>)), at)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>r <span class="ot">=</span> <span class="fu">rsmp</span>(<span class="st">"cv"</span>, <span class="at">folds =</span> <span class="dv">3</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>bm <span class="ot">=</span> <span class="fu">benchmark</span>(<span class="fu">benchmark_grid</span>(<span class="at">tasks =</span> <span class="fu">tsk</span>(<span class="st">"rats"</span>), <span class="at">learners =</span> learners, <span class="at">resamplings =</span> r))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>To evaluate the benchmark we use Harrell’s C, D-calibration, RCLL, the SBS evaluated at three quantiles, and the ISBS:</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>q25 <span class="ot">=</span> <span class="fu">quantile</span>(<span class="fu">tsk</span>(<span class="st">"rats"</span>)<span class="sc">$</span><span class="fu">times</span>(), <span class="fl">0.25</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>q50 <span class="ot">=</span> <span class="fu">quantile</span>(<span class="fu">tsk</span>(<span class="st">"rats"</span>)<span class="sc">$</span><span class="fu">times</span>(), <span class="fl">0.50</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>q75 <span class="ot">=</span> <span class="fu">quantile</span>(<span class="fu">tsk</span>(<span class="st">"rats"</span>)<span class="sc">$</span><span class="fu">times</span>(), <span class="fl">0.75</span>)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>measures <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">msrs</span>(</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">"surv.cindex"</span>, <span class="st">"surv.dcalib"</span>, <span class="st">"surv.rcll"</span>)),</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">integrated =</span> <span class="cn">FALSE</span>, <span class="at">times =</span> q25, <span class="at">id =</span> <span class="st">"SBS_q25"</span>),</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">integrated =</span> <span class="cn">FALSE</span>, <span class="at">times =</span> q50, <span class="at">id =</span> <span class="st">"SBS_q0.5"</span>),</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">integrated =</span> <span class="cn">FALSE</span>, <span class="at">times =</span> q75, <span class="at">id =</span> <span class="st">"SBS_q0.75"</span>),</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">id =</span> <span class="st">"ISBS"</span>)</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>q25 <span class="ot">=</span> <span class="fu">quantile</span>(<span class="fu">tsk</span>(<span class="st">"rats"</span>)<span class="sc">$</span><span class="fu">times</span>(), <span class="fl">0.25</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>q50 <span class="ot">=</span> <span class="fu">quantile</span>(<span class="fu">tsk</span>(<span class="st">"rats"</span>)<span class="sc">$</span><span class="fu">times</span>(), <span class="fl">0.50</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>q75 <span class="ot">=</span> <span class="fu">quantile</span>(<span class="fu">tsk</span>(<span class="st">"rats"</span>)<span class="sc">$</span><span class="fu">times</span>(), <span class="fl">0.75</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>measures <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">msrs</span>(</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">"surv.cindex"</span>, <span class="st">"surv.dcalib"</span>, <span class="st">"surv.rcll"</span>)),</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">integrated =</span> <span class="cn">FALSE</span>, <span class="at">times =</span> q25, <span class="at">id =</span> <span class="st">"SBS_q25"</span>),</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">integrated =</span> <span class="cn">FALSE</span>, <span class="at">times =</span> q50, <span class="at">id =</span> <span class="st">"SBS_q0.5"</span>),</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">integrated =</span> <span class="cn">FALSE</span>, <span class="at">times =</span> q75, <span class="at">id =</span> <span class="st">"SBS_q0.75"</span>),</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">id =</span> <span class="st">"ISBS"</span>)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Finally score results:</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>bm<span class="sc">$</span><span class="fu">aggregate</span>(measures)[, <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">7</span><span class="sc">:</span><span class="dv">13</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>bm<span class="sc">$</span><span class="fu">aggregate</span>(measures)[, <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">7</span><span class="sc">:</span><span class="dv">13</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>              learner_id surv.cindex  surv.dcalib surv.rcll    SBS_q25

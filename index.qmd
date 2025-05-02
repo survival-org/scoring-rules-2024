@@ -23,6 +23,174 @@ execute:
 knitr::opts_chunk$set(echo = TRUE, cache = FALSE)
 ```
 
+## Theoretical vs Practical Properness {-}
+
+:::{.callout-note}
+This sections refers to the results from the simulation experiments of Section 6.2 of the paper.
+
+Use [properness_test.R](https://github.com/survival-org/scoring-rules-2024/blob/main/properness_test.R) to run the experiments.
+To ran the script for different sample sizes `n`, use the [run_tests.sh](https://github.com/survival-org/scoring-rules-2024/blob/main/run_tests.sh) script.
+The output results table (merged for all `n`) is available [here](https://github.com/survival-org/scoring-rules-2024/blob/main/results/res_sims10000_distrs1000_0.rds).
+:::
+
+Load libraries:
+```{r, message=FALSE}
+library(dplyr)
+library(tibble)
+library(tidyr)
+library(DT)
+```
+
+Load results, and show 10 randomly selected simulations outputs:
+```{r}
+res = readRDS("results/res_sims10000_distrs1000_0.rds")
+
+res[sample(1:nrow(res), 10), ] |>
+  DT::datatable(
+    rownames = FALSE,
+    options = list(searching = FALSE)
+  ) |>
+  formatRound(columns = 3:15, digits = c(rep(3,8), rep(4,5)))
+```
+
+The output columns are:
+
+- `sim`: simulation number ($k$ in the paper, in each simulation we draw $m = 1000$ times from each Weibull distribution)
+- `n`: sample size ($10 - 2500$)
+- `{surv|pred|cens|}_{scale|shape}` the scale and shape of the Weibull distributions for true, predicted and censoring times respectively
+- `prop_cens`: proportion of censoring in each simulation
+- `tv_dist`: the total variation distance between the true and the predicted Weibull distribution (closer to 0 means more similar distributions)
+- `{score}_diff`: the mean score difference $\delta$ between true and predicted distribution. Scores used are the **SBS** at q10, q50 and q90 quantiles of observed times, the **ISBS** up to q80 quantile (50 equidistant time points), the **RCLL** and the **re-weighted rRCLL** (RCLL\*\* in the paper).
+- `{score}_se`: the mean of two squared errors for the (I)SBS scores (using the true and the predicted survival distribution) across the $m = 1000$ distributions.
+
+Calculate some stats:
+```{r}
+res = res |>
+  select(!matches("shape|scale|prop_cens|tv_dist"))
+
+# Define a violation threshold
+threshold = 1e-04
+
+# all_stats = res |>
+#   group_by(n) |>
+#   summarize(
+#     total = n(),
+#     SBS_median_n_violations = sum(SBS_median_diff > threshold),
+#     SBS_median_violation_rate = mean(SBS_median_diff > threshold),
+#     SBS_median_diff_mean = mean(SBS_median_diff[SBS_median_diff > threshold]),
+#     SBS_q10_n_violations = sum(SBS_q10_diff > threshold),
+#     SBS_q10_violation_rate = mean(SBS_q10_diff > threshold),
+#     SBS_q10_diff_mean = mean(SBS_q10_diff[SBS_q10_diff > threshold]),
+#     SBS_q90_n_violations = sum(SBS_q90_diff > threshold),
+#     SBS_q90_violation_rate = mean(SBS_q90_diff > threshold),
+#     SBS_q90_diff_mean = mean(SBS_q90_diff[SBS_q90_diff > threshold]),
+#     ISBS_n_violations = sum(ISBS_diff > threshold),
+#     ISBS_violation_rate = mean(ISBS_diff > threshold),
+#     ISBS_diff_mean = mean(ISBS_diff[ISBS_diff > threshold]),
+#     RCLL_n_violations = sum(RCLL_diff > threshold),
+#     RCLL_violation_rate = mean(RCLL_diff > threshold),
+#     rRCLL_n_violations = sum(rRCLL_diff > threshold),
+#     rRCLL_violation_rate = mean(rRCLL_diff > threshold),
+#     .groups = "drop"
+#   )
+```
+
+```{r}
+
+```
+
+## Estimating Censoring {-}
+
+:::{.callout-note}
+This sections refers to the results from the simulation experiments of Section 6.3 of the paper.
+The only difference with the previous section is that $S_C$ is now being estimated using the marginal Kaplan-Meier model via `survival::survfit()` instead of using the true Weibull censoring distribution.
+
+Use [properness_test.R](https://github.com/survival-org/scoring-rules-2024/blob/main/properness_test.R) to run the experiments.
+To ran the script for different sample sizes `n`, use the [run_tests.sh](https://github.com/survival-org/scoring-rules-2024/blob/main/run_tests.sh) script changing to `estimate_cens` to `TRUE`.
+The output results table (merged for all `n`) is available [here](https://github.com/survival-org/scoring-rules-2024/blob/main/results/res_sims10000_distrs1000_1.rds).
+:::
+
+Load results (same output columns as in the previous section):
+```{r}
+res = readRDS("results/res_sims10000_distrs1000_1.rds") |>
+  select(!matches("shape|scale|prop_cens|tv_dist")) # remove columns
+```
+
+Calculate violation stats:
+```{r}
+all_stats = res |>
+  group_by(n) |>
+  summarize(
+    total = n(),
+    SBS_median_n_violations = sum(SBS_median_diff > threshold),
+    SBS_median_violation_rate = mean(SBS_median_diff > threshold),
+    SBS_median_diff_mean = mean(SBS_median_diff[SBS_median_diff > threshold]),
+    SBS_q10_n_violations = sum(SBS_q10_diff > threshold),
+    SBS_q10_violation_rate = mean(SBS_q10_diff > threshold),
+    SBS_q10_diff_mean = mean(SBS_q10_diff[SBS_q10_diff > threshold]),
+    SBS_q90_n_violations = sum(SBS_q90_diff > threshold),
+    SBS_q90_violation_rate = mean(SBS_q90_diff > threshold),
+    SBS_q90_diff_mean = mean(SBS_q90_diff[SBS_q90_diff > threshold]),
+    ISBS_n_violations = sum(ISBS_diff > threshold),
+    ISBS_violation_rate = mean(ISBS_diff > threshold),
+    ISBS_diff_mean = mean(ISBS_diff[ISBS_diff > threshold]),
+    RCLL_n_violations = sum(RCLL_diff > threshold),
+    RCLL_violation_rate = mean(RCLL_diff > threshold),
+    rRCLL_n_violations = sum(rRCLL_diff > threshold),
+    rRCLL_violation_rate = mean(rRCLL_diff > threshold),
+    .groups = "drop"
+  )
+```
+
+No violations for (r)RCLL:
+```{r}
+all_stats |> 
+  select(n | contains("RCLL")) |>
+  DT::datatable(rownames = FALSE, options = list(searching = FALSE))
+```
+
+Violation stats for SBS at different $\tau^*$:
+```{r}
+all_stats |> 
+  select(n | starts_with("SBS")) |>
+  DT::datatable(rownames = FALSE, options = list(searching = FALSE)) |>
+  formatRound(columns = c(4,7,10), digits = 5)
+```
+
+Violation stats for ISBS:
+```{r}
+all_stats |> 
+  select(n | starts_with("ISBS")) |>
+  DT::datatable(rownames = FALSE, options = list(searching = FALSE)) |>
+  formatRound(columns = 4, digits = 5)
+```
+
+We compare the average standard error of the scores across distributions ($m=1000$) with the mean score difference (only for simulations that had violations):
+```{r}
+measures = c("SBS_median", "SBS_q10", "SBS_q90", "ISBS")
+
+# per measure
+se_res = lapply(measures, function(measure) {
+  diff_col = paste0(measure, "_diff")
+  se_col = paste0(measure, "_se")
+
+  res |>
+    filter(.data[[diff_col]] > threshold) |> # only simulation with violations
+    mutate(se_diff = .data[[se_col]] >= .data[[diff_col]]) |> # do we have se > delta_score?
+    group_by(n) |>
+    summarise(prop_se_gte_diff = mean(se_diff), .groups = "drop") |>
+    mutate(measure = measure)
+}) |>
+bind_rows() |>
+pivot_wider(names_from = measure, values_from = prop_se_gte_diff, names_prefix = "prop_")
+
+se_res |>
+  DT::datatable(rownames = FALSE, options = list(searching = FALSE)) |>
+  formatRound(columns = 2:5, digits = 3)
+```
+
+We observe that for a significant proportion of simulations, **the SE of the SBS/ISBS losses across distributions is larger or equal to the mean score difference**, providing evidence that some of these violations are a result of the variability of the scores.
+
 ## Degenerate Model Exploits ISBS Scoring Rule {-}
 
 This section demonstrates how a deliberately simple, uninformative survival model—the *degenerate model*—can outperform established methods under the Integrated Survival Brier Score (ISBS).

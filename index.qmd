@@ -63,7 +63,7 @@ The output columns are:
 - `{score}_diff`: the mean score difference $\delta$ between true and predicted distribution. Scores used are the **SBS** at q10, q50 and q90 quantiles of observed times, the **ISBS** up to q80 quantile (50 equidistant time points), the **RCLL** and the **re-weighted rRCLL** (RCLL\*\* in the paper).
 - `{score}_se`: the mean of two squared errors for the (I)SBS scores (using the true and the predicted survival distribution) across the $m = 1000$ distributions.
 
-Calculate some stats:
+Calculate violation stats:
 ```{r}
 res = res |>
   select(!matches("shape|scale|prop_cens|tv_dist"))
@@ -71,33 +71,78 @@ res = res |>
 # Define a violation threshold
 threshold = 1e-04
 
-# all_stats = res |>
-#   group_by(n) |>
-#   summarize(
-#     total = n(),
-#     SBS_median_n_violations = sum(SBS_median_diff > threshold),
-#     SBS_median_violation_rate = mean(SBS_median_diff > threshold),
-#     SBS_median_diff_mean = mean(SBS_median_diff[SBS_median_diff > threshold]),
-#     SBS_q10_n_violations = sum(SBS_q10_diff > threshold),
-#     SBS_q10_violation_rate = mean(SBS_q10_diff > threshold),
-#     SBS_q10_diff_mean = mean(SBS_q10_diff[SBS_q10_diff > threshold]),
-#     SBS_q90_n_violations = sum(SBS_q90_diff > threshold),
-#     SBS_q90_violation_rate = mean(SBS_q90_diff > threshold),
-#     SBS_q90_diff_mean = mean(SBS_q90_diff[SBS_q90_diff > threshold]),
-#     ISBS_n_violations = sum(ISBS_diff > threshold),
-#     ISBS_violation_rate = mean(ISBS_diff > threshold),
-#     ISBS_diff_mean = mean(ISBS_diff[ISBS_diff > threshold]),
-#     RCLL_n_violations = sum(RCLL_diff > threshold),
-#     RCLL_violation_rate = mean(RCLL_diff > threshold),
-#     rRCLL_n_violations = sum(rRCLL_diff > threshold),
-#     rRCLL_violation_rate = mean(rRCLL_diff > threshold),
-#     .groups = "drop"
-#   )
+all_stats = res |>
+  group_by(n) |>
+  summarize(
+    total = n(),
+    SBS_median_n_violations = sum(SBS_median_diff > threshold),
+    SBS_median_violation_rate = mean(SBS_median_diff > threshold),
+    SBS_median_diff_mean = mean(SBS_median_diff[SBS_median_diff > threshold]),
+    SBS_q10_n_violations = sum(SBS_q10_diff > threshold),
+    SBS_q10_violation_rate = mean(SBS_q10_diff > threshold),
+    SBS_q10_diff_mean = mean(SBS_q10_diff[SBS_q10_diff > threshold]),
+    SBS_q90_n_violations = sum(SBS_q90_diff > threshold),
+    SBS_q90_violation_rate = mean(SBS_q90_diff > threshold),
+    SBS_q90_diff_mean = mean(SBS_q90_diff[SBS_q90_diff > threshold]),
+    ISBS_n_violations = sum(ISBS_diff > threshold),
+    ISBS_violation_rate = mean(ISBS_diff > threshold),
+    ISBS_diff_mean = mean(ISBS_diff[ISBS_diff > threshold]),
+    RCLL_n_violations = sum(RCLL_diff > threshold),
+    RCLL_violation_rate = mean(RCLL_diff > threshold),
+    rRCLL_n_violations = sum(rRCLL_diff > threshold),
+    rRCLL_violation_rate = mean(rRCLL_diff > threshold),
+    .groups = "drop"
+  )
 ```
 
+No violations for (r)RCLL:
 ```{r}
-
+all_stats |> 
+  select(n | contains("RCLL")) |>
+  DT::datatable(rownames = FALSE, options = list(searching = FALSE))
 ```
+
+Violation stats for SBS at different $\tau^*$:
+```{r}
+all_stats |> 
+  select(n | starts_with("SBS")) |>
+  DT::datatable(rownames = FALSE, options = list(searching = FALSE)) |>
+  formatRound(columns = c(4,7,10), digits = 5)
+```
+
+Violation stats for ISBS:
+```{r}
+all_stats |> 
+  select(n | starts_with("ISBS")) |>
+  DT::datatable(rownames = FALSE, options = list(searching = FALSE)) |>
+  formatRound(columns = 4, digits = 5)
+```
+
+Lastly, we compare the average standard error of the scores across distributions ($m=1000$) with the mean score difference (only for simulations that had violations):
+```{r}
+measures = c("SBS_median", "SBS_q10", "SBS_q90", "ISBS")
+
+# per measure
+se_res = lapply(measures, function(measure) {
+  diff_col = paste0(measure, "_diff")
+  se_col = paste0(measure, "_se")
+
+  res |>
+    filter(.data[[diff_col]] > threshold) |> # only simulation with violations
+    mutate(se_diff = .data[[se_col]] >= .data[[diff_col]]) |> # do we have se > delta_score?
+    group_by(n) |>
+    summarise(prop_se_gte_diff = mean(se_diff), .groups = "drop") |>
+    mutate(measure = measure)
+}) |>
+bind_rows() |>
+pivot_wider(names_from = measure, values_from = prop_se_gte_diff, names_prefix = "prop_")
+
+se_res |>
+  DT::datatable(rownames = FALSE, options = list(searching = FALSE)) |>
+  formatRound(columns = 2:5, digits = 3)
+```
+
+We observe that for a significant proportion of simulations, **the SE of the SBS/ISBS losses across distributions is larger or equal to the mean score difference**, providing evidence that some of these violations are a result of the variability of the scores.
 
 ## Estimating Censoring {-}
 
@@ -189,7 +234,7 @@ se_res |>
   formatRound(columns = 2:5, digits = 3)
 ```
 
-We observe that for a significant proportion of simulations, **the SE of the SBS/ISBS losses across distributions is larger or equal to the mean score difference**, providing evidence that some of these violations are a result of the variability of the scores.
+We again observe that for a significant proportion of simulations, **the SE of the SBS/ISBS losses across distributions is larger or equal to the mean score difference**, providing evidence that some of these violations are a result of the variability of the scores.
 
 ## Degenerate Model Exploits ISBS Scoring Rule {-}
 

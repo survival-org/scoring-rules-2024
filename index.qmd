@@ -23,6 +23,46 @@ execute:
 knitr::opts_chunk$set(echo = TRUE, cache = FALSE)
 ```
 
+## High variability for generated survival and censoring distributions {-}
+
+To illustrate the diversity of the Weibull distributions used in our simulation design, we plot both the density $f(t)$ and survival $S(t)$ functions for 10 randomly sampled shape $\alpha$ and scale $\sigma$ parameter pairs.
+These distributions represent either the true survival, predicted survival, or censoring times across simulations.
+The wide parameter range induces substantial variability, ensuring a rich family of distributions and increasing the sensitivity of our evaluation to detect violations of properness.
+By construction, all data-generating mechanisms assume $Y$ independent of $C$, satisfying the random censoring assumption.
+
+```{r, message=FALSE}
+#| fig-cap: "Weibull density (top) and survival (bottom) curves for randomly generated shape, α, and scale, σ parameters. Each curve corresponds to a different parameter pair, illustrating the broad variability across simulated distributions."
+
+library(ggplot2)
+library(patchwork)
+library(dplyr)
+
+set.seed(20250408)
+
+shape = runif(10, 0.5, 5)
+scale = runif(10, 0.5, 5)
+
+dw = mapply(function(shape,scale) dweibull(seq.int(1,5,0.1), shape,scale),shape,scale) %>%
+  reshape2::melt() %>%
+  mutate(x = rep(seq.int(1,5,0.1), 10),
+        group = rep(sprintf("(%.2f,%.2f)",shape,scale), each = 41)) %>%
+  select(x, group, value)
+pw = mapply(function(shape,scale) pweibull(seq.int(1,5,0.1), shape,scale, lower.tail=F),shape,scale) %>%
+  reshape2::melt() %>%
+  mutate(x = rep(seq.int(1,5,0.1), 10),
+        group = rep(sprintf("(%.2f,%.2f)",shape,scale), each = 41)) %>%
+  select(x, group, value)
+
+(ggplot(dw, aes(x = x, y = value, group = group, color = group)) + ylab("f(x)")) /
+  (ggplot(pw, aes(x = x, y = value, group = group, color = group)) + ylab("S(x)")) +
+  plot_layout(guides='collect') &
+  geom_line() &
+  theme_classic() &
+  guides(color = guide_legend(title='(α,σ)'))
+
+# ggsave("weibull_plots.png", device = png, dpi=600, width =7, height = 4)
+```
+
 ## Theoretical vs Practical Properness {-}
 
 :::{.callout-note}
@@ -50,7 +90,7 @@ res[sample(1:nrow(res), 10), ] |>
     rownames = FALSE,
     options = list(searching = FALSE)
   ) |>
-  formatRound(columns = 3:15, digits = c(rep(3,8), rep(4,5)))
+  formatRound(columns = 3:20, digits = c(rep(3,8), rep(5,10)))
 ```
 
 The output columns are:
@@ -61,7 +101,7 @@ The output columns are:
 - `prop_cens`: proportion of censoring in each simulation
 - `tv_dist`: the total variation distance between the true and the predicted Weibull distribution (closer to 0 means more similar distributions)
 - `{score}_diff`: the mean score difference $\delta$ between true and predicted distribution. Scores used are the **SBS** at the 10, 50 and 90 quantiles of observed times, the **ISBS** from the 5 up to the 80 quantile (50 equidistant time points), the **RCLL** and the **re-weighted rRCLL** (RCLL\*\* in the paper).
-- `{score}_se`: the mean of two squared errors for the (I)SBS scores (using the true and the predicted survival distribution) across the $m = 1000$ distributions.
+- `{score}_se`: the mean of two squared errors for the (I)SBS scores across the $m = 1000$ distributions (one is when using the true and the other the predicted survival distribution).
 
 Calculate violation stats:
 ```{r}
@@ -118,7 +158,9 @@ all_stats |>
   formatRound(columns = 4, digits = 5)
 ```
 
-Lastly, we compare the average standard error of the scores across distributions ($m=1000$) with the mean score difference (only for simulations that had violations):
+To better understand the nature of observed violations, we assess whether they may arise from the inherent variability in score estimates across repeated draws.
+Specifically, for each scoring rule (SBS and ISBS), we compute the proportion of violating simulations in which the standard error (SE) of the score across the $m = 1000$ distributions exceeds the mean score difference observed in that same simulation:
+
 ```{r}
 measures = c("SBS_median", "SBS_q10", "SBS_q90", "ISBS")
 
@@ -142,7 +184,8 @@ se_res |>
   formatRound(columns = 2:5, digits = 3)
 ```
 
-We observe that for a significant proportion of simulations, **the SE of the SBS/ISBS losses across distributions is larger or equal to the mean score difference**, providing evidence that some of these violations are a result of the variability of the scores.
+We observe that for a significant proportion of simulations, **the standard error of the SBS/ISBS losses across distributions is as large or larger than the observed mean score difference**.
+This supports the interpretation that many violations may stem from statistical noise rather than genuine failures of properness.
 
 ## Estimating Censoring {-}
 
@@ -165,6 +208,9 @@ res = readRDS("results/res_sims10000_distrs1000_1.rds") |>
 
 Calculate violation stats:
 ```{r}
+# Define a violation threshold
+threshold = 1e-04
+
 all_stats = res |>
   group_by(n) |>
   summarize(
@@ -212,7 +258,8 @@ all_stats |>
   formatRound(columns = 4, digits = 5)
 ```
 
-We compare the average standard error of the scores across distributions ($m=1000$) with the mean score difference (only for simulations that had violations):
+As in the previous experiment, we assess whether violations could be explained by variability in score estimates.
+For each scoring rule, we again compute the proportion of violating simulations where the standard error exceeds the observed mean score difference:
 ```{r}
 measures = c("SBS_median", "SBS_q10", "SBS_q90", "ISBS")
 
@@ -244,7 +291,7 @@ We again observe that for a significant proportion of simulations, **the SE of t
 This section demonstrates how a deliberately simple, uninformative survival model—the *degenerate model*—can outperform established methods under the Integrated Survival Brier Score (ISBS).
 The model entirely ignores covariates and instead outputs a flat survival function that drops from 1 to 0 at a fixed quantile of observed times.
 
-While this model is intentionally unrealistic, its performance exposes a key weakness in ISBS: it can be minimized by predictions that offer no individualization or clinical utility.
+This model is deliberately constructed to expose a key weakness in ISBS: it can be minimized by predictions that offer no individualization or clinical utility.
 This reinforces our theoretical findings that ISBS is not a proper scoring rule.
 :::
 
@@ -329,32 +376,28 @@ r = rsmp("cv", folds = 3)
 bm = benchmark(benchmark_grid(tasks = tsk("rats"), learners = learners, resamplings = r))
 ```
 
-To evaluate the benchmark we use Harrell’s C, D-calibration, RCLL, the SBS evaluated at three quantiles, and the ISBS:
+To evaluate the benchmark we use Harrell’s C, D-calibration, RCLL, the SBS evaluated at the median observed time, and the ISBS:
 ```{r}
-q25 = quantile(tsk("rats")$times(), 0.25)
 q50 = quantile(tsk("rats")$times(), 0.50)
-q75 = quantile(tsk("rats")$times(), 0.75)
 
 measures = c(msrs(
   c("surv.cindex", "surv.dcalib", "surv.rcll")),
-  msr("surv.graf", integrated = FALSE, times = q25, id = "SBS_q25"),
   msr("surv.graf", integrated = FALSE, times = q50, id = "SBS_q0.5"),
-  msr("surv.graf", integrated = FALSE, times = q75, id = "SBS_q0.75"),
   msr("surv.graf", id = "ISBS")
 )
 ```
 
 Finally score results:
 ```{r}
-df = bm$aggregate(measures)[, c(4, 7:13)]
+df = bm$aggregate(measures)[, c(4, 7:11)]
 
 df |>
   DT::datatable(
     rownames = FALSE,
-    options = list(searching = FALSE, order = list(list(7, "desc")))
+    options = list(searching = FALSE, order = list(list(5, "desc")))
   ) |>
-  formatRound(columns = 2:8, digits = 5) |>
-  formatStyle(columns = 'ISBS', background = styleColorBar(df$ISBS, 'lightblue'))
+  formatRound(columns = c(2, 4, 5, 6), digits = 5) |>
+  formatSignif(columns = 3, digits = 3) # scientific notation for surv.dcalib
 ```
 
 And we see the degenerate model performs the best with respect to ISBS and SBS at the 75% quantile of observed times, but worse with respect to all other measures.

@@ -25,7 +25,6 @@ all_stats = res |>
     SBS_median_n_violations = sum(SBS_median_diff > threshold),
     SBS_median_violation_rate = mean(SBS_median_diff > threshold),
     SBS_median_diff_mean = mean(SBS_median_diff[SBS_median_diff > threshold]),
-    SBS_median_se_mean = mean(SBS_median_se[SBS_median_diff > threshold]),
     SBS_q10_n_violations = sum(SBS_q10_diff > threshold),
     SBS_q10_violation_rate = mean(SBS_q10_diff > threshold),
     SBS_q10_diff_mean = mean(SBS_q10_diff[SBS_q10_diff > threshold]),
@@ -47,26 +46,6 @@ all_stats |> select(n | contains("RCLL"))
 # SBS violations:
 all_stats |> select(n | contains("SBS"))
 all_stats |> select(n | contains("ISBS"))
-
-# check se for violations ((I)SBS scores)
-measures = c("SBS_median", "SBS_q10", "SBS_q90", "ISBS")
-
-# Compute proportions per measure
-se_res = lapply(measures, function(measure) {
-  diff_col = paste0(measure, "_diff")
-  se_col = paste0(measure, "_se")
-
-  res |>
-    filter(.data[[diff_col]] > threshold) |>
-    mutate(se_diff = .data[[se_col]] >= .data[[diff_col]]) |>
-    group_by(n) |>
-    summarise(prop_se_gte_diff = mean(se_diff), .groups = "drop") |>
-    mutate(measure = measure)
-}) |>
-bind_rows() |>
-pivot_wider(names_from = measure, values_from = prop_se_gte_diff)
-
-se_res
 
 # look at SBS violations grouped by (n, %cens)
 stats_cens =

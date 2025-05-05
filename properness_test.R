@@ -71,21 +71,6 @@ RCLL = function(pred_shape, pred_scale, t, delta, cens_shape, cens_scale, cens_f
 }
 
 # HELPER EXPERIMENT FUNCTIONS ----
-tv_distance = function(P, Q) {
-  # Create empirical cumulative distribution functions (ECDFs)
-  ecdf_P = ecdf(P)
-  ecdf_Q = ecdf(Q)
-
-  # Define a grid over the range of both input vectors
-  x_range = seq(min(c(P, Q)), max(c(P, Q)), length.out = 500)
-
-  # Compute the absolute differences between the ECDFs
-  differences = abs(ecdf_P(x_range) - ecdf_Q(x_range))
-
-  # Return the Total Variation distance (max difference in CDFs)
-  max(differences)
-}
-
 tv_distance_weibull = function(shape1, scale1, shape2, scale2, n_points = 500) {
   # Define a grid over which to compute the PDFs
   x_range = seq(0, 3 * max(c(scale1, scale2)), length.out = n_points)

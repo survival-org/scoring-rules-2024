@@ -128,23 +128,23 @@ run = function(surv_shape, cens_shape, pred_shape,
 
     c(
       # SBS at median observed time
-      sbs(surv_shape, surv_scale, obs_t, obs_d, tau_median, cens_shape, cens_scale, fit),
-      sbs(pred_shape, pred_scale, obs_t, obs_d, tau_median, cens_shape, cens_scale, fit),
+      sbs(surv_shape, surv_scale, obs_t, obs_d, tau_median, cens_shape, cens_scale, fit), # 1
+      sbs(pred_shape, pred_scale, obs_t, obs_d, tau_median, cens_shape, cens_scale, fit), # 2
       # SBS at 10% quantile observed time
-      sbs(surv_shape, surv_scale, obs_t, obs_d, tau_10, cens_shape, cens_scale, fit),
-      sbs(pred_shape, pred_scale, obs_t, obs_d, tau_10, cens_shape, cens_scale, fit),
+      sbs(surv_shape, surv_scale, obs_t, obs_d, tau_10, cens_shape, cens_scale, fit), # 3
+      sbs(pred_shape, pred_scale, obs_t, obs_d, tau_10, cens_shape, cens_scale, fit), # 4
       # SBS at 90% quantile observed time
-      sbs(surv_shape, surv_scale, obs_t, obs_d, tau_90, cens_shape, cens_scale, fit),
-      sbs(pred_shape, pred_scale, obs_t, obs_d, tau_90, cens_shape, cens_scale, fit),
+      sbs(surv_shape, surv_scale, obs_t, obs_d, tau_90, cens_shape, cens_scale, fit), # 5
+      sbs(pred_shape, pred_scale, obs_t, obs_d, tau_90, cens_shape, cens_scale, fit), # 6
       # RCLL
-      RCLL(surv_shape, surv_scale, obs_t, obs_d, cens_shape, cens_scale, fit, FALSE),
-      RCLL(pred_shape, pred_scale, obs_t, obs_d, cens_shape, cens_scale, fit, FALSE),
+      RCLL(surv_shape, surv_scale, obs_t, obs_d, cens_shape, cens_scale, fit, FALSE), # 7
+      RCLL(pred_shape, pred_scale, obs_t, obs_d, cens_shape, cens_scale, fit, FALSE), # 8
       # rRCLL
-      RCLL(surv_shape, surv_scale, obs_t, obs_d, cens_shape, cens_scale, fit, TRUE),
-      RCLL(pred_shape, pred_scale, obs_t, obs_d, cens_shape, cens_scale, fit, TRUE),
+      RCLL(surv_shape, surv_scale, obs_t, obs_d, cens_shape, cens_scale, fit, TRUE), # 9
+      RCLL(pred_shape, pred_scale, obs_t, obs_d, cens_shape, cens_scale, fit, TRUE), # 10
       # ISBS
-      isbs(surv_shape, surv_scale, obs_t, obs_d, cens_shape, cens_scale, fit),
-      isbs(pred_shape, pred_scale, obs_t, obs_d, cens_shape, cens_scale, fit),
+      isbs(surv_shape, surv_scale, obs_t, obs_d, cens_shape, cens_scale, fit), # 11
+      isbs(pred_shape, pred_scale, obs_t, obs_d, cens_shape, cens_scale, fit), # 12
       # censoring proportion
       prop_cens
     )
@@ -154,20 +154,21 @@ run = function(surv_shape, cens_shape, pred_shape,
 
   # average over all simulations
   means = rowMeans(x)
-  # squared error over all simulations
-  se = apply(x, 1, sd) / sqrt(num_distrs)
 
+  # Differences are always: (True Distribution) - (Predicted Distribution)
   list(
-    SBS_median = means[1] - means[2],
-    SBS_median_se = mean(se[1], se[2]),
+    SBS_median = means[1] - means[2], # same as mean(x[1,] - x[2,])
+    SBS_median_sd = sd(x[1,] - x[2,]),
     SBS_q10 = means[3] - means[4],
-    SBS_q10_se = mean(se[3], se[4]),
+    SBS_q10_sd = sd(x[3,] - x[4,]),
     SBS_q90 = means[5] - means[6],
-    SBS_q90_se = mean(se[5], se[6]),
+    SBS_q90_sd = sd(x[5,] - x[6,]),
     RCLL = means[7] - means[8],
+    RCLL_sd = sd(x[7,] - x[8,]),
     rRCLL = means[9] - means[10],
+    rRCLL_sd = sd(x[9,] - x[10,]),
     ISBS = means[11] - means[12],
-    ISBS_se = mean(se[11], se[12]),
+    ISBS_sd = sd(x[11,] - x[12,]),
     prop_cens = means[13],
     tv_dist = tv_distance_weibull(
       shape1 = surv_shape, scale1 = surv_scale,
@@ -233,11 +234,13 @@ run_experiment = function(num_sims = 20, num_distrs = 1000, num_samples = 1000, 
         ISBS_diff = result$ISBS,
         RCLL_diff = result$RCLL,
         rRCLL_diff = result$rRCLL,
-        # Average SEs of the scores using Y and Y_hat
-        SBS_median_se = result$SBS_median_se,
-        SBS_q10_se = result$SBS_q10_se,
-        SBS_q90_se = result$SBS_q90_se,
-        ISBS_se = result$ISBS_se
+        # standard deviations of the score differences
+        SBS_median_sd = result$SBS_median_sd,
+        SBS_q10_sd = result$SBS_q10_sd,
+        SBS_q90_sd = result$SBS_q90_sd,
+        ISBS_sd = result$ISBS_sd,
+        RCLL_sd = result$RCLL_sd,
+        rRCLL_sd = result$rRCLL_sd
       )
     })
   })

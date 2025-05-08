@@ -66,138 +66,159 @@ pw = mapply(function(shape,scale) pweibull(seq.int(1,5,0.1), shape,scale, lower.
 ## Theoretical vs Practical Properness {-}
 
 :::{.callout-note}
-This sections refers to the results from the simulation experiments of Section 6.2 of the paper.
+This section supports the results in Section 6.2 of the paper.
 
 Use [properness_test.R](https://github.com/survival-org/scoring-rules-2024/blob/main/properness_test.R) to run the experiments.
-To ran the script for different sample sizes `n`, use the [run_tests.sh](https://github.com/survival-org/scoring-rules-2024/blob/main/run_tests.sh) script.
-The output results table (merged for all `n`) is available [here](https://github.com/survival-org/scoring-rules-2024/blob/main/results/res_sims10000_distrs1000_0.rds).
+To run for different sample sizes `n`, use [run_tests.sh](https://github.com/survival-org/scoring-rules-2024/blob/main/run_tests.sh).
+Merged simulation results for all $n$ are available [here](https://github.com/survival-org/scoring-rules-2024/blob/main/results/res_sims10000_distrs1000_0.rds).
 :::
 
-Load libraries:
+Load libraries and explore data:
 ```{r, message=FALSE}
 library(dplyr)
 library(tibble)
 library(tidyr)
 library(DT)
-```
 
-Load results, and show 10 randomly selected simulations outputs:
-```{r}
 res = readRDS("results/res_sims10000_distrs1000_0.rds")
 
 res[sample(1:nrow(res), 10), ] |>
-  DT::datatable(
-    rownames = FALSE,
-    options = list(searching = FALSE)
-  ) |>
-  formatRound(columns = 3:20, digits = c(rep(3,8), rep(5,10)))
+  DT::datatable(rownames = FALSE, options = list(searching = FALSE)) |>
+  formatRound(columns = 3:22, digits = c(rep(3,8), rep(5,12)))
 ```
+
+Each row corresponds to one simulation, using $m = 1000$ draws from Weibull survival distributions at a fixed sample size $n \in {10, \dots, 1000}$.
 
 The output columns are:
 
-- `sim`: simulation number ($k$ in the paper, in each simulation we draw $m = 1000$ times from each Weibull distribution)
-- `n`: sample size ($10 - 2000$)
+- `sim`: simulation index ($k$ in the paper)
+- `n`: sample size
 - `{surv|pred|cens|}_{scale|shape}` the scale and shape of the Weibull distributions for true, predicted and censoring times respectively
 - `prop_cens`: proportion of censoring in each simulation
 - `tv_dist`: the total variation distance between the true and the predicted Weibull distribution (closer to 0 means more similar distributions)
-- `{score}_diff`: the mean score difference $\delta$ between true and predicted distribution. Scores used are the **SBS** at the 10, 50 and 90 quantiles of observed times, the **ISBS** from the 5 up to the 80 quantile (50 equidistant time points), the **RCLL** and the **re-weighted rRCLL** (RCLL\*\* in the paper).
-- `{score}_se`: the mean of two squared errors for the (I)SBS scores across the $m = 1000$ distributions (one is when using the true and the other the predicted survival distribution).
+- `{score}_diff`, `{score}_sd`: the mean and standard deviation of the score difference $\delta$ between true and predicted distributions across draws
 
-Calculate violation stats:
+Scoring rules analyzed:
+
+- The **SBS** at the 10th, 50th and 90th percentiles of observed times
+- The **ISBS**, using 50 equidistant points between the 5th and 80th percentile of observed times
+- The **RCLL** and its re-weighted **rRCLL** or **RCLL\*\***
+
+We compute 95% confidence intervals (CIs) for the mean score difference $\delta$ using a $t$-distribution.
+A violation is marked statistically significant if:
+
+- The mean score difference exceeds a threshold: $\delta > 0.001$
+- The CI excludes zero (i.e., $\text{CI}_\text{lower} > 0$)
+
 ```{r}
 res = res |>
   select(!matches("shape|scale|prop_cens|tv_dist"))
 
-# Define a violation threshold
-threshold = 1e-04
+measures = c("SBS_median", "SBS_q10", "SBS_q90", "ISBS", "RCLL", "rRCLL")
+n_distrs = 1000 # `m` value from paper's experiment
+tcrit = qt(0.975, df = n_distrs - 1) # 95% t-test
+threshold = 1e-3
 
-all_stats = res |>
-  group_by(n) |>
+data = measures |>
+  lapply(function(m) {
+    mean_diff_col = paste0(m, "_diff")
+    mean_sd_col = paste0(m, "_sd")
+    
+    res |>
+      select(sim, n, !!mean_diff_col, !!mean_sd_col) |>
+      mutate(
+        se = .data[[mean_sd_col]] / sqrt(n_distrs),
+        CI_lower = .data[[mean_diff_col]] - tcrit * se,
+        CI_upper = .data[[mean_diff_col]] + tcrit * se,
+        signif_violation = .data[[mean_diff_col]] > threshold & CI_lower > 0
+      ) |>
+      select(!se) |>
+      mutate(metric = !!m) |>
+      relocate(metric, .after = 1) |>
+      rename(diff = !!mean_diff_col,
+             sd   = !!mean_sd_col)
+  }) |>
+  bind_rows()
+
+data$metric = factor(
+  data$metric,
+  levels = measures,
+  labels = c("SBS (Median)", "SBS (Q10)", "SBS (Q90)", "ISBS", "RCLL", "RCLL**")
+)
+```
+
+For example, the violation results for the first simulation and $n = 250$ across all scoring rules are:
+```{r}
+data |> 
+  filter(sim == 1, n == 250) |>
+  DT::datatable(rownames = FALSE, options = list(searching = FALSE)) |>
+  formatRound(columns = 4:7, digits = 5)
+```
+
+We summarize violations across simulations, by computing for each score & sample size:
+
+- Number of significant violations
+- Violation rate
+- Average score difference (with 95% CI) among simulations where violations occurred
+
+```{r}
+all_stats = 
+  data |> 
+  group_by(n, metric) |> 
   summarize(
-    total = n(),
-    SBS_median_n_violations = sum(SBS_median_diff > threshold),
-    SBS_median_violation_rate = mean(SBS_median_diff > threshold),
-    SBS_median_diff_mean = mean(SBS_median_diff[SBS_median_diff > threshold]),
-    SBS_q10_n_violations = sum(SBS_q10_diff > threshold),
-    SBS_q10_violation_rate = mean(SBS_q10_diff > threshold),
-    SBS_q10_diff_mean = mean(SBS_q10_diff[SBS_q10_diff > threshold]),
-    SBS_q90_n_violations = sum(SBS_q90_diff > threshold),
-    SBS_q90_violation_rate = mean(SBS_q90_diff > threshold),
-    SBS_q90_diff_mean = mean(SBS_q90_diff[SBS_q90_diff > threshold]),
-    ISBS_n_violations = sum(ISBS_diff > threshold),
-    ISBS_violation_rate = mean(ISBS_diff > threshold),
-    ISBS_diff_mean = mean(ISBS_diff[ISBS_diff > threshold]),
-    RCLL_n_violations = sum(RCLL_diff > threshold),
-    RCLL_violation_rate = mean(RCLL_diff > threshold),
-    rRCLL_n_violations = sum(rRCLL_diff > threshold),
-    rRCLL_violation_rate = mean(rRCLL_diff > threshold),
+    #total = n(),
+    n_violations = sum(signif_violation),
+    violation_rate = mean(signif_violation),
+    diff_mean = mean(diff[signif_violation]),
+    diff_sd = sd(diff[signif_violation]),
     .groups = "drop"
   )
-```
 
-No violations for (r)RCLL:
-```{r}
-all_stats |> 
-  select(n | contains("RCLL")) |>
-  DT::datatable(rownames = FALSE, options = list(searching = FALSE))
-```
+# 95% t-critical value based on average violation count
+get_violation_ci = function(mean, sd, n_viol) {
+  if (n_viol <= 1) return(NA)
+  se = sd / sqrt(n_viol)
+  tcrit = qt(0.975, df = n_viol - 1)
+  diff_CI_lower = mean - tcrit * se
+  diff_CI_upper = mean + tcrit * se
+  tibble(diff_CI_lower, diff_CI_upper)
+}
 
-Violation stats for SBS at different $\tau^*$:
-```{r}
-all_stats |> 
-  select(n | starts_with("SBS")) |>
+all_stats = all_stats |>
+  rowwise() |> 
+  mutate(get_violation_ci(diff_mean, diff_sd, n_violations)) |> 
+  select(!diff_sd) |>
+  ungroup()
+
+all_stats |>
+  arrange(metric) |>
   DT::datatable(rownames = FALSE, options = list(searching = FALSE)) |>
-  formatRound(columns = c(4,7,10), digits = 5)
+  formatRound(columns = 4:7, digits = 5)
 ```
 
-Violation stats for ISBS:
-```{r}
-all_stats |> 
-  select(n | starts_with("ISBS")) |>
-  DT::datatable(rownames = FALSE, options = list(searching = FALSE)) |>
-  formatRound(columns = 4, digits = 5)
-```
+:::{.callout-tip}
+## Summary
 
-To better understand the nature of observed violations, we assess whether they may arise from the inherent variability in score estimates across repeated draws.
-Specifically, for each scoring rule (SBS and ISBS), we compute the proportion of violating simulations in which the standard error (SE) of the score across the $m = 1000$ distributions exceeds the mean score difference observed in that same simulation:
-
-```{r}
-measures = c("SBS_median", "SBS_q10", "SBS_q90", "ISBS")
-
-# per measure
-se_res = lapply(measures, function(measure) {
-  diff_col = paste0(measure, "_diff")
-  se_col = paste0(measure, "_se")
-
-  res |>
-    filter(.data[[diff_col]] > threshold) |> # only simulation with violations
-    mutate(se_diff = .data[[se_col]] >= .data[[diff_col]]) |> # do we have se > delta_score?
-    group_by(n) |>
-    summarise(prop_se_gte_diff = mean(se_diff), .groups = "drop") |>
-    mutate(measure = measure)
-}) |>
-bind_rows() |>
-pivot_wider(names_from = measure, values_from = prop_se_gte_diff, names_prefix = "prop_")
-
-se_res |>
-  DT::datatable(rownames = FALSE, options = list(searching = FALSE)) |>
-  formatRound(columns = 2:5, digits = 3)
-```
-
-We observe that for a significant proportion of simulations, **the standard error of the SBS/ISBS losses across distributions is as large or larger than the observed mean score difference**.
-This supports the interpretation that many violations may stem from statistical noise rather than genuine failures of properness.
+- **RCLL** and **RCLL\*\*** show no violations across any simulation or sample size.
+- **SBS** shows time- and sample-size-dependent violations, mostly at smaller $n$, especially for early evaluation times ($\tau = q_{0.1}$).
+All differences are small (typically < 0.01).
+- **ISBS** showed minor violations only at $n = 10$; none for $n > 50$.
+- For SBS and ISBS, the 95% confidence intervals around the mean score differences in violating simulations had lower bounds that were only marginally above zero.
+This indicates that the violations were barely statistically significant and likely attributable to sampling variability rather than true departures from properness.
+:::
 
 ## Estimating Censoring {-}
 
 :::{.callout-note}
-This sections refers to the results from the simulation experiments of Section 6.3 of the paper.
-The only difference with the previous section is that $S_C(t)$ is now being estimated using the marginal Kaplan-Meier model via `survival::survfit()` instead of using the true Weibull censoring distribution (see [helper.R](https://github.com/survival-org/scoring-rules-2024/blob/main/helper.R).
-For SBS/ISBS we use constant interpolation of the censoring survival distribution $S_C(t)$.
-For rRCLL we use linear interpolation of of $S_C(t)$ to mitigate density estimation issues, i.e. for $f_C(t)$.
+This section supports the results in Section 6.3 of the paper.
+
+The only difference with the previous section is that $S_C(t)$ is now being estimated using the marginal Kaplan-Meier model via `survival::survfit()` instead of using the true Weibull censoring distribution (see [helper.R](https://github.com/survival-org/scoring-rules-2024/blob/main/helper.R)).
+For SBS/ISBS we use *constant interpolation* of the censoring survival distribution $S_C(t)$.
+For RCLL\*\* we use *linear interpolation* of $S_C(t)$ to mitigate density estimation issues, i.e. for $f_C(t)$.
 
 Use [properness_test.R](https://github.com/survival-org/scoring-rules-2024/blob/main/properness_test.R) to run the experiments.
-To ran the script for different sample sizes `n`, use the [run_tests.sh](https://github.com/survival-org/scoring-rules-2024/blob/main/run_tests.sh) script changing to `estimate_cens` to `TRUE`.
-The output results table (merged for all `n`) is available [here](https://github.com/survival-org/scoring-rules-2024/blob/main/results/res_sims10000_distrs1000_1.rds).
+To run for different sample sizes `n`, use [run_tests.sh](https://github.com/survival-org/scoring-rules-2024/blob/main/run_tests.sh), changing `estimate_cens` to `TRUE`.
+ Merged simulation results for all `n` are available [here](https://github.com/survival-org/scoring-rules-2024/blob/main/results/res_sims10000_distrs1000_1.rds).
 :::
 
 Load results (same output columns as in the previous section):
@@ -206,84 +227,82 @@ res = readRDS("results/res_sims10000_distrs1000_1.rds") |>
   select(!matches("shape|scale|prop_cens|tv_dist")) # remove columns
 ```
 
-Calculate violation stats:
+As before, we compute 95% confidence intervals for the score differences across $m = 1000$ draws per simulation:
 ```{r}
-# Define a violation threshold
-threshold = 1e-04
+measures = c("SBS_median", "SBS_q10", "SBS_q90", "ISBS", "RCLL", "rRCLL")
+n_distrs = 1000 # `m` value from paper's experiment
+tcrit = qt(0.975, df = n_distrs - 1) # 95% t-test
+threshold = 1e-3
 
-all_stats = res |>
-  group_by(n) |>
+data = measures |>
+  lapply(function(m) {
+    mean_diff_col = paste0(m, "_diff")
+    mean_sd_col = paste0(m, "_sd")
+    
+    res |>
+      select(sim, n, !!mean_diff_col, !!mean_sd_col) |>
+      mutate(
+        se = .data[[mean_sd_col]] / sqrt(n_distrs),
+        CI_lower = .data[[mean_diff_col]] - tcrit * se,
+        CI_upper = .data[[mean_diff_col]] + tcrit * se,
+        signif_violation = .data[[mean_diff_col]] > threshold & CI_lower > 0
+      ) |>
+      select(!se) |>
+      mutate(metric = !!m) |>
+      relocate(metric, .after = 1) |>
+      rename(diff = !!mean_diff_col,
+             sd   = !!mean_sd_col)
+  }) |>
+  bind_rows()
+
+data$metric = factor(
+  data$metric,
+  levels = measures,
+  labels = c("SBS (Median)", "SBS (Q10)", "SBS (Q90)", "ISBS", "RCLL", "RCLL**")
+)
+```
+
+Lastly, we summarize the significant violations across sample sizes and scoring rules:
+```{r}
+all_stats = 
+  data |> 
+  group_by(n, metric) |> 
   summarize(
-    total = n(),
-    SBS_median_n_violations = sum(SBS_median_diff > threshold),
-    SBS_median_violation_rate = mean(SBS_median_diff > threshold),
-    SBS_median_diff_mean = mean(SBS_median_diff[SBS_median_diff > threshold]),
-    SBS_q10_n_violations = sum(SBS_q10_diff > threshold),
-    SBS_q10_violation_rate = mean(SBS_q10_diff > threshold),
-    SBS_q10_diff_mean = mean(SBS_q10_diff[SBS_q10_diff > threshold]),
-    SBS_q90_n_violations = sum(SBS_q90_diff > threshold),
-    SBS_q90_violation_rate = mean(SBS_q90_diff > threshold),
-    SBS_q90_diff_mean = mean(SBS_q90_diff[SBS_q90_diff > threshold]),
-    ISBS_n_violations = sum(ISBS_diff > threshold),
-    ISBS_violation_rate = mean(ISBS_diff > threshold),
-    ISBS_diff_mean = mean(ISBS_diff[ISBS_diff > threshold]),
-    RCLL_n_violations = sum(RCLL_diff > threshold),
-    RCLL_violation_rate = mean(RCLL_diff > threshold),
-    rRCLL_n_violations = sum(rRCLL_diff > threshold),
-    rRCLL_violation_rate = mean(rRCLL_diff > threshold),
+    #total = n(),
+    n_violations = sum(signif_violation),
+    violation_rate = mean(signif_violation),
+    diff_mean = mean(diff[signif_violation]),
+    diff_sd = sd(diff[signif_violation]),
     .groups = "drop"
   )
-```
 
-No violations for (r)RCLL:
-```{r}
-all_stats |> 
-  select(n | contains("RCLL")) |>
-  DT::datatable(rownames = FALSE, options = list(searching = FALSE))
-```
+# 95% t-critical value based on average violation count
+get_violation_ci = function(mean, sd, n_viol) {
+  if (n_viol <= 1) return(NA)
+  se = sd / sqrt(n_viol)
+  tcrit = qt(0.975, df = n_viol - 1)
+  diff_CI_lower = mean - tcrit * se
+  diff_CI_upper = mean + tcrit * se
+  tibble(diff_CI_lower, diff_CI_upper)
+}
 
-Violation stats for SBS at different $\tau^*$:
-```{r}
-all_stats |> 
-  select(n | starts_with("SBS")) |>
+all_stats = all_stats |>
+  rowwise() |> 
+  mutate(get_violation_ci(diff_mean, diff_sd, n_violations)) |> 
+  select(!diff_sd) |>
+  ungroup()
+
+all_stats |>
+  arrange(metric) |>
   DT::datatable(rownames = FALSE, options = list(searching = FALSE)) |>
-  formatRound(columns = c(4,7,10), digits = 5)
+  formatRound(columns = 4:7, digits = 5)
 ```
 
-Violation stats for ISBS:
-```{r}
-all_stats |> 
-  select(n | starts_with("ISBS")) |>
-  DT::datatable(rownames = FALSE, options = list(searching = FALSE)) |>
-  formatRound(columns = 4, digits = 5)
-```
+:::{.callout-tip}
+## Summary
 
-As in the previous experiment, we assess whether violations could be explained by variability in score estimates.
-For each scoring rule, we again compute the proportion of violating simulations where the standard error exceeds the observed mean score difference:
-```{r}
-measures = c("SBS_median", "SBS_q10", "SBS_q90", "ISBS")
-
-# per measure
-se_res = lapply(measures, function(measure) {
-  diff_col = paste0(measure, "_diff")
-  se_col = paste0(measure, "_se")
-
-  res |>
-    filter(.data[[diff_col]] > threshold) |> # only simulation with violations
-    mutate(se_diff = .data[[se_col]] >= .data[[diff_col]]) |> # do we have se > delta_score?
-    group_by(n) |>
-    summarise(prop_se_gte_diff = mean(se_diff), .groups = "drop") |>
-    mutate(measure = measure)
-}) |>
-bind_rows() |>
-pivot_wider(names_from = measure, values_from = prop_se_gte_diff, names_prefix = "prop_")
-
-se_res |>
-  DT::datatable(rownames = FALSE, options = list(searching = FALSE)) |>
-  formatRound(columns = 2:5, digits = 3)
-```
-
-We again observe that for a significant proportion of simulations, **the SE of the SBS/ISBS losses across distributions is larger or equal to the mean score difference**, providing evidence that some of these violations are a result of the variability of the scores.
+Estimating $S_C(t)$ via Kaplan-Meier produced nearly identical results to using the true distribution, with no violations for RCLL/RCLL** and only small-sample effects for SBS and ISBS.
+:::
 
 ## Degenerate Model Exploits ISBS Scoring Rule {-}
 

@@ -203,8 +203,6 @@ all_stats |>
 - **SBS** shows time- and sample-size-dependent violations, mostly at smaller $n$, especially for early evaluation times ($\tau = q_{0.1}$).
 All differences are small (typically < 0.01).
 - **ISBS** showed minor violations only at $n = 10$; none for $n > 50$.
-- For SBS and ISBS, the 95% confidence intervals around the mean score differences in violating simulations had lower bounds that were only marginally above zero.
-This indicates that the violations were barely statistically significant and likely attributable to sampling variability rather than true departures from properness.
 :::
 
 ## Table D2 {-}
@@ -465,6 +463,7 @@ Below we show the aggregated performance metrics across all tasks and learners:
 res = readRDS("results/rrcll_bm.rds")
 
 res |>
+  rename(`RCLL**` = RRCLL) |>
   DT::datatable(rownames = FALSE, options = list(searching = FALSE)) |>
   formatRound(columns = 3:7, digits = 3) |>
   formatSignif(columns = 6, digits = 3) # scientific notation for surv.dcalib
@@ -473,17 +472,17 @@ res |>
 :::{.callout-tip}
 ## Summary
 
-Our experiment demonstrates substantial divergences in model assessment depending on the chosen metric. Although **RCLL\*** is the only proper scoring rule in a theoretical sense, its practical behavior differs meaningfully from other commonly used metrics.
+Our experiment demonstrates substantial divergences in model assessment depending on the chosen metric.
+Although **RCLL\*** is the only proper scoring rule in a theoretical sense, its practical behavior differs meaningfully from other commonly used metrics.
 
-We find notable inconsistency in model rankings: while **RCLL\*** sometimes selects CoxPH, it also favors RSF in several datasets - particularly those known to violate the proportional hazards assumption.
-In contrast, **RCLL/ISBS** overwhelmingly prefers CoxPH, suggesting these metrics may be less sensitive to non-PH effects or complex hazard structures.
+For instance, on datasets such as `veteran` and `whas`, which exhibit non-proportional hazards, RSF is more suitable to model non-linear effects compared to the CoxPH.
+In these cases, RCLL** correctly identifies RSF as superior, whereas RCLL and ISBS still prefer CoxPH — suggesting potential practical limitations of the latter metrics in such settings.
 
-Notably, RCLL\* correlates with RCLL ($r = 0.63$) and more moderately with ISBS ($r = 0.54$), indicating some underlying coherence.
+Additionally, RCLL** appears to better capture both discrimination and calibration.
+In the `gbcs` dataset, CoxPH achieves the best RCLL, ISBS and C-index scores, yet shows extremely poor calibration ($\text{D-calib} \approx 15.7$), while RCLL** ranks Kaplan-Meier as the best — possibly reflecting better-calibrated risk estimates.
+This discrepancy becomes even more pronounced in the `lung` dataset, where CoxPH again yields high RCLL/C-index/ISBS performance despite severe calibration failure ($\text{D-calib} \approx 23.5$), whereas RCLL** selects RSF instead.
 
-For example, on the **veteran** and **whas** datasets, which exhibit pronounced non-proportional hazards, the CoxPH model is theoretically misspecified while RSF is more suitable to model non-linear effects.
-Here, **RCLL\*** appropriately identifies RSF as superior, whereas RCLL and ISBS still prefer CoxPH - demonstrating potential practical limitations of the latter metrics in such settings.
-
-These findings highlight a critical need for further research: not all metrics labeled as "proper" in theory are equally discerning in real applications.
+These findings highlight a critical need for further research: not all metrics labeled as "proper" in theory behave equally in practice.
 :::
 
 ## R session info {-}

@@ -63,10 +63,10 @@ pw = mapply(function(shape,scale) pweibull(seq.int(1,5,0.1), shape,scale, lower.
 # ggsave("weibull_plots.png", device = png, dpi=600, width =7, height = 4)
 ```
 
-## Theoretical vs Practical Properness {-}
+## Table D1 {-}
 
 :::{.callout-note}
-This section supports the results in Section 6.2 of the paper.
+This section supports the "Simulation Experiments" section of the paper.
 
 Use [properness_test.R](https://github.com/survival-org/scoring-rules-2024/blob/main/properness_test.R) to run the experiments.
 To run for different sample sizes `n`, use [run_tests.sh](https://github.com/survival-org/scoring-rules-2024/blob/main/run_tests.sh).
@@ -207,12 +207,10 @@ All differences are small (typically < 0.01).
 This indicates that the violations were barely statistically significant and likely attributable to sampling variability rather than true departures from properness.
 :::
 
-## Estimating Censoring {-}
+## Table D2 {-}
 
 :::{.callout-note}
-This section supports the results in Section 6.3 of the paper.
-
-The only difference with the previous section is that $S_C(t)$ is now being estimated using the marginal Kaplan-Meier model via `survival::survfit()` instead of using the true Weibull censoring distribution (see [helper.R](https://github.com/survival-org/scoring-rules-2024/blob/main/helper.R)).
+The only difference with the previous experiment is that $S_C(t)$ is now being estimated using the marginal Kaplan-Meier model via `survival::survfit()` instead of using the true Weibull censoring distribution (see [helper.R](https://github.com/survival-org/scoring-rules-2024/blob/main/helper.R)).
 For SBS/ISBS we use *constant interpolation* of the censoring survival distribution $S_C(t)$.
 For RCLL\*\* we use *linear interpolation* of $S_C(t)$ to mitigate density estimation issues, i.e. for $f_C(t)$.
 
@@ -419,7 +417,75 @@ df |>
   formatSignif(columns = 3, digits = 3) # scientific notation for surv.dcalib
 ```
 
-And we see the degenerate model performs the best with respect to ISBS and SBS at the 75% quantile of observed times, but worse with respect to all other measures.
+:::{.callout-tip}
+## Summary
+
+And we see the degenerate model performs the best with respect to ISBS, but worse with respect to all other measures.
+:::
+
+## Real-World Benchmark Evaluation {-}
+
+:::{.callout-note}
+To run the experiment use [rrcll_benchmark.R](https://github.com/survival-org/scoring-rules-2024/blob/main/rrcll_benchmark.R).
+:::
+
+We assess the performance of several survival scoring rules (RCLL, RCLL\*\*, ISBS, D-calibration, Harrell’s C-index) on real-world survival datasets using the `mlr3proba` framework, tested with 10 repetitions of 5-fold cross-validation on the following learners:
+
+- Kaplan-Meier (non-parametric)
+- Cox proportional hazards model
+- Random survival forests (RSF)
+
+```{r, echo = TRUE, eval = FALSE}
+# (normal) RCLL
+rcll = msr("surv.rrcll", id = "RCLL", proper = FALSE)
+# (re-weighted) rRCLL/RCLL**
+rrcll = msr("surv.rrcll", id = "RRCLL", proper = TRUE)
+
+# get all survival tasks in mlr3proba
+keys = as.data.table(mlr_tasks)[task_type == "surv"][["key"]]
+tasks = lapply(keys, function(key) {
+  tsk(key)
+})
+
+set.seed(42)
+bm_grid = benchmark_grid(
+  tasks = tasks,
+  learners = lrns(c("surv.kaplan", "surv.ranger", "surv.coxph")),
+  resamplings = rsmp("repeated_cv", folds = 5)
+)
+
+bm = benchmark(bm_grid)
+res = bm$aggregate(
+  measures = c(rcll, rrcll, msr("surv.cindex"), msr("surv.dcalib"), msr("surv.graf"))
+)
+```
+
+Below we show the aggregated performance metrics across all tasks and learners:
+```{r}
+res = readRDS("results/rrcll_bm.rds")
+
+res |>
+  DT::datatable(rownames = FALSE, options = list(searching = FALSE)) |>
+  formatRound(columns = 3:7, digits = 3) |>
+  formatSignif(columns = 6, digits = 3) # scientific notation for surv.dcalib
+```
+
+:::{.callout-tip}
+## Summary
+
+Our experiment demonstrates substantial divergences in model assessment depending on the chosen metric. Although **RCLL\*\*** is the only proper scoring rule in a theoretical sense, its practical behavior differs meaningfully from other commonly used metrics.
+
+We find notable inconsistency in model rankings: while **RCLL\*\*** sometimes selects CoxPH, it also favors RSF in several datasets - particularly those known to violate the proportional hazards assumption.
+In contrast, **RCLL/ISBS** overwhelmingly prefers CoxPH, suggesting these metrics may be less sensitive to non-PH effects or complex hazard structures.
+
+Notably, RCLL\*\* correlates with RCLL ($r = 0.63$) and more moderately with ISBS ($r = 0.54$), indicating some underlying coherence, yet differences in selected models remain and can be substantial.
+
+For example, on the **veteran** dataset (Grambsch and Therneau 1994), which exhibits pronounced non-proportional hazards, the CoxPH model is theoretically misspecified while RSF is more suitable to model non-linear and time-varying effects.
+Here, **RCLL\*\*** appropriately identifies RSF as superior, whereas RCLL and ISBS still prefer CoxPH - demonstrating the practical limitations of the latter metrics in such settings.
+
+These findings highlight a critical need for further research: not all metrics labeled as "proper" in theory are equally discerning in real applications, especially under model misspecification.
+Future work should further investigate which scoring rules are most robust and informative for complex survival data.
+:::
 
 ## R session info {-}
 

@@ -463,7 +463,7 @@ Below we show the aggregated performance metrics across all tasks and learners:
 res = readRDS("results/rrcll_bm.rds")
 
 res |>
-  rename(`RCLL**` = RRCLL) |>
+  rename(`RCLL*` = RRCLL) |>
   DT::datatable(rownames = FALSE, options = list(searching = FALSE)) |>
   formatRound(columns = 3:7, digits = 3) |>
   formatSignif(columns = 6, digits = 3) # scientific notation for surv.dcalib
@@ -476,7 +476,7 @@ Our experiment demonstrates substantial divergences in model assessment dependin
 Although **RCLL\*** is the only proper scoring rule in a theoretical sense, its practical behavior differs meaningfully from other commonly used metrics.
 
 For instance, on datasets such as `veteran` and `whas`, which exhibit non-proportional hazards, RSF is more suitable to model non-linear effects compared to the CoxPH.
-In these cases, RCLL** correctly identifies RSF as superior, whereas RCLL and ISBS still prefer CoxPH — suggesting potential practical limitations of the latter metrics in such settings.
+In these cases, RCLL** identifies RSF as superior, whereas RCLL and ISBS still prefer CoxPH — suggesting potential practical limitations of the latter metrics in such settings.
 
 Additionally, RCLL** appears to better capture both discrimination and calibration.
 In the `gbcs` dataset, CoxPH achieves the best RCLL, ISBS and C-index scores, yet shows extremely poor calibration ($\text{D-calib} \approx 15.7$), while RCLL** ranks Kaplan-Meier as the best — possibly reflecting better-calibrated risk estimates.

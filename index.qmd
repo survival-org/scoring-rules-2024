@@ -102,7 +102,7 @@ Scoring rules analyzed:
 
 - The **SBS** at the 10th, 50th and 90th percentiles of observed times
 - The **ISBS**, using 50 equidistant points between the 5th and 80th percentile of observed times
-- The **RCLL** and its re-weighted **rRCLL** or **RCLL\*\***
+- The **RCLL** and its re-weighted **rRCLL** (**RCLL\*** in the paper)
 
 We compute 95% confidence intervals (CIs) for the mean score difference $\delta$ using a $t$-distribution.
 A violation is marked statistically significant if:
@@ -143,7 +143,7 @@ data = measures |>
 data$metric = factor(
   data$metric,
   levels = measures,
-  labels = c("SBS (Median)", "SBS (Q10)", "SBS (Q90)", "ISBS", "RCLL", "RCLL**")
+  labels = c("SBS (Median)", "SBS (Q10)", "SBS (Q90)", "ISBS", "RCLL", "RCLL*")
 )
 ```
 
@@ -199,7 +199,7 @@ all_stats |>
 :::{.callout-tip}
 ## Summary
 
-- **RCLL** and **RCLL\*\*** show no violations across any simulation or sample size.
+- **RCLL** and **RCLL\*** show no violations across any simulation or sample size.
 - **SBS** shows time- and sample-size-dependent violations, mostly at smaller $n$, especially for early evaluation times ($\tau = q_{0.1}$).
 All differences are small (typically < 0.01).
 - **ISBS** showed minor violations only at $n = 10$; none for $n > 50$.
@@ -212,7 +212,7 @@ This indicates that the violations were barely statistically significant and lik
 :::{.callout-note}
 The only difference with the previous experiment is that $S_C(t)$ is now being estimated using the marginal Kaplan-Meier model via `survival::survfit()` instead of using the true Weibull censoring distribution (see [helper.R](https://github.com/survival-org/scoring-rules-2024/blob/main/helper.R)).
 For SBS/ISBS we use *constant interpolation* of the censoring survival distribution $S_C(t)$.
-For RCLL\*\* we use *linear interpolation* of $S_C(t)$ to mitigate density estimation issues, i.e. for $f_C(t)$.
+For RCLL\* we use *linear interpolation* of $S_C(t)$ to mitigate density estimation issues, i.e. for $f_C(t)$.
 
 Use [properness_test.R](https://github.com/survival-org/scoring-rules-2024/blob/main/properness_test.R) to run the experiments.
 To run for different sample sizes `n`, use [run_tests.sh](https://github.com/survival-org/scoring-rules-2024/blob/main/run_tests.sh), changing `estimate_cens` to `TRUE`.
@@ -429,7 +429,7 @@ And we see the degenerate model performs the best with respect to ISBS, but wors
 To run the experiment use [rrcll_benchmark.R](https://github.com/survival-org/scoring-rules-2024/blob/main/rrcll_benchmark.R).
 :::
 
-We assess the performance of several survival scoring rules (RCLL, RCLL\*\*, ISBS, D-calibration, Harrell’s C-index) on real-world survival datasets using the `mlr3proba` framework, tested with 10 repetitions of 5-fold cross-validation on the following learners:
+We assess the performance of several survival scoring rules (RCLL, RCLL\*, ISBS, D-calibration, Harrell’s C-index) on real-world survival datasets using the `mlr3proba` framework, tested with 10 repetitions of 5-fold cross-validation on the following learners:
 
 - Kaplan-Meier (non-parametric)
 - Cox proportional hazards model
@@ -473,15 +473,15 @@ res |>
 :::{.callout-tip}
 ## Summary
 
-Our experiment demonstrates substantial divergences in model assessment depending on the chosen metric. Although **RCLL\*\*** is the only proper scoring rule in a theoretical sense, its practical behavior differs meaningfully from other commonly used metrics.
+Our experiment demonstrates substantial divergences in model assessment depending on the chosen metric. Although **RCLL\*** is the only proper scoring rule in a theoretical sense, its practical behavior differs meaningfully from other commonly used metrics.
 
-We find notable inconsistency in model rankings: while **RCLL\*\*** sometimes selects CoxPH, it also favors RSF in several datasets - particularly those known to violate the proportional hazards assumption.
+We find notable inconsistency in model rankings: while **RCLL\*** sometimes selects CoxPH, it also favors RSF in several datasets - particularly those known to violate the proportional hazards assumption.
 In contrast, **RCLL/ISBS** overwhelmingly prefers CoxPH, suggesting these metrics may be less sensitive to non-PH effects or complex hazard structures.
 
-Notably, RCLL\*\* correlates with RCLL ($r = 0.63$) and more moderately with ISBS ($r = 0.54$), indicating some underlying coherence.
+Notably, RCLL\* correlates with RCLL ($r = 0.63$) and more moderately with ISBS ($r = 0.54$), indicating some underlying coherence.
 
 For example, on the **veteran** and **whas** datasets, which exhibit pronounced non-proportional hazards, the CoxPH model is theoretically misspecified while RSF is more suitable to model non-linear effects.
-Here, **RCLL\*\*** appropriately identifies RSF as superior, whereas RCLL and ISBS still prefer CoxPH - demonstrating potential practical limitations of the latter metrics in such settings.
+Here, **RCLL\*** appropriately identifies RSF as superior, whereas RCLL and ISBS still prefer CoxPH - demonstrating potential practical limitations of the latter metrics in such settings.
 
 These findings highlight a critical need for further research: not all metrics labeled as "proper" in theory are equally discerning in real applications.
 :::

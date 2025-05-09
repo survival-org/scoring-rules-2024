@@ -128,7 +128,6 @@ bm = benchmark(bm_grid)
 res = bm$aggregate(c(rcll, rrcll, msr("surv.cindex"), msr("surv.dcalib"), msr("surv.graf")))
 
 # store results
-res =
-  data.table::as.data.table(res) |>
+res = data.table::as.data.table(res) |>
   dplyr::select(task_id, learner_id, RCLL, RRCLL, surv.cindex, surv.dcalib, surv.graf)
 saveRDS(res, file = "results/rrcll_bm.rds")

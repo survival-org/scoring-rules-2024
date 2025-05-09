@@ -478,13 +478,12 @@ Our experiment demonstrates substantial divergences in model assessment dependin
 We find notable inconsistency in model rankings: while **RCLL\*\*** sometimes selects CoxPH, it also favors RSF in several datasets - particularly those known to violate the proportional hazards assumption.
 In contrast, **RCLL/ISBS** overwhelmingly prefers CoxPH, suggesting these metrics may be less sensitive to non-PH effects or complex hazard structures.
 
-Notably, RCLL\*\* correlates with RCLL ($r = 0.63$) and more moderately with ISBS ($r = 0.54$), indicating some underlying coherence, yet differences in selected models remain and can be substantial.
+Notably, RCLL\*\* correlates with RCLL ($r = 0.63$) and more moderately with ISBS ($r = 0.54$), indicating some underlying coherence.
 
-For example, on the **veteran** dataset (Grambsch and Therneau 1994), which exhibits pronounced non-proportional hazards, the CoxPH model is theoretically misspecified while RSF is more suitable to model non-linear and time-varying effects.
-Here, **RCLL\*\*** appropriately identifies RSF as superior, whereas RCLL and ISBS still prefer CoxPH - demonstrating the practical limitations of the latter metrics in such settings.
+For example, on the **veteran** and **whas** datasets, which exhibit pronounced non-proportional hazards, the CoxPH model is theoretically misspecified while RSF is more suitable to model non-linear effects.
+Here, **RCLL\*\*** appropriately identifies RSF as superior, whereas RCLL and ISBS still prefer CoxPH - demonstrating potential practical limitations of the latter metrics in such settings.
 
-These findings highlight a critical need for further research: not all metrics labeled as "proper" in theory are equally discerning in real applications, especially under model misspecification.
-Future work should further investigate which scoring rules are most robust and informative for complex survival data.
+These findings highlight a critical need for further research: not all metrics labeled as "proper" in theory are equally discerning in real applications.
 :::
 
 ## R session info {-}

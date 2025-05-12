@@ -254,7 +254,7 @@ data = measures |>
 data$metric = factor(
   data$metric,
   levels = measures,
-  labels = c("SBS (Median)", "SBS (Q10)", "SBS (Q90)", "ISBS", "RCLL", "RCLL**")
+  labels = c("SBS (Median)", "SBS (Q10)", "SBS (Q90)", "ISBS", "RCLL", "RCLL*")
 )
 ```
 
@@ -297,7 +297,7 @@ all_stats |>
 :::{.callout-tip}
 ## Summary
 
-Estimating $S_C(t)$ via Kaplan-Meier produced nearly identical results to using the true distribution, with no violations for RCLL/RCLL** and only small-sample effects for SBS and ISBS.
+Estimating $S_C(t)$ via Kaplan-Meier produced nearly identical results to using the true distribution, with no violations for RCLL/RCLL* and only small-sample effects for SBS and ISBS.
 :::
 
 ## Degenerate Model Exploits ISBS Scoring Rule {-}
@@ -436,7 +436,7 @@ We assess the performance of several survival scoring rules (RCLL, RCLL\*, ISBS,
 ```{r, echo = TRUE, eval = FALSE}
 # (normal) RCLL
 rcll = msr("surv.rrcll", id = "RCLL", proper = FALSE)
-# (re-weighted) rRCLL/RCLL**
+# (re-weighted) rRCLL/RCLL*
 rrcll = msr("surv.rrcll", id = "RRCLL", proper = TRUE)
 
 # get all survival tasks in mlr3proba
@@ -476,11 +476,11 @@ Our experiment demonstrates substantial divergences in model assessment dependin
 Although **RCLL\*** is the only proper scoring rule in a theoretical sense, its practical behavior differs meaningfully from other commonly used metrics.
 
 For instance, on datasets such as `veteran` and `whas`, which exhibit non-proportional hazards, RSF is more suitable to model non-linear effects compared to the CoxPH.
-In these cases, RCLL** identifies RSF as superior, whereas RCLL and ISBS still prefer CoxPH — suggesting potential practical limitations of the latter metrics in such settings.
+In these cases, RCLL* identifies RSF as superior, whereas RCLL and ISBS still prefer CoxPH — suggesting potential practical limitations of the latter metrics in such settings.
 
-Additionally, RCLL** appears to better capture both discrimination and calibration.
-In the `gbcs` dataset, CoxPH achieves the best RCLL, ISBS and C-index scores, yet shows extremely poor calibration ($\text{D-calib} \approx 15.7$), while RCLL** ranks Kaplan-Meier as the best — possibly reflecting better-calibrated risk estimates.
-This discrepancy becomes even more pronounced in the `lung` dataset, where CoxPH again yields high RCLL/C-index/ISBS performance despite severe calibration failure ($\text{D-calib} \approx 23.5$), whereas RCLL** selects RSF instead.
+Additionally, RCLL* appears to better capture both discrimination and calibration.
+In the `gbcs` dataset, CoxPH achieves the best RCLL, ISBS and C-index scores, yet shows extremely poor calibration ($\text{D-calib} \approx 15.7$), while RCLL* ranks Kaplan-Meier as the best — possibly reflecting better-calibrated risk estimates.
+This discrepancy becomes even more pronounced in the `lung` dataset, where CoxPH again yields high RCLL/C-index/ISBS performance despite severe calibration failure ($\text{D-calib} \approx 23.5$), whereas RCLL* selects RSF instead.
 
 These findings highlight a critical need for further research: not all metrics labeled as "proper" in theory behave equally in practice.
 :::

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="John Zobolas">
-<meta name="dcterms.date" content="2025-05-13">
+<meta name="dcterms.date" content="2025-05-15">
 <meta name="description" content="Supporting information for paper ‘Examining properness in the external validation of survival models with squared and logarithmic losses’">
 
 <title>Supplementary Material</title>
@@ -210,7 +210,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 13, 2025</p>
+      <p class="date">May 15, 2025</p>
     </div>
   </div>
   
@@ -237,23 +237,24 @@ window.Quarto = {
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>shape <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">10</span>, <span class="fl">0.5</span>, <span class="dv">5</span>)</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>scale <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">10</span>, <span class="fl">0.5</span>, <span class="dv">5</span>)</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>dw <span class="ot">=</span> <span class="fu">mapply</span>(<span class="cf">function</span>(shape,scale) <span class="fu">dweibull</span>(<span class="fu">seq.int</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="fl">0.1</span>), shape,scale),shape,scale) <span class="sc">%&gt;%</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  reshape2<span class="sc">::</span><span class="fu">melt</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>dw <span class="ot">=</span> <span class="fu">mapply</span>(<span class="cf">function</span>(shape,scale) <span class="fu">dweibull</span>(<span class="fu">seq.int</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="fl">0.1</span>), shape,scale),shape,scale) <span class="sc">|&gt;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  reshape2<span class="sc">::</span><span class="fu">melt</span>() <span class="sc">|&gt;</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">x =</span> <span class="fu">rep</span>(<span class="fu">seq.int</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="fl">0.1</span>), <span class="dv">10</span>),</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">group =</span> <span class="fu">rep</span>(<span class="fu">sprintf</span>(<span class="st">"(%.2f,%.2f)"</span>,shape,scale), <span class="at">each =</span> <span class="dv">41</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">group =</span> <span class="fu">rep</span>(<span class="fu">sprintf</span>(<span class="st">"(%.2f,%.2f)"</span>,shape,scale), <span class="at">each =</span> <span class="dv">41</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(x, group, value)</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>pw <span class="ot">=</span> <span class="fu">mapply</span>(<span class="cf">function</span>(shape,scale) <span class="fu">pweibull</span>(<span class="fu">seq.int</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="fl">0.1</span>), shape,scale, <span class="at">lower.tail=</span>F),shape,scale) <span class="sc">%&gt;%</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  reshape2<span class="sc">::</span><span class="fu">melt</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>pw <span class="ot">=</span> <span class="fu">mapply</span>(<span class="cf">function</span>(shape,scale) <span class="fu">pweibull</span>(<span class="fu">seq.int</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="fl">0.1</span>), shape,scale, <span class="at">lower.tail=</span>F),shape,scale) <span class="sc">|&gt;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  reshape2<span class="sc">::</span><span class="fu">melt</span>() <span class="sc">|&gt;</span></span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">x =</span> <span class="fu">rep</span>(<span class="fu">seq.int</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="fl">0.1</span>), <span class="dv">10</span>),</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">group =</span> <span class="fu">rep</span>(<span class="fu">sprintf</span>(<span class="st">"(%.2f,%.2f)"</span>,shape,scale), <span class="at">each =</span> <span class="dv">41</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">group =</span> <span class="fu">rep</span>(<span class="fu">sprintf</span>(<span class="st">"(%.2f,%.2f)"</span>,shape,scale), <span class="at">each =</span> <span class="dv">41</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(x, group, value)</span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>(<span class="fu">ggplot</span>(dw, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> value, <span class="at">group =</span> group, <span class="at">color =</span> group)) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"f(x)"</span>)) <span class="sc">/</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  (<span class="fu">ggplot</span>(pw, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> value, <span class="at">group =</span> group, <span class="at">color =</span> group)) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"S(x)"</span>)) <span class="sc">+</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>(<span class="fu">ggplot</span>(pw, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> value, <span class="at">group =</span> group, <span class="at">color =</span> group)) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"S(x)"</span>)) <span class="sc">+</span></span>
 <span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_layout</span>(<span class="at">guides=</span><span class="st">'collect'</span>) <span class="sc">&amp;</span></span>
 <span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">&amp;</span></span>
 <span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">&amp;</span></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">title=</span><span class="st">'(α,σ)'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">title=</span><span class="st">'(α,σ)'</span>)) <span class="sc">&amp;</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_viridis_d</span>(<span class="at">option =</span> <span class="st">"turbo"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -853,11 +854,11 @@ loaded via a namespace (and not attached):
 [55] utf8_1.2.4            future.apply_1.11.3   withr_3.0.2          
 [58] scales_1.3.0          backports_1.5.0       ooplah_0.2.0         
 [61] rmarkdown_2.29        globals_0.16.3        distr6_1.8.4         
-[64] evaluate_1.0.3        knitr_1.49            dictionar6_0.1.3     
-[67] mlr3misc_0.16.0       rlang_1.1.4           Rcpp_1.0.13-1        
-[70] glue_1.8.0            param6_0.2.4          palmerpenguins_0.1.1 
-[73] rstudioapi_0.17.1     jsonlite_1.8.9        lgr_0.4.4            
-[76] plyr_1.8.9           </code></pre>
+[64] evaluate_1.0.3        knitr_1.49            viridisLite_0.4.2    
+[67] dictionar6_0.1.3      mlr3misc_0.16.0       rlang_1.1.4          
+[70] Rcpp_1.0.13-1         glue_1.8.0            param6_0.2.4         
+[73] palmerpenguins_0.1.1  rstudioapi_0.17.1     jsonlite_1.8.9       
+[76] lgr_0.4.4             plyr_1.8.9           </code></pre>
 </div>
 </div>
 

@@ -42,23 +42,24 @@ set.seed(20250408)
 shape = runif(10, 0.5, 5)
 scale = runif(10, 0.5, 5)
 
-dw = mapply(function(shape,scale) dweibull(seq.int(1,5,0.1), shape,scale),shape,scale) %>%
-  reshape2::melt() %>%
+dw = mapply(function(shape,scale) dweibull(seq.int(1,5,0.1), shape,scale),shape,scale) |>
+  reshape2::melt() |>
   mutate(x = rep(seq.int(1,5,0.1), 10),
-        group = rep(sprintf("(%.2f,%.2f)",shape,scale), each = 41)) %>%
+        group = rep(sprintf("(%.2f,%.2f)",shape,scale), each = 41)) |>
   select(x, group, value)
-pw = mapply(function(shape,scale) pweibull(seq.int(1,5,0.1), shape,scale, lower.tail=F),shape,scale) %>%
-  reshape2::melt() %>%
+pw = mapply(function(shape,scale) pweibull(seq.int(1,5,0.1), shape,scale, lower.tail=F),shape,scale) |>
+  reshape2::melt() |>
   mutate(x = rep(seq.int(1,5,0.1), 10),
-        group = rep(sprintf("(%.2f,%.2f)",shape,scale), each = 41)) %>%
+        group = rep(sprintf("(%.2f,%.2f)",shape,scale), each = 41)) |>
   select(x, group, value)
 
 (ggplot(dw, aes(x = x, y = value, group = group, color = group)) + ylab("f(x)")) /
-  (ggplot(pw, aes(x = x, y = value, group = group, color = group)) + ylab("S(x)")) +
+(ggplot(pw, aes(x = x, y = value, group = group, color = group)) + ylab("S(x)")) +
   plot_layout(guides='collect') &
   geom_line() &
   theme_classic() &
-  guides(color = guide_legend(title='(α,σ)'))
+  guides(color = guide_legend(title='(α,σ)')) &
+  scale_color_viridis_d(option = "turbo")
 
 # ggsave("weibull_plots.png", device = png, dpi=600, width =7, height = 4)
 ```

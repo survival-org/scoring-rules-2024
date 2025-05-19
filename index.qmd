@@ -97,7 +97,7 @@ The output columns are:
 - `{surv|pred|cens|}_{scale|shape}` the scale and shape of the Weibull distributions for true, predicted and censoring times respectively
 - `prop_cens`: proportion of censoring in each simulation
 - `tv_dist`: the total variation distance between the true and the predicted Weibull distribution (closer to 0 means more similar distributions)
-- `{score}_diff`, `{score}_sd`: the mean and standard deviation of the score difference $\delta$ between true and predicted distributions across draws
+- `{score}_diff`, `{score}_sd`: the mean and standard deviation of the score difference $D$ between true and predicted distributions across draws
 
 Scoring rules analyzed:
 
@@ -105,10 +105,10 @@ Scoring rules analyzed:
 - The **ISBS**, using 50 equidistant points between the 5th and 80th percentile of observed times
 - The **RCLL** and its re-weighted **rRCLL** (**RCLL\*** in the paper)
 
-We compute 95% confidence intervals (CIs) for the mean score difference $\delta$ using a $t$-distribution.
+We compute 95% confidence intervals (CIs) for the mean score difference $D$ using a $t$-distribution.
 A violation is marked statistically significant if:
 
-- The mean score difference exceeds a threshold: $\delta > 0.001$
+- The mean score difference exceeds a threshold: $\bar{D} > 0.001$
 - The CI excludes zero (i.e., $\text{CI}_\text{lower} > 0$)
 
 ```{r}
@@ -160,41 +160,32 @@ We summarize violations across simulations, by computing for each score & sample
 
 - Number of significant violations
 - Violation rate
-- Average score difference (with 95% CI) among simulations where violations occurred
+- Average, median, min and max score difference among simulations where violations occurred
 
 ```{r}
 all_stats = 
   data |> 
   group_by(n, metric) |> 
   summarize(
-    #total = n(),
     n_violations = sum(signif_violation),
     violation_rate = mean(signif_violation),
-    diff_mean = mean(diff[signif_violation]),
-    diff_sd = sd(diff[signif_violation]),
+    diff_mean = if (any(signif_violation)) mean(diff[signif_violation]) else NA_real_,
+    diff_median = if (any(signif_violation)) median(diff[signif_violation]) else NA_real_,
+    diff_min = if (any(signif_violation)) min(diff[signif_violation]) else NA_real_,
+    diff_max = if (any(signif_violation)) max(diff[signif_violation]) else NA_real_,
     .groups = "drop"
   )
 
-# 95% t-critical value based on average violation count
-get_violation_ci = function(mean, sd, n_viol) {
-  if (n_viol <= 1) return(NA)
-  se = sd / sqrt(n_viol)
-  tcrit = qt(0.975, df = n_viol - 1)
-  diff_CI_lower = mean - tcrit * se
-  diff_CI_upper = mean + tcrit * se
-  tibble(diff_CI_lower, diff_CI_upper)
-}
-
-all_stats = all_stats |>
-  rowwise() |> 
-  mutate(get_violation_ci(diff_mean, diff_sd, n_violations)) |> 
-  select(!diff_sd) |>
-  ungroup()
-
 all_stats |>
   arrange(metric) |>
-  DT::datatable(rownames = FALSE, options = list(searching = FALSE)) |>
-  formatRound(columns = 4:7, digits = 5)
+  DT::datatable(
+    rownames = FALSE,
+    options = list(searching = FALSE),
+    caption = htmltools::tags$caption(
+      style = "caption-side: top; text-align: center; font-size:150%",
+      "Table D1: Empirical violations of properness")
+  ) |>
+  formatRound(columns = 4:8, digits = 5)
 ```
 
 :::{.callout-tip}
@@ -265,34 +256,25 @@ all_stats =
   data |> 
   group_by(n, metric) |> 
   summarize(
-    #total = n(),
     n_violations = sum(signif_violation),
     violation_rate = mean(signif_violation),
-    diff_mean = mean(diff[signif_violation]),
-    diff_sd = sd(diff[signif_violation]),
+    diff_mean = if (any(signif_violation)) mean(diff[signif_violation]) else NA_real_,
+    diff_median = if (any(signif_violation)) median(diff[signif_violation]) else NA_real_,
+    diff_min = if (any(signif_violation)) min(diff[signif_violation]) else NA_real_,
+    diff_max = if (any(signif_violation)) max(diff[signif_violation]) else NA_real_,
     .groups = "drop"
   )
 
-# 95% t-critical value based on average violation count
-get_violation_ci = function(mean, sd, n_viol) {
-  if (n_viol <= 1) return(NA)
-  se = sd / sqrt(n_viol)
-  tcrit = qt(0.975, df = n_viol - 1)
-  diff_CI_lower = mean - tcrit * se
-  diff_CI_upper = mean + tcrit * se
-  tibble(diff_CI_lower, diff_CI_upper)
-}
-
-all_stats = all_stats |>
-  rowwise() |> 
-  mutate(get_violation_ci(diff_mean, diff_sd, n_violations)) |> 
-  select(!diff_sd) |>
-  ungroup()
-
 all_stats |>
   arrange(metric) |>
-  DT::datatable(rownames = FALSE, options = list(searching = FALSE)) |>
-  formatRound(columns = 4:7, digits = 5)
+  DT::datatable(
+    rownames = FALSE,
+    options = list(searching = FALSE),
+    caption = htmltools::tags$caption(
+      style = "caption-side: top; text-align: center; font-size:150%",
+      "Table D2: Empirical violations of properness using G(t)")
+  ) |>
+  formatRound(columns = 4:8, digits = 5)
 ```
 
 :::{.callout-tip}

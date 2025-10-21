@@ -20,7 +20,7 @@ The report includes:
   A minimal model that outperforms established methods under ISBS, illustrating its vulnerability to gaming.
 
 - **Real-World Benchmark Evaluation** [[link](https://survival-org.github.io/scoring-rules-2024/#real-world-benchmark-evaluation)]  
-  An exploratory comparison of scoring rules (RCLL, RCLL*, ISBS, C-index, D-calibration) on validation tasks using real-world survival datasets.
+  An exploratory comparison of survival metrics including 3 scoring rules (RCLL, RCLL\*, ISBS) the C-index and D-calibration, on validation tasks using real-world survival datasets.
 
 ## Citation
 

@@ -446,7 +446,8 @@ Below we show the aggregated performance metrics across all tasks and learners:
 res = readRDS("results/rrcll_bm.rds")
 
 res |>
-  rename(`RCLL*` = RRCLL) |>
+  rename(`RCLL*` = RRCLL, `C-index` = surv.cindex, 
+         `D-Calibration` = surv.dcalib, ISBS = surv.graf) |>
   DT::datatable(rownames = FALSE, options = list(searching = FALSE)) |>
   formatRound(columns = 3:7, digits = 3) |>
   formatSignif(columns = 6, digits = 3) # scientific notation for surv.dcalib

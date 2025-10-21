@@ -206,7 +206,7 @@ For RCLL\* we use *linear interpolation* of $S_C(t)$ to mitigate density estimat
 
 Use [properness_test.R](https://github.com/survival-org/scoring-rules-2024/blob/main/properness_test.R) to run the experiments.
 To run for different sample sizes `n`, use [run_tests.sh](https://github.com/survival-org/scoring-rules-2024/blob/main/run_tests.sh), changing `estimate_cens` to `TRUE`.
- Merged simulation results for all `n` are available [here](https://github.com/survival-org/scoring-rules-2024/blob/main/results/res_sims10000_distrs1000_1.rds).
+Merged simulation results for all `n` are available [here](https://github.com/survival-org/scoring-rules-2024/blob/main/results/res_sims10000_distrs1000_1.rds).
 :::
 
 Load results (same output columns as in the previous section):
@@ -290,7 +290,7 @@ This section demonstrates how a deliberately simple, uninformative survival mode
 The model entirely ignores covariates and instead outputs a flat survival function that drops from 1 to 0 at a fixed quantile of observed times.
 
 This model is deliberately constructed to expose a key weakness in ISBS: it can be minimized by predictions that offer no individualization or clinical utility.
-This reinforces our theoretical findings that ISBS is not a proper scoring rule.
+This highlights that the ISBS is not a proper scoring rule in general, particularly when fundamental assumptions are violated—such as independent censoring or the propriety of the true and censoring survival distributions (i.e., when $\lim_{t\to\infty} S(t) \ne 0$).
 :::
 
 Below, we define the degenerate model in `mlr3proba`, tune it over the quantile cutoff with ISBS, and compare its ISBS score and other evaluation measures to Cox, Kaplan-Meier, and Random Survival Forest (RSF) learners on the `survival::rats` dataset.
@@ -339,7 +339,7 @@ LearnerSurvDegenerate = R6Class("LearnerSurvDegenerate",
       surv[, 1:floor(q_t)] = 1
       surv[, ceiling(q_t):ncol(surv)] = 0
       colnames(surv) = times
-      .surv_return(times = times, surv = surv)
+      mlr3proba::surv_return(times = times, surv = surv)
     }
   )
 )
@@ -358,7 +358,7 @@ at = auto_tuner(
   tuner = tnr("grid_search", resolution = 20),
   learner = l,
   resampling = rsmp("holdout"),
-  measure = m,
+  measure = m
 )
 ```
 
@@ -410,7 +410,7 @@ And we see the degenerate model performs the best with respect to ISBS, but wors
 To run the experiment use [rrcll_benchmark.R](https://github.com/survival-org/scoring-rules-2024/blob/main/rrcll_benchmark.R).
 :::
 
-We assess the performance of several survival scoring rules (RCLL, RCLL\*, ISBS, D-calibration, Harrell’s C-index) on real-world survival datasets using the `mlr3proba` framework, tested with 10 repetitions of 5-fold cross-validation on the following learners:
+We assess the performance using three survival scoring rules (RCLL, RCLL\*, ISBS), D-calibration and Harrell’s C-index on real-world survival datasets using the `mlr3proba` framework, tested with 10 repetitions of 5-fold cross-validation on the following learners:
 
 - Kaplan-Meier (non-parametric)
 - Cox proportional hazards model
@@ -455,8 +455,7 @@ res |>
 :::{.callout-tip}
 ## Summary
 
-Our experiment demonstrates substantial divergences in model assessment depending on the chosen metric.
-Although **RCLL\*** is the only proper scoring rule in a theoretical sense, its practical behavior differs meaningfully from other commonly used metrics.
+Our experiment demonstrates substantial divergences in model assessment depending on the chosen metric (especially in the case of the scoring rules which are all theoretically proper).
 
 For instance, on datasets such as `veteran` and `whas`, which exhibit non-proportional hazards, RSF is more suitable to model non-linear effects compared to the CoxPH.
 In these cases, RCLL* identifies RSF as superior, whereas RCLL and ISBS still prefer CoxPH — suggesting potential practical limitations of the latter metrics in such settings.
@@ -465,7 +464,7 @@ Additionally, RCLL* appears to better capture both discrimination and calibratio
 In the `gbcs` dataset, CoxPH achieves the best RCLL, ISBS and C-index scores, yet shows extremely poor calibration ($\text{D-calib} \approx 15.7$), while RCLL* ranks Kaplan-Meier as the best — possibly reflecting better-calibrated risk estimates.
 This discrepancy becomes even more pronounced in the `lung` dataset, where CoxPH again yields high RCLL/C-index/ISBS performance despite severe calibration failure ($\text{D-calib} \approx 23.5$), whereas RCLL* selects RSF instead.
 
-These findings highlight a critical need for further research: not all metrics labeled as "proper" in theory behave equally in practice.
+These findings highlight a critical need for further research: **not all metrics labeled as "proper" in theory behave equally in practice.**
 :::
 
 ## R session info {-}

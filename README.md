@@ -5,8 +5,6 @@ This repository contains the code, data, and results from a simulation study on 
 Check the [supplementary HTML report](https://survival-org.github.io/scoring-rules-2024/), which summarizes the results and includes reproducibility instructions.
 It also links code outputs to manuscript figures and tables for clarity.
 
-See also [here the R script](https://github.com/survival-org/scoring-rules-2024/blob/main/ISBS_counterexample.R) that contains a numerical evaluation that complements the analytical proof of ISBS improperness.
-
 ## HTML Report Contents
 
 The report includes:

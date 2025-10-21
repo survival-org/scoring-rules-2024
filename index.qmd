@@ -363,7 +363,7 @@ at = auto_tuner(
 ```
 
 In our benchmark experiment we compare to the Cox PH, Random Forest, and Kaplan-Meier using 3-fold outer cross-validation.
-```{r, results='hide'}
+```{r, results='hide', warning=FALSE}
 # Seed for reproducibility
 set.seed(20250418)
 

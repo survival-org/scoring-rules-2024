@@ -649,39 +649,33 @@ Note
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>r <span class="ot">=</span> <span class="fu">rsmp</span>(<span class="st">"cv"</span>, <span class="at">folds =</span> <span class="dv">3</span>)</span>
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>bm <span class="ot">=</span> <span class="fu">benchmark</span>(<span class="fu">benchmark_grid</span>(<span class="at">tasks =</span> <span class="fu">tsk</span>(<span class="st">"rats"</span>), <span class="at">learners =</span> learners, <span class="at">resamplings =</span> r))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: 
-✖ Multiple predict types detected, this will mean that you cannot evaluate the
-  same measures on all learners.
-→ Class: Mlr3WarningVaryingPredictTypes</code></pre>
-</div>
 </div>
 <p>To evaluate the benchmark we use Harrell’s C, D-calibration, RCLL, the SBS evaluated at the median observed time, and the ISBS:</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>q50 <span class="ot">=</span> <span class="fu">quantile</span>(<span class="fu">tsk</span>(<span class="st">"rats"</span>)<span class="sc">$</span><span class="fu">times</span>(), <span class="fl">0.50</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>measures <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">msrs</span>(</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">"surv.cindex"</span>, <span class="st">"surv.dcalib"</span>, <span class="st">"surv.rcll"</span>)),</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">integrated =</span> <span class="cn">FALSE</span>, <span class="at">times =</span> q50, <span class="at">id =</span> <span class="st">"SBS_q0.5"</span>),</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">id =</span> <span class="st">"ISBS"</span>)</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>q50 <span class="ot">=</span> <span class="fu">quantile</span>(<span class="fu">tsk</span>(<span class="st">"rats"</span>)<span class="sc">$</span><span class="fu">times</span>(), <span class="fl">0.50</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>measures <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">msrs</span>(</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">"surv.cindex"</span>, <span class="st">"surv.dcalib"</span>, <span class="st">"surv.rcll"</span>)),</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">integrated =</span> <span class="cn">FALSE</span>, <span class="at">times =</span> q50, <span class="at">id =</span> <span class="st">"SBS_q0.5"</span>),</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">id =</span> <span class="st">"ISBS"</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Finally score results:</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> bm<span class="sc">$</span><span class="fu">aggregate</span>(measures)[, <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">7</span><span class="sc">:</span><span class="dv">11</span>)]</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">rownames =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">options =</span> <span class="fu">list</span>(<span class="at">searching =</span> <span class="cn">FALSE</span>, <span class="at">order =</span> <span class="fu">list</span>(<span class="fu">list</span>(<span class="dv">5</span>, <span class="st">"desc"</span>)))</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>), <span class="at">digits =</span> <span class="dv">5</span>) <span class="sc">|&gt;</span></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="dv">3</span>, <span class="at">digits =</span> <span class="dv">3</span>) <span class="co"># scientific notation for surv.dcalib</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> bm<span class="sc">$</span><span class="fu">aggregate</span>(measures)[, <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">7</span><span class="sc">:</span><span class="dv">11</span>)]</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">rownames =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">options =</span> <span class="fu">list</span>(<span class="at">searching =</span> <span class="cn">FALSE</span>, <span class="at">order =</span> <span class="fu">list</span>(<span class="fu">list</span>(<span class="dv">5</span>, <span class="st">"desc"</span>)))</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>), <span class="at">digits =</span> <span class="dv">5</span>) <span class="sc">|&gt;</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="dv">3</span>, <span class="at">digits =</span> <span class="dv">3</span>) <span class="co"># scientific notation for surv.dcalib</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="datatables html-widget html-fill-item" id="htmlwidget-a6b773675c10bd4ef7fc" style="width:100%;height:auto;"></div>
@@ -726,41 +720,41 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (normal) RCLL</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>rcll <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.rrcll"</span>, <span class="at">id =</span> <span class="st">"RCLL"</span>, <span class="at">proper =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># (re-weighted) rRCLL/RCLL*</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>rrcll <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.rrcll"</span>, <span class="at">id =</span> <span class="st">"RRCLL"</span>, <span class="at">proper =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co"># get all survival tasks in mlr3proba</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>keys <span class="ot">=</span> <span class="fu">as.data.table</span>(mlr_tasks)[task_type <span class="sc">==</span> <span class="st">"surv"</span>][[<span class="st">"key"</span>]]</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>tasks <span class="ot">=</span> <span class="fu">lapply</span>(keys, <span class="cf">function</span>(key) {</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tsk</span>(key)</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>bm_grid <span class="ot">=</span> <span class="fu">benchmark_grid</span>(</span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">tasks =</span> tasks,</span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">learners =</span> <span class="fu">lrns</span>(<span class="fu">c</span>(<span class="st">"surv.kaplan"</span>, <span class="st">"surv.ranger"</span>, <span class="st">"surv.coxph"</span>)),</span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">resamplings =</span> <span class="fu">rsmp</span>(<span class="st">"repeated_cv"</span>, <span class="at">folds =</span> <span class="dv">5</span>)</span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>bm <span class="ot">=</span> <span class="fu">benchmark</span>(bm_grid)</span>
-<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> bm<span class="sc">$</span><span class="fu">aggregate</span>(</span>
-<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">measures =</span> <span class="fu">c</span>(rcll, rrcll, <span class="fu">msr</span>(<span class="st">"surv.cindex"</span>), <span class="fu">msr</span>(<span class="st">"surv.dcalib"</span>), <span class="fu">msr</span>(<span class="st">"surv.graf"</span>))</span>
-<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (normal) RCLL</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>rcll <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.rrcll"</span>, <span class="at">id =</span> <span class="st">"RCLL"</span>, <span class="at">proper =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># (re-weighted) rRCLL/RCLL*</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>rrcll <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.rrcll"</span>, <span class="at">id =</span> <span class="st">"RRCLL"</span>, <span class="at">proper =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># get all survival tasks in mlr3proba</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>keys <span class="ot">=</span> <span class="fu">as.data.table</span>(mlr_tasks)[task_type <span class="sc">==</span> <span class="st">"surv"</span>][[<span class="st">"key"</span>]]</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>tasks <span class="ot">=</span> <span class="fu">lapply</span>(keys, <span class="cf">function</span>(key) {</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tsk</span>(key)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>bm_grid <span class="ot">=</span> <span class="fu">benchmark_grid</span>(</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">tasks =</span> tasks,</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">learners =</span> <span class="fu">lrns</span>(<span class="fu">c</span>(<span class="st">"surv.kaplan"</span>, <span class="st">"surv.ranger"</span>, <span class="st">"surv.coxph"</span>)),</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">resamplings =</span> <span class="fu">rsmp</span>(<span class="st">"repeated_cv"</span>, <span class="at">folds =</span> <span class="dv">5</span>)</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>bm <span class="ot">=</span> <span class="fu">benchmark</span>(bm_grid)</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> bm<span class="sc">$</span><span class="fu">aggregate</span>(</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">measures =</span> <span class="fu">c</span>(rcll, rrcll, <span class="fu">msr</span>(<span class="st">"surv.cindex"</span>), <span class="fu">msr</span>(<span class="st">"surv.dcalib"</span>), <span class="fu">msr</span>(<span class="st">"surv.graf"</span>))</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Below we show the aggregated performance metrics across all tasks and learners:</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">"results/rrcll_bm.rds"</span>)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>res <span class="sc">|&gt;</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">`</span><span class="at">RCLL*</span><span class="st">`</span> <span class="ot">=</span> RRCLL) <span class="sc">|&gt;</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(<span class="at">rownames =</span> <span class="cn">FALSE</span>, <span class="at">options =</span> <span class="fu">list</span>(<span class="at">searching =</span> <span class="cn">FALSE</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="dv">3</span><span class="sc">:</span><span class="dv">7</span>, <span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="dv">6</span>, <span class="at">digits =</span> <span class="dv">3</span>) <span class="co"># scientific notation for surv.dcalib</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">"results/rrcll_bm.rds"</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>res <span class="sc">|&gt;</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">`</span><span class="at">RCLL*</span><span class="st">`</span> <span class="ot">=</span> RRCLL) <span class="sc">|&gt;</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(<span class="at">rownames =</span> <span class="cn">FALSE</span>, <span class="at">options =</span> <span class="fu">list</span>(<span class="at">searching =</span> <span class="cn">FALSE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="dv">3</span><span class="sc">:</span><span class="dv">7</span>, <span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="dv">6</span>, <span class="at">digits =</span> <span class="dv">3</span>) <span class="co"># scientific notation for surv.dcalib</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="datatables html-widget html-fill-item" id="htmlwidget-fcab9633ff2699465ba1" style="width:100%;height:auto;"></div>
@@ -789,7 +783,7 @@ Summary
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>utils<span class="sc">::</span><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>utils<span class="sc">::</span><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>R version 4.4.2 (2024-10-31)

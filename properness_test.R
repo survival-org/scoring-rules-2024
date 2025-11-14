@@ -100,7 +100,7 @@ run = function(surv_shape, cens_shape, pred_shape,
                surv_scale, cens_scale, pred_scale,
                num_distrs, num_samples, estimate_cens) {
   # --- Change Number of cores ---
-  num_cores = 1
+  num_cores = 60
 
   x = mclapply(seq.int(num_distrs), function(i) {
     # --- Simulate data ---

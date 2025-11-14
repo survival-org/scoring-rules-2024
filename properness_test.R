@@ -43,11 +43,11 @@ isbs = function(pred_shape, pred_scale, t, delta, cens_shape, cens_scale, cens_f
   sum(diff(times) * (scores[-n] + scores[-1]) / 2) / (max(times) - min(times))
 }
 
-RCLL = function(pred_shape, pred_scale, t, delta, cens_shape, cens_scale, cens_fit = NULL, proper = FALSE, eps = 1e-5) {
+RCLL = function(pred_shape, pred_scale, t, delta, cens_shape, cens_scale, cens_fit = NULL, weighted = FALSE, eps = 1e-5) {
   out = numeric(length(t))
 
   out[delta] = dweibull(t[delta], pred_shape, pred_scale)
-  if (proper) {
+  if (weighted) {
     # divide by survival at outcome time (censoring distr, linear interpolation)
     if (is.null(cens_fit)) {
       out[delta] = out[delta] / pmax(eps, pweibull(t[delta], cens_shape, cens_scale, FALSE))
@@ -58,7 +58,7 @@ RCLL = function(pred_shape, pred_scale, t, delta, cens_shape, cens_scale, cens_f
 
   out[!delta] = pweibull(t[!delta], pred_shape, pred_scale, FALSE)
 
-  if (proper) {
+  if (weighted) {
     # divide by density at outcome time (censoring distr, linear interpolation)
     if (is.null(cens_fit)) {
       out[!delta] = out[!delta] / pmax(eps, dweibull(t[!delta], cens_shape, cens_scale))
@@ -99,11 +99,11 @@ tv_distance_weibull = function(shape1, scale1, shape2, scale2, n_points = 500) {
 run = function(surv_shape, cens_shape, pred_shape,
                surv_scale, cens_scale, pred_scale,
                num_distrs, num_samples, estimate_cens) {
-
-  #num_cores = detectCores() - 1
-  num_cores = 60
+  # --- Change Number of cores ---
+  num_cores = 1
 
   x = mclapply(seq.int(num_distrs), function(i) {
+    # --- Simulate data ---
     # True event & censoring times
     true_y = rweibull(num_samples, surv_shape, surv_scale)
     true_c = rweibull(num_samples, cens_shape, cens_scale)
@@ -112,13 +112,47 @@ run = function(surv_shape, cens_shape, pred_shape,
     obs_t = pmin(true_y, true_c)
     obs_d = true_y == obs_t
 
-    # calculate proportion of censoring
-    prop_cens = sum(!obs_d) / num_samples
+    # --- Analytic mean survival times ---
+    # True and predicted mean survival times for Weibull distributions
+    m_true = surv_scale * gamma(1 + 1 / surv_shape)
+    m_pred = pred_scale * gamma(1 + 1 / pred_shape)
 
-    # time to evaluate at (median) for SBS
+    # --- Trapezoidal rule mean estimation (finite sample approx.) ---
+    t_sorted = sort(obs_t)
+    S_true_t = pweibull(t_sorted, shape = surv_shape, scale = surv_scale, lower.tail = FALSE)
+    S_pred_t = pweibull(t_sorted, shape = pred_shape, scale = pred_scale, lower.tail = FALSE)
+    m_true_est = trap_int(S_true_t, t_sorted)
+    m_pred_est = trap_int(S_pred_t, t_sorted)
+
+    # --- Derived diagnostics ---
+    prop_cens = mean(!obs_d) # proportion of censoring
+    n_events = sum(obs_d)
+    max_t = max(obs_t)
+
+    # --- Evaluation time points for SBS ---
     tau_median = median(obs_t)
     tau_10 = unname(quantile(obs_t, 0.1))
     tau_90 = unname(quantile(obs_t, 0.9))
+
+    # --- Diagnostics for SBS ----
+    # True and censoring survival at each tau
+    S_Y_q10 = pweibull(tau_10, shape = surv_shape, scale = surv_scale, lower.tail = FALSE)
+    S_Y_med = pweibull(tau_median, shape = surv_shape, scale = surv_scale, lower.tail = FALSE)
+    S_Y_q90 = pweibull(tau_90, shape = surv_shape, scale = surv_scale, lower.tail = FALSE)
+
+    S_C_q10 = pweibull(tau_10, shape = cens_shape, scale = cens_scale, lower.tail = FALSE)
+    S_C_med = pweibull(tau_median, shape = cens_shape, scale = cens_scale, lower.tail = FALSE)
+    S_C_q90 = pweibull(tau_90, shape = cens_shape, scale = cens_scale, lower.tail = FALSE)
+
+    # tail terms for (Y,C)
+    S_Y_tail = pweibull(max_t, shape = surv_shape, scale = surv_scale, lower.tail = FALSE)
+    S_C_tail = pweibull(max_t, shape = cens_shape, scale = cens_scale, lower.tail = FALSE)
+    epsilon = S_Y_tail * S_C_tail
+
+    # SBS shift
+    shift_q10 = shift_fun(S_Y_q10, S_C_q10, epsilon)
+    shift_med = shift_fun(S_Y_med, S_C_med, epsilon)
+    shift_q90 = shift_fun(S_Y_q90, S_C_q90, epsilon)
 
     fit = NULL
     if (estimate_cens) {
@@ -139,14 +173,16 @@ run = function(surv_shape, cens_shape, pred_shape,
       # RCLL
       RCLL(surv_shape, surv_scale, obs_t, obs_d, cens_shape, cens_scale, fit, FALSE), # 7
       RCLL(pred_shape, pred_scale, obs_t, obs_d, cens_shape, cens_scale, fit, FALSE), # 8
-      # rRCLL
+      # wRCLL (weighted RCLL)
       RCLL(surv_shape, surv_scale, obs_t, obs_d, cens_shape, cens_scale, fit, TRUE), # 9
       RCLL(pred_shape, pred_scale, obs_t, obs_d, cens_shape, cens_scale, fit, TRUE), # 10
       # ISBS
       isbs(surv_shape, surv_scale, obs_t, obs_d, cens_shape, cens_scale, fit), # 11
       isbs(pred_shape, pred_scale, obs_t, obs_d, cens_shape, cens_scale, fit), # 12
-      # censoring proportion
-      prop_cens
+      # Diagnostics
+      prop_cens, n_events, max_t, m_true, m_pred, m_true_est, m_pred_est, # 13-19
+      S_Y_q10, S_C_q10, S_Y_med, S_C_med, S_Y_q90, S_C_q90, # 20-25
+      S_Y_tail, S_C_tail, epsilon, shift_q10, shift_med, shift_q90 # 26-31
     )
   }, mc.cores = num_cores)
 
@@ -157,19 +193,37 @@ run = function(surv_shape, cens_shape, pred_shape,
 
   # Differences are always: (True Distribution) - (Predicted Distribution)
   list(
-    SBS_median = means[1] - means[2], # same as mean(x[1,] - x[2,])
+    SBS_median_diff = means[1] - means[2], # same as mean(x[1,] - x[2,])
     SBS_median_sd = sd(x[1,] - x[2,]),
-    SBS_q10 = means[3] - means[4],
+    SBS_q10_diff = means[3] - means[4],
     SBS_q10_sd = sd(x[3,] - x[4,]),
-    SBS_q90 = means[5] - means[6],
+    SBS_q90_diff = means[5] - means[6],
     SBS_q90_sd = sd(x[5,] - x[6,]),
-    RCLL = means[7] - means[8],
+    RCLL_diff = means[7] - means[8],
     RCLL_sd = sd(x[7,] - x[8,]),
-    rRCLL = means[9] - means[10],
-    rRCLL_sd = sd(x[9,] - x[10,]),
-    ISBS = means[11] - means[12],
+    wRCLL_diff = means[9] - means[10],
+    wRCLL_sd = sd(x[9,] - x[10,]),
+    ISBS_diff = means[11] - means[12],
     ISBS_sd = sd(x[11,] - x[12,]),
     prop_cens = means[13],
+    n_events = as.integer(means[14]),
+    max_t = means[15],
+    m_true = means[16],
+    m_pred = means[17],
+    m_true_est = means[18],
+    m_pred_est = means[19],
+    S_Y_q10 = means[20],
+    S_C_q10 = means[21],
+    S_Y_med = means[22],
+    S_C_med = means[23],
+    S_Y_q90 = means[24],
+    S_C_q90 = means[25],
+    S_Y_tail = means[26],
+    S_C_tail = means[27],
+    epsilon  = means[28],
+    shift_q10 = means[29],
+    shift_med = means[30],
+    shift_q90 = means[31],
     tv_dist = tv_distance_weibull(
       shape1 = surv_shape, scale1 = surv_scale,
       shape2 = pred_shape, scale2 = pred_scale
@@ -209,38 +263,20 @@ run_experiment = function(num_sims = 20, num_distrs = 1000, num_samples = 1000, 
         num_distrs, num_samples, estimate_cens
       )
 
-      tibble::tibble(
-        # simulation number
-        sim = i,
-        # number of samples
-        n = num_samples,
-        # Y
-        surv_shape = surv_shape,
-        surv_scale = surv_scale,
-        # C
-        cens_shape = cens_shape,
-        cens_scale = cens_scale,
-        # S
-        pred_shape = pred_shape,
-        pred_scale = pred_scale,
-        # mean proportion of censoring
-        prop_cens = result$prop_cens,
-        # total variational distance between Y and Y_hat
-        tv_dist = result$tv_dist,
-        # score mean differences (score(Y) - score(Y_hat))
-        SBS_median_diff = result$SBS_median,
-        SBS_q10_diff = result$SBS_q10,
-        SBS_q90_diff = result$SBS_q90,
-        ISBS_diff = result$ISBS,
-        RCLL_diff = result$RCLL,
-        rRCLL_diff = result$rRCLL,
-        # standard deviations of the score differences
-        SBS_median_sd = result$SBS_median_sd,
-        SBS_q10_sd = result$SBS_q10_sd,
-        SBS_q90_sd = result$SBS_q90_sd,
-        ISBS_sd = result$ISBS_sd,
-        RCLL_sd = result$RCLL_sd,
-        rRCLL_sd = result$rRCLL_sd
+      tibble::as_tibble(
+        c(
+          list(
+            sim = i, # simulation number
+            n = num_samples, # number of samples
+            surv_shape = surv_shape, # Y
+            surv_scale = surv_scale,
+            cens_shape = cens_shape, # C
+            cens_scale = cens_scale,
+            pred_shape = pred_shape, # Y_hat
+            pred_scale = pred_scale
+          ),
+          result # automatically adds all elements of `result`
+        )
       )
     })
   })

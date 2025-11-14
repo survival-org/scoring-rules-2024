@@ -88,3 +88,15 @@ interp_pdf = function(fit, new_times) {
   # return density at `new_times`, clip any negatives to 0
   pmax(dens_full[indx], 0)
 }
+
+# Trapezoidal rule for intergral of S(t) across time points - restricted mean survival time
+trap_int = function(S, t) sum(0.5 * diff(t) * (S[-1] + S[-length(S)]))
+
+# Theoretical SBS 'properness' shift at each tau
+# `eps` is the product of survival limits for Y and C
+shift_fun = function(S_Y, S_C, eps) {
+  # `x_star` is the minimum
+  x_star = (S_Y - eps / S_C) / (1 - eps / S_C)
+  # difference (minimum - true survival) => closer to 0 => more proper
+  x_star - S_Y
+}

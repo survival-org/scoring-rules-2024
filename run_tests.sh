@@ -10,7 +10,7 @@ fi
 
 # Loop over all provided values for `n`
 for n in "$@"; do
-  seed=$((n)) # Calculate seed as n (+ 1)
+  seed=$((n))
   echo "n = $n (seed = $seed)"
   # change below to TRUE to run the experiment with the Kaplan-Meier
   # for estimating the censoring distribution

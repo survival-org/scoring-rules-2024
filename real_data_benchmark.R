@@ -1,29 +1,28 @@
 source("helper.R") # interpolation functions
-library(mlr3proba)
+library(mlr3proba) # 0.8.5 version
 library(mlr3extralearners)
 library(paradox)
 library(progressr)
 
-# Define mlr3(proba) measure
-MeasureSurvReweightedRCLL = R6::R6Class("MeasureSurvReweightedRCLL",
+# Define new mlr3(proba) measure
+MeasureSurvWeightedRCLL = R6::R6Class("MeasureSurvWeightedRCLL",
   inherit = MeasureSurv,
   public = list(
     initialize = function() {
       param_set = paradox::ps(
-        proper = p_lgl(default = TRUE),
+        weighted = p_lgl(default = TRUE),
         eps = p_dbl(0, 1, default = 1e-6)
       )
 
-      param_set$set_values(proper = TRUE, eps = 1e-6)
+      param_set$set_values(weighted = TRUE, eps = 1e-6)
 
       super$initialize(
-        id = "surv.rrcll",
+        id = "surv.wrcll",
         param_set = param_set,
         minimize = TRUE,
         predict_type = "distr",
-        packages = "distr6",
-        label = "Reweighted Right-Censored Log Loss",
-        man = "mlr3proba::mlr_measures_surv.rcll",
+        label = "Weighted Right-Censored Log Loss",
+        man = "mlr3proba::mlr_measures_surv.wrcll",
         range = c(0, Inf)
       )
 
@@ -35,9 +34,9 @@ MeasureSurvReweightedRCLL = R6::R6Class("MeasureSurvReweightedRCLL",
     .score = function(prediction, task, train_set, ...) {
       pv = self$param_set$values
 
-      if (pv$proper && is.null(task)) {
+      if (pv$weighted && is.null(task)) {
         # we need all the data to estimate S_C(t) and f_C(t) via KM
-        stop("'task' is required for proper score for estimating the censoring distribution")
+        stop("'task' is required for weighted score for estimating the censoring distribution")
       }
 
       truth = prediction$truth
@@ -65,8 +64,8 @@ MeasureSurvReweightedRCLL = R6::R6Class("MeasureSurvReweightedRCLL",
 
       out = -log(pmax(eps, out))
 
-      # if proper, apply IPCW
-      if (pv$proper) {
+      # if weighted, apply IPCW
+      if (pv$weighted) {
         ghat = task$kaplan(reverse = TRUE)
 
         out = vapply(seq_len(n_obs), function(obs_index) {
@@ -91,12 +90,7 @@ MeasureSurvReweightedRCLL = R6::R6Class("MeasureSurvReweightedRCLL",
 
 # Add measure for easy use with `msr()`
 mlr_measures = utils::getFromNamespace("mlr_measures", ns = "mlr3")
-mlr_measures$add("surv.rrcll", MeasureSurvReweightedRCLL)
-
-# (normal) RCLL
-rcll = msr("surv.rrcll", id = "RCLL", proper = FALSE)
-# (re-weighted) rRCLL/RCLL**
-rrcll = msr("surv.rrcll", id = "RRCLL", proper = TRUE)
+mlr_measures$add("surv.wrcll", MeasureSurvWeightedRCLL)
 
 # get all survival tasks in mlr3proba
 keys = as.data.table(mlr_tasks)[task_type == "surv"][["key"]]
@@ -113,21 +107,28 @@ handlers(global = TRUE)
 handlers("progress")
 
 # parallelization
-future::plan("multicore", workers = 15)
+future::plan("multisession", workers = 15)
 
-# conduct benchmark
+# conduct benchmark (<=2 min on a modern laptop)
 set.seed(42)
 bm_grid = benchmark_grid(
   tasks = tasks,
   learners = lrns(c("surv.kaplan", "surv.ranger", "surv.coxph")),
-  resamplings = rsmp("repeated_cv", folds = 5)
+  resamplings = rsmp("repeated_cv", repeats = 10, folds = 5)
 )
 bm = benchmark(bm_grid)
 
 # calculate scores
-res = bm$aggregate(c(rcll, rrcll, msr("surv.cindex"), msr("surv.dcalib"), msr("surv.graf")))
+measures = c(
+  msr("surv.rcll", id = "RCLL"),
+  msr("surv.wrcll", id = "RCLL*", weighted = TRUE), # weighted RCLL (RCLL* in the paper)
+  msr("surv.cindex", id = "C-index"),
+  msr("surv.dcalib", id = "D-calib"),
+  msr("surv.graf", id = "ISBS")
+)
+res = bm$aggregate(measures)
 
 # store results
 res = data.table::as.data.table(res) |>
-  dplyr::select(task_id, learner_id, RCLL, RRCLL, surv.cindex, surv.dcalib, surv.graf)
-saveRDS(res, file = "results/rrcll_bm.rds")
+  dplyr::select(task_id, learner_id, RCLL, `RCLL*`, `C-index`, `D-calib`, `ISBS`)
+saveRDS(res, file = "results/real_data_bm.rds")

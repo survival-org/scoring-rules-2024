@@ -111,7 +111,7 @@ Scoring rules analyzed:
 
 - The **SBS** at the 10th, 50th and 90th percentiles of observed times
 - The **ISBS**, using 50 equidistant points between the 5th and 80th percentile of observed times
-- The **RCLL** and its weighted version **wRCLL** (**RCLL\*** in the paper)
+- The **RCLL** and its weighted version **wRCLL** (or **RCLL\***)
 
 We compute 95% confidence intervals (CIs) for the mean score difference $D$ (true - predicted) using a $t$-distribution.
 A violation is marked statistically significant if:
@@ -383,7 +383,7 @@ plot_data |>
   )
 ```
 
-## Table D2 {-}
+## Table D1 {-}
 
 :::{.callout-note}
 The only difference with the previous experiment is that $S_C(t)$ is now being estimated using the marginal Kaplan-Meier model via `survival::survfit()` instead of using the true Weibull censoring distribution (see [helper.R](https://github.com/survival-org/scoring-rules-2024/blob/main/helper.R)).
@@ -397,13 +397,13 @@ Merged simulation results for all `n` are available [here](https://github.com/su
 
 Load results (same output columns as in the previous section):
 ```{r}
-res = readRDS("results/res_sims10000_distrs1000_1.old.rds") |>
-  select(!matches("shape|scale|prop_cens|tv_dist")) # remove columns
+res = readRDS("results/res_sims10000_distrs1000_1.rds") |>
+  select(!matches("shape|scale|prop_cens|tv_dist|n_events|max_t|m_true|m_pred")) # remove columns
 ```
 
 As before, we compute 95% confidence intervals for the score differences across $m = 1000$ draws per simulation:
 ```{r}
-measures = c("SBS_median", "SBS_q10", "SBS_q90", "ISBS", "RCLL", "rRCLL")
+measures = c("SBS_q10", "SBS_median", "SBS_q90", "ISBS", "RCLL", "wRCLL")
 n_distrs = 1000 # `m` value from paper's experiment
 tcrit = qt(0.975, df = n_distrs - 1) # 95% t-test
 threshold = 1e-4
@@ -414,12 +414,24 @@ data = measures |>
     mean_sd_col = paste0(m, "_sd")
     
     res |>
-      select(sim, n, !!mean_diff_col, !!mean_sd_col) |>
+      select(sim, n, !!mean_diff_col, !!mean_sd_col, starts_with("shift_"), 
+             epsilon, starts_with("S_")) |>
+      select(-ends_with("tail")) |>
       mutate(
         se = .data[[mean_sd_col]] / sqrt(n_distrs),
         CI_lower = .data[[mean_diff_col]] - tcrit * se,
         CI_upper = .data[[mean_diff_col]] + tcrit * se,
-        signif_violation = .data[[mean_diff_col]] > threshold & CI_lower > 0
+        signif_violation = .data[[mean_diff_col]] > threshold & CI_lower > 0,
+        # Keep relevant SBS columns, just in case
+        shift_q10 = if (m == "SBS_q10") shift_q10 else NA_real_,
+        S_Y_q10   = if (m == "SBS_q10") S_Y_q10 else NA_real_,
+        S_C_q10   = if (m == "SBS_q10") S_C_q10 else NA_real_,
+        shift_med = if (m == "SBS_median") shift_med else NA_real_,
+        S_Y_med   = if (m == "SBS_median") S_Y_med else NA_real_,
+        S_C_med   = if (m == "SBS_median") S_C_med else NA_real_,
+        shift_q90 = if (m == "SBS_q90") shift_q90 else NA_real_,
+        S_Y_q90   = if (m == "SBS_q90") S_Y_q90 else NA_real_,
+        S_C_q90   = if (m == "SBS_q90") S_C_q90 else NA_real_
       ) |>
       select(!se) |>
       mutate(metric = !!m) |>
@@ -432,7 +444,7 @@ data = measures |>
 data$metric = factor(
   data$metric,
   levels = measures,
-  labels = c("SBS (Median)", "SBS (Q10)", "SBS (Q90)", "ISBS", "RCLL", "RCLL*")
+  labels = c("SBS (Q10)", "SBS (Median)", "SBS (Q90)", "ISBS", "RCLL", "RCLL*")
 )
 ```
 
@@ -565,8 +577,10 @@ To evaluate the benchmark we use Harrell’s C, D-calibration, RCLL, the SBS eva
 ```{r}
 q50 = quantile(tsk("rats")$times(), 0.50)
 
-measures = c(msrs(
-  c("surv.cindex", "surv.dcalib", "surv.rcll")),
+measures = c(
+  msr("surv.cindex", id = "C-index"),
+  msr("surv.dcalib", id = "D-calib"),
+  msr("surv.rcll", id = "RCLL"),
   msr("surv.graf", integrated = FALSE, times = q50, id = "SBS_q0.5"),
   msr("surv.graf", id = "ISBS")
 )
@@ -588,54 +602,35 @@ df |>
 :::{.callout-tip}
 ## Summary
 
-And we see the degenerate model performs the best with respect to ISBS, but worse with respect to all other measures.
+We observe that the degenerate model performs the best with respect to ISBS, but worse with respect to all other measures.
 :::
 
 ## Real-World Benchmark Evaluation {-}
 
 :::{.callout-note}
-To run the experiment use [rrcll_benchmark.R](https://github.com/survival-org/scoring-rules-2024/blob/main/rrcll_benchmark.R).
+To run the experiment use [real_data_benchmark.R](https://github.com/survival-org/scoring-rules-2024/blob/main/real_data_benchmark.R).
 :::
 
-We assess the performance using three survival scoring rules (RCLL, RCLL\*, ISBS), D-calibration and Harrell’s C-index on real-world survival datasets using the `mlr3proba` framework, tested with 10 repetitions of 5-fold cross-validation on the following learners:
+We assess the performance using three survival scoring rules (RCLL, RCLL\*, ISBS), D-calibration and Harrell's C-index on real-world survival datasets using the `mlr3proba` framework, tested with 10 repetitions of 5-fold cross-validation on the following learners:
 
-- Kaplan-Meier (non-parametric)
-- Cox proportional hazards model
-- Random survival forests (RSF)
-
-```{r, echo = TRUE, eval = FALSE}
-# (normal) RCLL
-rcll = msr("surv.rrcll", id = "RCLL", proper = FALSE)
-# (re-weighted) rRCLL/RCLL*
-rrcll = msr("surv.rrcll", id = "RRCLL", proper = TRUE)
-
-# get all survival tasks in mlr3proba
-keys = as.data.table(mlr_tasks)[task_type == "surv"][["key"]]
-tasks = lapply(keys, function(key) {
-  tsk(key)
-})
-
-set.seed(42)
-bm_grid = benchmark_grid(
-  tasks = tasks,
-  learners = lrns(c("surv.kaplan", "surv.ranger", "surv.coxph")),
-  resamplings = rsmp("repeated_cv", folds = 5)
-)
-
-bm = benchmark(bm_grid)
-res = bm$aggregate(
-  measures = c(rcll, rrcll, msr("surv.cindex"), msr("surv.dcalib"), msr("surv.graf"))
-)
-```
+- Kaplan-Meier (non-parametric) - `surv.coxph`
+- Cox proportional hazards model - `surv.coxph`
+- Random survival forests (RSF) - `surv.ranger`
 
 Below we show the aggregated performance metrics across all tasks and learners:
 ```{r}
-res = readRDS("results/rrcll_bm.rds")
+res = readRDS("results/real_data_bm.rds")
 
 res |>
-  rename(`RCLL*` = RRCLL, `C-index` = surv.cindex, 
-         `D-Calibration` = surv.dcalib, ISBS = surv.graf) |>
-  DT::datatable(rownames = FALSE, options = list(searching = FALSE)) |>
+  mutate(
+    learner_id = recode(
+      learner_id,
+      "surv.kaplan" = "KM",
+      "surv.ranger" = "RSF",
+      "surv.coxph"  = "CoxPH"
+    )
+  )|>
+  DT::datatable(rownames = FALSE, filter = "top", options = list(searching = TRUE)) |>
   formatRound(columns = 3:7, digits = 3) |>
   formatSignif(columns = 6, digits = 3) # scientific notation for surv.dcalib
 ```
@@ -643,7 +638,7 @@ res |>
 :::{.callout-tip}
 ## Summary
 
-Our experiment demonstrates substantial divergences in model assessment depending on the chosen metric (especially in the case of the scoring rules which are all theoretically proper).
+Our experiment demonstrates substantial divergences in model assessment depending on the chosen metric (especially in the case of the scoring rules).
 
 For instance, on datasets such as `veteran` and `whas`, which exhibit non-proportional hazards, RSF is more suitable to model non-linear effects compared to the CoxPH.
 In these cases, RCLL* identifies RSF as superior, whereas RCLL and ISBS still prefer CoxPH — suggesting potential practical limitations of the latter metrics in such settings.

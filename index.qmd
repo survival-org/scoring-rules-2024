@@ -481,130 +481,6 @@ all_stats |>
 Estimating $S_C(t)$ via Kaplan-Meier produced nearly identical results to using the true distribution, with no violations for RCLL/RCLL* and only small-sample effects for SBS and ISBS.
 :::
 
-## Degenerate Model Exploits ISBS Scoring Rule {-}
-
-:::{.callout-note}
-This section demonstrates how a deliberately simple, uninformative survival model—the *degenerate model*—can outperform established methods under the Integrated Survival Brier Score (ISBS).
-The model entirely ignores covariates and instead outputs a flat survival function that drops from 1 to 0 at a fixed quantile of observed times.
-
-This model is deliberately constructed to expose a key weakness in ISBS: it can be minimized by predictions that offer no individualization or clinical utility.
-This highlights that the ISBS is not a proper scoring rule in general, particularly when fundamental assumptions are violated—such as independent censoring or the propriety of the true and censoring survival distributions (i.e., when $\lim_{t\to\infty} S(t) \ne 0$).
-:::
-
-Below, we define the degenerate model in `mlr3proba`, tune it over the quantile cutoff with ISBS, and compare its ISBS score and other evaluation measures to Cox, Kaplan-Meier, and Random Survival Forest (RSF) learners on the `survival::rats` dataset.
-
-Load libraries:
-```{r, message=FALSE}
-library(R6)
-library(mlr3proba)
-library(mlr3extralearners)
-library(mlr3tuning)
-```
-
-Define the degenerate model:
-```{r}
-LearnerSurvDegenerate = R6Class("LearnerSurvDegenerate",
-  inherit = LearnerSurv,
-  public = list(
-    initialize = function() {
-      super$initialize(
-        id = "surv.degenerate",
-        predict_types = c("distr"),
-        feature_types = c("logical", "integer", "numeric", "character", "factor", "ordered"),
-        properties = "missings",
-        packages = c("survival", "distr6"),
-        label = "Degenerate Estimator",
-        param_set = ps(
-           quantile = p_dbl(0, 1)
-        )
-      )
-    }
-  ),
-
-  private = list(
-    .train = function(task) {
-      list(time = task$truth()[,1L]) # store observed times
-    },
-
-    .predict = function(task) {
-      quantile_ps = self$param_set$values$quantile
-      times = sort(unique(self$model$time))
-      surv = matrix(nrow = task$nrow, ncol = length(times))
-
-      q_t = quantile(seq.int(length(times)), quantile_ps)[[1]]
-      
-      # same S for all test observations, sharp drop from 1 to 0 at q_t
-      surv[, 1:floor(q_t)] = 1
-      surv[, ceiling(q_t):ncol(surv)] = 0
-      colnames(surv) = times
-      mlr3proba::surv_return(times = times, surv = surv)
-    }
-  )
-)
-```
-
-We tune the degenerate model to find the optimal quantile to switch the prediction at:
-```{r}
-l = LearnerSurvDegenerate$new()
-l$param_set$values$quantile = to_tune(0, 1)
-
-# ISBS
-m = msr("surv.graf")
-
-# Tune the quantile parameter of the degenerate model
-at = auto_tuner(
-  tuner = tnr("grid_search", resolution = 20),
-  learner = l,
-  resampling = rsmp("holdout"),
-  measure = m
-)
-```
-
-In our benchmark experiment we compare to the Cox PH, Random Forest, and Kaplan-Meier using 3-fold outer cross-validation.
-```{r, results='hide', warning=FALSE}
-#| cache: true
-# Seed for reproducibility
-set.seed(20250418)
-
-# Compare to Cox PH and Kaplan-Meier
-learners = c(lrns(c("surv.coxph", "surv.kaplan", "surv.rfsrc")), at)
-
-r = rsmp("cv", folds = 3)
-bm = benchmark(benchmark_grid(tasks = tsk("rats"), learners = learners, resamplings = r))
-```
-
-To evaluate the benchmark we use Harrell’s C, D-calibration, RCLL, the SBS evaluated at the median observed time, and the ISBS:
-```{r}
-q50 = quantile(tsk("rats")$times(), 0.50)
-
-measures = c(
-  msr("surv.cindex", id = "C-index"),
-  msr("surv.dcalib", id = "D-calib"),
-  msr("surv.rcll", id = "RCLL"),
-  msr("surv.graf", integrated = FALSE, times = q50, id = "SBS_q0.5"),
-  msr("surv.graf", id = "ISBS")
-)
-```
-
-Finally score results:
-```{r}
-df = bm$aggregate(measures)[, c(4, 7:11)]
-
-df |>
-  DT::datatable(
-    rownames = FALSE,
-    options = list(searching = FALSE, order = list(list(5, "desc")))
-  ) |>
-  formatRound(columns = c(2, 4, 5, 6), digits = 5) |>
-  formatSignif(columns = 3, digits = 3) # scientific notation for surv.dcalib
-```
-
-:::{.callout-tip}
-## Summary
-
-We observe that the degenerate model performs the best with respect to ISBS, but worse with respect to all other measures.
-:::
-
 ## Real-World Benchmark Evaluation {-}
 
 :::{.callout-note}
@@ -613,17 +489,17 @@ To run the experiment use [real_data_benchmark.R](https://github.com/survival-or
 
 We assess the performance using three survival scoring rules (RCLL, RCLL\*, ISBS), D-calibration and Harrell's C-index on real-world survival datasets using the `mlr3proba` framework, tested with 10 repetitions of 5-fold cross-validation on the following learners:
 
-- Kaplan-Meier (non-parametric) - `surv.coxph`
-- Cox proportional hazards model - `surv.coxph`
-- Random survival forests (RSF) - `surv.ranger`
+- Kaplan-Meier (non-parametric)
+- Cox proportional hazards model
+- Random survival forests (RSF)
 
 Below we show the aggregated performance metrics across all tasks and learners:
 ```{r}
 res = readRDS("results/real_data_bm.rds")
 
 res |>
-  mutate(
-    learner_id = recode(
+  dplyr::mutate(
+    learner_id = dplyr::recode(
       learner_id,
       "surv.kaplan" = "KM",
       "surv.ranger" = "RSF",
@@ -631,8 +507,8 @@ res |>
     )
   )|>
   DT::datatable(rownames = FALSE, filter = "top", options = list(searching = TRUE)) |>
-  formatRound(columns = 3:7, digits = 3) |>
-  formatSignif(columns = 6, digits = 3) # scientific notation for surv.dcalib
+  DT::formatRound(columns = 3:7, digits = 3) |>
+  DT::formatSignif(columns = 6, digits = 3) # scientific notation for surv.dcalib
 ```
 
 :::{.callout-tip}

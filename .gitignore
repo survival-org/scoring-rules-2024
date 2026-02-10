@@ -12,3 +12,5 @@ sysconfig
 /index_cache/
 /attic
 /_freeze
+
+**/*.quarto_ipynb

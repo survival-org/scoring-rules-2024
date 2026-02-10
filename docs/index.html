@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
+<meta name="generator" content="quarto-1.8.25">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="John Zobolas">
-<meta name="dcterms.date" content="2025-11-26">
+<meta name="dcterms.date" content="2026-02-10">
 <meta name="description" content="Supporting information for paper ‘Examining properness in the external validation of survival models with squared and logarithmic losses’">
 
 <title>Supplementary Material</title>
@@ -69,14 +69,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="./">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-af23c60371069d061fe26fca06acead3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-94fcc9667b62da6a5755ff8232bbff18.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -147,7 +148,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -180,7 +181,6 @@ window.Quarto = {
   <li><a href="#table-1" id="toc-table-1" class="nav-link" data-scroll-target="#table-1">Table 1</a></li>
   <li><a href="#quantifying-impropriety-in-the-survival-brier-score-sbs" id="toc-quantifying-impropriety-in-the-survival-brier-score-sbs" class="nav-link" data-scroll-target="#quantifying-impropriety-in-the-survival-brier-score-sbs">Quantifying Impropriety in the Survival Brier Score (SBS)</a></li>
   <li><a href="#table-d1" id="toc-table-d1" class="nav-link" data-scroll-target="#table-d1">Table D1</a></li>
-  <li><a href="#degenerate-model-exploits-isbs-scoring-rule" id="toc-degenerate-model-exploits-isbs-scoring-rule" class="nav-link" data-scroll-target="#degenerate-model-exploits-isbs-scoring-rule">Degenerate Model Exploits ISBS Scoring Rule</a></li>
   <li><a href="#real-world-benchmark-evaluation" id="toc-real-world-benchmark-evaluation" class="nav-link" data-scroll-target="#real-world-benchmark-evaluation">Real-World Benchmark Evaluation</a></li>
   <li><a href="#r-session-info" id="toc-r-session-info" class="nav-link" data-scroll-target="#r-session-info">R session info</a></li>
   </ul>
@@ -217,7 +217,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 26, 2025</p>
+      <p class="date">February 10, 2026</p>
     </div>
   </div>
   
@@ -235,7 +235,7 @@ window.Quarto = {
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -261,7 +261,7 @@ window.Quarto = {
 <span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">&amp;</span></span>
 <span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">&amp;</span></span>
 <span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">title=</span><span class="st">'(α,σ)'</span>)) <span class="sc">&amp;</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_viridis_d</span>(<span class="at">option =</span> <span class="st">"turbo"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_viridis_d</span>(<span class="at">option =</span> <span class="st">"turbo"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -273,7 +273,7 @@ window.Quarto = {
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ggsave("weibull_plots.png", device = png, dpi=600, width =7, height = 4)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ggsave("weibull_plots.png", device = png, dpi=600, width =7, height = 4)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -297,7 +297,7 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DT)</span>
@@ -306,7 +306,7 @@ Note
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>res[<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(res), <span class="dv">10</span>), ] <span class="sc">|&gt;</span></span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(<span class="at">rownames =</span> <span class="cn">FALSE</span>, <span class="at">options =</span> <span class="fu">list</span>(<span class="at">searching =</span> <span class="cn">FALSE</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="dv">3</span><span class="sc">:</span><span class="dv">40</span>, <span class="at">digits =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">3</span>,<span class="dv">8</span>), <span class="fu">rep</span>(<span class="dv">5</span>,<span class="dv">30</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="dv">3</span><span class="sc">:</span><span class="dv">40</span>, <span class="at">digits =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">3</span>,<span class="dv">8</span>), <span class="fu">rep</span>(<span class="dv">5</span>,<span class="dv">30</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div class="datatables html-widget html-fill-item" id="htmlwidget-4180413069dec37aa3f7" style="width:100%;height:auto;"></div>
@@ -345,7 +345,7 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> res <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> res <span class="sc">|&gt;</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">matches</span>(<span class="st">"shape|scale|prop_cens|tv_dist|n_events|max_t|m_true|m_pred"</span>))</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>measures <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"SBS_q10"</span>, <span class="st">"SBS_median"</span>, <span class="st">"SBS_q90"</span>, <span class="st">"ISBS"</span>, <span class="st">"RCLL"</span>, <span class="st">"wRCLL"</span>)</span>
@@ -390,18 +390,18 @@ Note
 <span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>  data<span class="sc">$</span>metric,</span>
 <span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> measures,</span>
 <span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"SBS (Q10)"</span>, <span class="st">"SBS (Median)"</span>, <span class="st">"SBS (Q90)"</span>, <span class="st">"ISBS"</span>, <span class="st">"RCLL"</span>, <span class="st">"RCLL*"</span>)</span>
-<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>For example, the violation results for the first simulation and <span class="math inline">n = 250</span> across all scoring rules are:</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">|&gt;</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">|&gt;</span> </span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sim <span class="sc">==</span> <span class="dv">1</span>, n <span class="sc">==</span> <span class="dv">250</span>) <span class="sc">|&gt;</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"shift"</span>), <span class="sc">-</span>epsilon, <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"S_"</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(<span class="at">rownames =</span> <span class="cn">FALSE</span>, <span class="at">options =</span> <span class="fu">list</span>(<span class="at">searching =</span> <span class="cn">FALSE</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">7</span>, <span class="at">digits =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">7</span>, <span class="at">digits =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div class="datatables html-widget html-fill-item" id="htmlwidget-4845b45f5a21cb82ccf6" style="width:100%;height:auto;"></div>
@@ -417,7 +417,7 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>all_stats <span class="ot">=</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>all_stats <span class="ot">=</span> </span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span> </span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(n, metric) <span class="sc">|&gt;</span> </span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
@@ -439,7 +439,7 @@ Note
 <span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">style =</span> <span class="st">"caption-side: top; text-align: center; font-size:150%"</span>,</span>
 <span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Table 1: Empirical violations of properness"</span>)</span>
 <span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">8</span>, <span class="at">digits =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">8</span>, <span class="at">digits =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div class="datatables html-widget html-fill-item" id="htmlwidget-d9ac0baf775a3b16ae64" style="width:100%;height:auto;"></div>
@@ -452,7 +452,7 @@ Note
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Summary
+<span class="screen-reader-only">Tip</span>Summary
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -472,7 +472,7 @@ Summary
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>plot_data <span class="ot">=</span> data <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>plot_data <span class="ot">=</span> data <span class="sc">|&gt;</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"^SBS"</span>, metric)) <span class="sc">|&gt;</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">"shift_"</span>),</span>
@@ -492,13 +492,13 @@ Summary
 <span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>      metric <span class="sc">==</span> <span class="st">"SBS (Q90)"</span> <span class="sc">~</span> S_C_q90</span>
 <span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>S_Y_q10, <span class="sc">-</span>S_Y_med, <span class="sc">-</span>S_Y_q90, <span class="sc">-</span>S_C_q10, <span class="sc">-</span>S_C_med, <span class="sc">-</span>S_C_q90)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>S_Y_q10, <span class="sc">-</span>S_Y_med, <span class="sc">-</span>S_Y_q90, <span class="sc">-</span>S_C_q10, <span class="sc">-</span>S_C_med, <span class="sc">-</span>S_C_q90)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ann_df <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ann_df <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">metric =</span> <span class="fu">unique</span>(plot_data<span class="sc">$</span>metric)[<span class="dv">1</span>],</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fl">0.01</span>,</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="sc">-</span><span class="fl">0.07</span>,</span>
@@ -543,7 +543,7 @@ Summary
 <span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>      <span class="at">angle =</span> <span class="dv">90</span>,</span>
 <span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>      <span class="at">size =</span> <span class="dv">6</span>,</span>
 <span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>      <span class="at">fontface =</span> <span class="st">"bold"</span></span>
-<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -557,7 +557,7 @@ Summary
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>plot_data <span class="sc">|&gt;</span> </span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_sample</span>(<span class="at">prop =</span> <span class="fl">0.2</span>) <span class="sc">|&gt;</span> <span class="co"># 3 SBS metrics x 10 sample sizes (n) x 1000 simulations per n</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> S_Y, <span class="at">y =</span> shift, <span class="at">color =</span> <span class="fu">factor</span>(n))) <span class="sc">+</span></span>
@@ -588,7 +588,7 @@ Summary
 <span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">angle =</span> <span class="dv">90</span>,</span>
 <span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">6</span>,</span>
 <span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">fontface =</span> <span class="st">"bold"</span></span>
-<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -602,7 +602,7 @@ Summary
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>plot_data <span class="sc">|&gt;</span> </span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_sample</span>(<span class="at">prop =</span> <span class="fl">0.2</span>) <span class="sc">|&gt;</span> <span class="co"># 3 SBS metrics x 10 sample sizes (n) x 1000 simulations per n</span></span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> S_C, <span class="at">y =</span> shift, <span class="at">color =</span> <span class="fu">factor</span>(n))) <span class="sc">+</span></span>
@@ -633,7 +633,7 @@ Summary
 <span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">angle =</span> <span class="dv">90</span>,</span>
 <span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">6</span>,</span>
 <span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">fontface =</span> <span class="st">"bold"</span></span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -665,15 +665,15 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">"results/res_sims10000_distrs1000_1.rds"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">matches</span>(<span class="st">"shape|scale|prop_cens|tv_dist|n_events|max_t|m_true|m_pred"</span>)) <span class="co"># remove columns</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">"results/res_sims10000_distrs1000_1.rds"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">matches</span>(<span class="st">"shape|scale|prop_cens|tv_dist|n_events|max_t|m_true|m_pred"</span>)) <span class="co"># remove columns</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>As before, we compute 95% confidence intervals for the score differences across <span class="math inline">m = 1000</span> draws per simulation:</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>measures <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"SBS_q10"</span>, <span class="st">"SBS_median"</span>, <span class="st">"SBS_q90"</span>, <span class="st">"ISBS"</span>, <span class="st">"RCLL"</span>, <span class="st">"wRCLL"</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>measures <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"SBS_q10"</span>, <span class="st">"SBS_median"</span>, <span class="st">"SBS_q90"</span>, <span class="st">"ISBS"</span>, <span class="st">"RCLL"</span>, <span class="st">"wRCLL"</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>n_distrs <span class="ot">=</span> <span class="dv">1000</span> <span class="co"># `m` value from paper's experiment</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>tcrit <span class="ot">=</span> <span class="fu">qt</span>(<span class="fl">0.975</span>, <span class="at">df =</span> n_distrs <span class="sc">-</span> <span class="dv">1</span>) <span class="co"># 95% t-test</span></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>threshold <span class="ot">=</span> <span class="fl">1e-4</span></span>
@@ -715,14 +715,14 @@ Note
 <span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>  data<span class="sc">$</span>metric,</span>
 <span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> measures,</span>
 <span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"SBS (Q10)"</span>, <span class="st">"SBS (Median)"</span>, <span class="st">"SBS (Q90)"</span>, <span class="st">"ISBS"</span>, <span class="st">"RCLL"</span>, <span class="st">"RCLL*"</span>)</span>
-<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Lastly, we summarize the significant violations across sample sizes and scoring rules:</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>all_stats <span class="ot">=</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>all_stats <span class="ot">=</span> </span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span> </span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(n, metric) <span class="sc">|&gt;</span> </span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
@@ -744,7 +744,7 @@ Note
 <span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">style =</span> <span class="st">"caption-side: top; text-align: center; font-size:150%"</span>,</span>
 <span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Table D2: Empirical violations of properness using G(t)"</span>)</span>
 <span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">8</span>, <span class="at">digits =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">8</span>, <span class="at">digits =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div class="datatables html-widget html-fill-item" id="htmlwidget-cb75ca9f9e6f97528efb" style="width:100%;height:auto;"></div>
@@ -757,163 +757,11 @@ Note
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Summary
+<span class="screen-reader-only">Tip</span>Summary
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <p>Estimating <span class="math inline">S_C(t)</span> via Kaplan-Meier produced nearly identical results to using the true distribution, with no violations for RCLL/RCLL* and only small-sample effects for SBS and ISBS.</p>
-</div>
-</div>
-</section>
-<section id="degenerate-model-exploits-isbs-scoring-rule" class="level2 unnumbered">
-<h2 class="unnumbered anchored" data-anchor-id="degenerate-model-exploits-isbs-scoring-rule">Degenerate Model Exploits ISBS Scoring Rule</h2>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This section demonstrates how a deliberately simple, uninformative survival model—the <em>degenerate model</em>—can outperform established methods under the Integrated Survival Brier Score (ISBS). The model entirely ignores covariates and instead outputs a flat survival function that drops from 1 to 0 at a fixed quantile of observed times.</p>
-<p>This model is deliberately constructed to expose a key weakness in ISBS: it can be minimized by predictions that offer no individualization or clinical utility. This highlights that the ISBS is not a proper scoring rule in general, particularly when fundamental assumptions are violated—such as independent censoring or the propriety of the true and censoring survival distributions (i.e., when <span class="math inline">\lim_{t\to\infty} S(t) \ne 0</span>).</p>
-</div>
-</div>
-<p>Below, we define the degenerate model in <code>mlr3proba</code>, tune it over the quantile cutoff with ISBS, and compare its ISBS score and other evaluation measures to Cox, Kaplan-Meier, and Random Survival Forest (RSF) learners on the <code>survival::rats</code> dataset.</p>
-<p>Load libraries:</p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(R6)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3proba)</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3extralearners)</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3tuning)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<p>Define the degenerate model:</p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>LearnerSurvDegenerate <span class="ot">=</span> <span class="fu">R6Class</span>(<span class="st">"LearnerSurvDegenerate"</span>,</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">inherit =</span> LearnerSurv,</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">public =</span> <span class="fu">list</span>(</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">initialize =</span> <span class="cf">function</span>() {</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>      super<span class="sc">$</span><span class="fu">initialize</span>(</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">id =</span> <span class="st">"surv.degenerate"</span>,</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">predict_types =</span> <span class="fu">c</span>(<span class="st">"distr"</span>),</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">feature_types =</span> <span class="fu">c</span>(<span class="st">"logical"</span>, <span class="st">"integer"</span>, <span class="st">"numeric"</span>, <span class="st">"character"</span>, <span class="st">"factor"</span>, <span class="st">"ordered"</span>),</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">properties =</span> <span class="st">"missings"</span>,</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">packages =</span> <span class="fu">c</span>(<span class="st">"survival"</span>, <span class="st">"distr6"</span>),</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">label =</span> <span class="st">"Degenerate Estimator"</span>,</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">param_set =</span> <span class="fu">ps</span>(</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>           <span class="at">quantile =</span> <span class="fu">p_dbl</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">private =</span> <span class="fu">list</span>(</span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">.train =</span> <span class="cf">function</span>(task) {</span>
-<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>      <span class="fu">list</span>(<span class="at">time =</span> task<span class="sc">$</span><span class="fu">truth</span>()[,<span class="dv">1</span>L]) <span class="co"># store observed times</span></span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>    },</span>
-<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">.predict =</span> <span class="cf">function</span>(task) {</span>
-<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>      quantile_ps <span class="ot">=</span> self<span class="sc">$</span>param_set<span class="sc">$</span>values<span class="sc">$</span>quantile</span>
-<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>      times <span class="ot">=</span> <span class="fu">sort</span>(<span class="fu">unique</span>(self<span class="sc">$</span>model<span class="sc">$</span>time))</span>
-<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>      surv <span class="ot">=</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> task<span class="sc">$</span>nrow, <span class="at">ncol =</span> <span class="fu">length</span>(times))</span>
-<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>      q_t <span class="ot">=</span> <span class="fu">quantile</span>(<span class="fu">seq.int</span>(<span class="fu">length</span>(times)), quantile_ps)[[<span class="dv">1</span>]]</span>
-<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>      <span class="co"># same S for all test observations, sharp drop from 1 to 0 at q_t</span></span>
-<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>      surv[, <span class="dv">1</span><span class="sc">:</span><span class="fu">floor</span>(q_t)] <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>      surv[, <span class="fu">ceiling</span>(q_t)<span class="sc">:</span><span class="fu">ncol</span>(surv)] <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>      <span class="fu">colnames</span>(surv) <span class="ot">=</span> times</span>
-<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>      mlr3proba<span class="sc">::</span><span class="fu">surv_return</span>(<span class="at">times =</span> times, <span class="at">surv =</span> surv)</span>
-<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<p>We tune the degenerate model to find the optimal quantile to switch the prediction at:</p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>l <span class="ot">=</span> LearnerSurvDegenerate<span class="sc">$</span><span class="fu">new</span>()</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>l<span class="sc">$</span>param_set<span class="sc">$</span>values<span class="sc">$</span>quantile <span class="ot">=</span> <span class="fu">to_tune</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ISBS</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>m <span class="ot">=</span> <span class="fu">msr</span>(<span class="st">"surv.graf"</span>)</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Tune the quantile parameter of the degenerate model</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>at <span class="ot">=</span> <span class="fu">auto_tuner</span>(</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">tuner =</span> <span class="fu">tnr</span>(<span class="st">"grid_search"</span>, <span class="at">resolution =</span> <span class="dv">20</span>),</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">learner =</span> l,</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">resampling =</span> <span class="fu">rsmp</span>(<span class="st">"holdout"</span>),</span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">measure =</span> m</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<p>In our benchmark experiment we compare to the Cox PH, Random Forest, and Kaplan-Meier using 3-fold outer cross-validation.</p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Seed for reproducibility</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">20250418</span>)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare to Cox PH and Kaplan-Meier</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>learners <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">lrns</span>(<span class="fu">c</span>(<span class="st">"surv.coxph"</span>, <span class="st">"surv.kaplan"</span>, <span class="st">"surv.rfsrc"</span>)), at)</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>r <span class="ot">=</span> <span class="fu">rsmp</span>(<span class="st">"cv"</span>, <span class="at">folds =</span> <span class="dv">3</span>)</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>bm <span class="ot">=</span> <span class="fu">benchmark</span>(<span class="fu">benchmark_grid</span>(<span class="at">tasks =</span> <span class="fu">tsk</span>(<span class="st">"rats"</span>), <span class="at">learners =</span> learners, <span class="at">resamplings =</span> r))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<p>To evaluate the benchmark we use Harrell’s C, D-calibration, RCLL, the SBS evaluated at the median observed time, and the ISBS:</p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>q50 <span class="ot">=</span> <span class="fu">quantile</span>(<span class="fu">tsk</span>(<span class="st">"rats"</span>)<span class="sc">$</span><span class="fu">times</span>(), <span class="fl">0.50</span>)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>measures <span class="ot">=</span> <span class="fu">c</span>(</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">msr</span>(<span class="st">"surv.cindex"</span>, <span class="at">id =</span> <span class="st">"C-index"</span>),</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">msr</span>(<span class="st">"surv.dcalib"</span>, <span class="at">id =</span> <span class="st">"D-calib"</span>),</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">msr</span>(<span class="st">"surv.rcll"</span>, <span class="at">id =</span> <span class="st">"RCLL"</span>),</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">integrated =</span> <span class="cn">FALSE</span>, <span class="at">times =</span> q50, <span class="at">id =</span> <span class="st">"SBS_q0.5"</span>),</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">msr</span>(<span class="st">"surv.graf"</span>, <span class="at">id =</span> <span class="st">"ISBS"</span>)</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<p>Finally score results:</p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> bm<span class="sc">$</span><span class="fu">aggregate</span>(measures)[, <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">7</span><span class="sc">:</span><span class="dv">11</span>)]</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">rownames =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">options =</span> <span class="fu">list</span>(<span class="at">searching =</span> <span class="cn">FALSE</span>, <span class="at">order =</span> <span class="fu">list</span>(<span class="fu">list</span>(<span class="dv">5</span>, <span class="st">"desc"</span>)))</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>), <span class="at">digits =</span> <span class="dv">5</span>) <span class="sc">|&gt;</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="dv">3</span>, <span class="at">digits =</span> <span class="dv">3</span>) <span class="co"># scientific notation for surv.dcalib</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div class="datatables html-widget html-fill-item" id="htmlwidget-92f368e37d5f12d0762a" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-92f368e37d5f12d0762a">{"x":{"filter":"none","vertical":false,"data":[["surv.coxph","surv.kaplan","surv.rfsrc","surv.degenerate.tuned"],[0.7637313008308411,0.5,0.7553536295890808,0.5],[0.4629203491200687,0.9691005461763704,0.9493992723267703,12832236391.94999],[0.9148334786987149,0.9898660004535476,0.9712334856060884,6.458060107652114],[0.1091271295123838,0.1212524953098007,0.1083267692445754,0.1400007922303577],[0.06850171426844204,0.07341426920167463,0.06488957376661877,0.06306716311908939]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>learner_id<\/th>\n      <th>C-index<\/th>\n      <th>D-calib<\/th>\n      <th>RCLL<\/th>\n      <th>SBS_q0.5<\/th>\n      <th>ISBS<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"searching":false,"order":[[5,"desc"]],"columnDefs":[{"targets":2,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatSignif(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":1,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 5, 3, \",\", \".\", null);\n  }"},{"targets":3,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 5, 3, \",\", \".\", null);\n  }"},{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 5, 3, \",\", \".\", null);\n  }"},{"targets":5,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 5, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[1,2,3,4,5]},{"name":"learner_id","targets":0},{"name":"C-index","targets":1},{"name":"D-calib","targets":2},{"name":"RCLL","targets":3},{"name":"SBS_q0.5","targets":4},{"name":"ISBS","targets":5}],"autoWidth":false,"orderClasses":false}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.columnDefs.3.render","options.columnDefs.4.render"],"jsHooks":[]}</script>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Summary
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>We observe that the degenerate model performs the best with respect to ISBS, but worse with respect to all other measures.</p>
 </div>
 </div>
 </section>
@@ -934,32 +782,32 @@ Note
 </div>
 <p>We assess the performance using three survival scoring rules (RCLL, RCLL*, ISBS), D-calibration and Harrell’s C-index on real-world survival datasets using the <code>mlr3proba</code> framework, tested with 10 repetitions of 5-fold cross-validation on the following learners:</p>
 <ul>
-<li>Kaplan-Meier (non-parametric) - <code>surv.coxph</code></li>
-<li>Cox proportional hazards model - <code>surv.coxph</code></li>
-<li>Random survival forests (RSF) - <code>surv.ranger</code></li>
+<li>Kaplan-Meier (non-parametric)</li>
+<li>Cox proportional hazards model</li>
+<li>Random survival forests (RSF)</li>
 </ul>
 <p>Below we show the aggregated performance metrics across all tasks and learners:</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">"results/real_data_bm.rds"</span>)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>res <span class="sc">|&gt;</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">learner_id =</span> <span class="fu">recode</span>(</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>      learner_id,</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>      <span class="st">"surv.kaplan"</span> <span class="ot">=</span> <span class="st">"KM"</span>,</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>      <span class="st">"surv.ranger"</span> <span class="ot">=</span> <span class="st">"RSF"</span>,</span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>      <span class="st">"surv.coxph"</span>  <span class="ot">=</span> <span class="st">"CoxPH"</span></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">|&gt;</span></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(<span class="at">rownames =</span> <span class="cn">FALSE</span>, <span class="at">filter =</span> <span class="st">"top"</span>, <span class="at">options =</span> <span class="fu">list</span>(<span class="at">searching =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="dv">3</span><span class="sc">:</span><span class="dv">7</span>, <span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="dv">6</span>, <span class="at">digits =</span> <span class="dv">3</span>) <span class="co"># scientific notation for surv.dcalib</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">"results/real_data_bm.rds"</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>res <span class="sc">|&gt;</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">learner_id =</span> dplyr<span class="sc">::</span><span class="fu">recode</span>(</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>      learner_id,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>      <span class="st">"surv.kaplan"</span> <span class="ot">=</span> <span class="st">"KM"</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>      <span class="st">"surv.ranger"</span> <span class="ot">=</span> <span class="st">"RSF"</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>      <span class="st">"surv.coxph"</span>  <span class="ot">=</span> <span class="st">"CoxPH"</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">|&gt;</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(<span class="at">rownames =</span> <span class="cn">FALSE</span>, <span class="at">filter =</span> <span class="st">"top"</span>, <span class="at">options =</span> <span class="fu">list</span>(<span class="at">searching =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="dv">3</span><span class="sc">:</span><span class="dv">7</span>, <span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="dv">6</span>, <span class="at">digits =</span> <span class="dv">3</span>) <span class="co"># scientific notation for surv.dcalib</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<div class="datatables html-widget html-fill-item" id="htmlwidget-6a3c1af9d9bea6b77367" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-6a3c1af9d9bea6b77367">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.735194214258959\" data-max=\"10.085885283026\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"7.25390237882467\" data-max=\"3528.81578409596\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.5\" data-max=\"0.845364315509797\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.916792733122042\" data-max=\"6290217.26873058\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.058604236013288\" data-max=\"0.239413349345781\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["actg","actg","actg","gbcs","gbcs","gbcs","gbsg","gbsg","gbsg","grace","grace","grace","lung","lung","lung","mgus","mgus","mgus","rats","rats","rats","veteran","veteran","veteran","whas","whas","whas"],["KM","RSF","CoxPH","KM","RSF","CoxPH","KM","RSF","CoxPH","KM","RSF","CoxPH","KM","RSF","CoxPH","KM","RSF","CoxPH","KM","RSF","CoxPH","KM","RSF","CoxPH","KM","RSF","CoxPH"],[0.7567041045610103,0.8776141633865842,0.7351942142589597,2.47289294050868,2.655761176365595,2.419351112584689,3.94209830035081,4.275112497278296,3.884387726112861,2.04583326978495,1.455681307566044,1.755940255643272,5.394397934593083,6.099781711752552,5.335782360713995,9.393905557111257,10.08588528302604,9.114148019093296,1.003300833959881,1.023895260231137,0.9411454938276417,5.837710478374294,6.619003143999921,5.697715967748342,4.302363938224783,4.521052367149109,4.138829928451631],[24.87985662084925,27.70807130118615,21.11411863564531,522.2194517545338,571.7469338016826,615.4374708247187,733.9559733461506,633.2427867665696,688.4363373324854,46.1597801509995,39.38298659184174,21.76465562674164,388.1982588595486,207.4139607385753,331.1680595957296,3528.815784095963,1872.798478437407,3225.17537878297,8.700545557645874,7.25390237882467,7.309728461484315,84.9231852558184,58.0775683978342,76.29738116137214,2177.89793337128,1818.279921627027,2222.496820547451],[0.5,0.7237344253063202,0.739308797121048,0.5,0.7141540884971619,0.7377930462360383,0.5,0.6844223845005035,0.6780326104164124,0.5,0.8453643155097962,0.8371528506278991,0.5,0.5880253702402115,0.6183875674009323,0.5,0.6831466794013977,0.7034943723678588,0.5,0.7963823628425598,0.7868871819972992,0.5,0.6994045674800873,0.7155141901969909,0.5,0.7602470374107361,0.7434525525569916],[0.9228093515091215,0.9888319840478774,0.9167927331220422,2.446816425121009,3.301086844271917,15.66312453997603,6.322789959530837,5.119742340728969,178636.0803179203,4.242563885008336,16.26427982384799,5.59362367899505,13.41387267308914,9.301514417220407,23.49663046798761,6290217.26873058,14.61424290510219,11.25283246177585,1.831523843059321,1.779263535091758,1.495567891952885,10.25450925188884,15.12044549660546,12.29042682761187,5.988492752157038,7.59418631790367,11.10609437226754],[0.06146679594839772,0.05933906904546646,0.05860423601328801,0.1497424020376201,0.1309991637632391,0.1235753192601146,0.2018054361700662,0.174401928265157,0.1707018254129985,0.1979073085416527,0.1052990314834692,0.09780423776062915,0.1620304966228825,0.1785492495630046,0.1613712943222766,0.2128474509173105,0.1793762899157695,0.1586440215141225,0.08230711425948128,0.06206509861620109,0.0702933476758727,0.1166828482225961,0.1200312013148727,0.1015243229904948,0.2394133493457809,0.202826289245871,0.2015402207261469]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>task_id<\/th>\n      <th>learner_id<\/th>\n      <th>RCLL<\/th>\n      <th>RCLL*<\/th>\n      <th>C-index<\/th>\n      <th>D-calib<\/th>\n      <th>ISBS<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"searching":true,"columnDefs":[{"targets":5,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatSignif(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":2,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":3,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":5,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[2,3,4,5,6]},{"name":"task_id","targets":0},{"name":"learner_id","targets":1},{"name":"RCLL","targets":2},{"name":"RCLL*","targets":3},{"name":"C-index","targets":4},{"name":"D-calib","targets":5},{"name":"ISBS","targets":6}],"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.columnDefs.3.render","options.columnDefs.4.render","options.columnDefs.5.render"],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-92f368e37d5f12d0762a" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-92f368e37d5f12d0762a">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.735194214258959\" data-max=\"10.085885283026\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"7.25390237882467\" data-max=\"3528.81578409596\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.5\" data-max=\"0.845364315509797\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.916792733122042\" data-max=\"6290217.26873058\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.058604236013288\" data-max=\"0.239413349345781\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["actg","actg","actg","gbcs","gbcs","gbcs","gbsg","gbsg","gbsg","grace","grace","grace","lung","lung","lung","mgus","mgus","mgus","rats","rats","rats","veteran","veteran","veteran","whas","whas","whas"],["KM","RSF","CoxPH","KM","RSF","CoxPH","KM","RSF","CoxPH","KM","RSF","CoxPH","KM","RSF","CoxPH","KM","RSF","CoxPH","KM","RSF","CoxPH","KM","RSF","CoxPH","KM","RSF","CoxPH"],[0.7567041045610103,0.8776141633865842,0.7351942142589597,2.47289294050868,2.655761176365595,2.419351112584689,3.94209830035081,4.275112497278296,3.884387726112861,2.04583326978495,1.455681307566044,1.755940255643272,5.394397934593083,6.099781711752552,5.335782360713995,9.393905557111257,10.08588528302604,9.114148019093296,1.003300833959881,1.023895260231137,0.9411454938276417,5.837710478374294,6.619003143999921,5.697715967748342,4.302363938224783,4.521052367149109,4.138829928451631],[24.87985662084925,27.70807130118615,21.11411863564531,522.2194517545338,571.7469338016826,615.4374708247187,733.9559733461506,633.2427867665696,688.4363373324854,46.1597801509995,39.38298659184174,21.76465562674164,388.1982588595486,207.4139607385753,331.1680595957296,3528.815784095963,1872.798478437407,3225.17537878297,8.700545557645874,7.25390237882467,7.309728461484315,84.9231852558184,58.0775683978342,76.29738116137214,2177.89793337128,1818.279921627027,2222.496820547451],[0.5,0.7237344253063202,0.739308797121048,0.5,0.7141540884971619,0.7377930462360383,0.5,0.6844223845005035,0.6780326104164124,0.5,0.8453643155097962,0.8371528506278991,0.5,0.5880253702402115,0.6183875674009323,0.5,0.6831466794013977,0.7034943723678588,0.5,0.7963823628425598,0.7868871819972992,0.5,0.6994045674800873,0.7155141901969909,0.5,0.7602470374107361,0.7434525525569916],[0.9228093515091215,0.9888319840478774,0.9167927331220422,2.446816425121009,3.301086844271917,15.66312453997603,6.322789959530837,5.119742340728969,178636.0803179203,4.242563885008336,16.26427982384799,5.59362367899505,13.41387267308914,9.301514417220407,23.49663046798761,6290217.26873058,14.61424290510219,11.25283246177585,1.831523843059321,1.779263535091758,1.495567891952885,10.25450925188884,15.12044549660546,12.29042682761187,5.988492752157038,7.59418631790367,11.10609437226754],[0.06146679594839772,0.05933906904546646,0.05860423601328801,0.1497424020376201,0.1309991637632391,0.1235753192601146,0.2018054361700662,0.174401928265157,0.1707018254129985,0.1979073085416527,0.1052990314834692,0.09780423776062915,0.1620304966228825,0.1785492495630046,0.1613712943222766,0.2128474509173105,0.1793762899157695,0.1586440215141225,0.08230711425948128,0.06206509861620109,0.0702933476758727,0.1166828482225961,0.1200312013148727,0.1015243229904948,0.2394133493457809,0.202826289245871,0.2015402207261469]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>task_id<\/th>\n      <th>learner_id<\/th>\n      <th>RCLL<\/th>\n      <th>RCLL*<\/th>\n      <th>C-index<\/th>\n      <th>D-calib<\/th>\n      <th>ISBS<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"searching":true,"columnDefs":[{"targets":5,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatSignif(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":2,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":3,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":5,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[2,3,4,5,6]},{"name":"task_id","targets":0},{"name":"learner_id","targets":1},{"name":"RCLL","targets":2},{"name":"RCLL*","targets":3},{"name":"C-index","targets":4},{"name":"D-calib","targets":5},{"name":"ISBS","targets":6}],"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.columnDefs.3.render","options.columnDefs.4.render","options.columnDefs.5.render"],"jsHooks":[]}</script>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip callout-titled">
@@ -968,7 +816,7 @@ Note
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Summary
+<span class="screen-reader-only">Tip</span>Summary
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -984,7 +832,7 @@ Summary
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>utils<span class="sc">::</span><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>utils<span class="sc">::</span><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>R version 4.4.2 (2024-10-31)
@@ -1010,38 +858,21 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] mlr3tuning_1.5.0             paradox_1.0.1               
- [3] mlr3extralearners_1.3.0.9000 mlr3proba_0.8.5             
- [5] mlr3_1.2.0                   R6_2.6.1                    
- [7] DT_0.33                      tidyr_1.3.1                 
- [9] tibble_3.3.0                 dplyr_1.1.4                 
-[11] patchwork_1.3.2              ggplot2_4.0.0               
+[1] DT_0.33         tidyr_1.3.1     tibble_3.3.0    dplyr_1.1.4    
+[5] patchwork_1.3.2 ggplot2_4.0.1  
 
 loaded via a namespace (and not attached):
- [1] gtable_0.3.6         xfun_0.49            bslib_0.8.0         
- [4] htmlwidgets_1.6.4    lattice_0.22-6       mlr3cmprsk_0.0.1    
- [7] vctrs_0.6.5          tools_4.4.2          crosstalk_1.2.1     
-[10] generics_0.1.3       parallel_4.4.2       pkgconfig_2.0.3     
-[13] Matrix_1.7-1         data.table_1.17.8    checkmate_2.3.3     
-[16] RColorBrewer_1.1-3   S7_0.2.0             mlr3pipelines_0.10.0
-[19] uuid_1.2-1           lifecycle_1.0.4      compiler_4.4.2      
-[22] farver_2.1.2         stringr_1.5.1        set6_0.2.6          
-[25] codetools_0.2-20     bbotk_1.8.0          htmltools_0.5.8.1   
-[28] sass_0.4.9           yaml_2.3.10          pillar_1.11.0       
-[31] crayon_1.5.3         jquerylib_0.1.4      cachem_1.1.0        
-[34] survdistr_0.0.1      parallelly_1.45.0    tidyselect_1.2.1    
-[37] digest_0.6.37        stringi_1.8.4        future_1.67.0       
-[40] reshape2_1.4.4       purrr_1.0.2          listenv_0.9.1       
-[43] splines_4.4.2        labeling_0.4.3       fastmap_1.2.0       
-[46] grid_4.4.2           cli_3.6.5            magrittr_2.0.3      
-[49] survival_3.7-0       withr_3.0.2          scales_1.4.0        
-[52] backports_1.5.0      ooplah_0.2.0         rmarkdown_2.29      
-[55] globals_0.18.0       distr6_1.8.4         evaluate_1.0.5      
-[58] knitr_1.49           viridisLite_0.4.2    dictionar6_0.1.3    
-[61] mlr3misc_0.19.0      rlang_1.1.6          Rcpp_1.1.0          
-[64] glue_1.8.0           param6_0.2.4         palmerpenguins_0.1.1
-[67] rstudioapi_0.17.1    jsonlite_1.8.9       lgr_0.5.0           
-[70] plyr_1.8.9          </code></pre>
+ [1] gtable_0.3.6       jsonlite_2.0.0     compiler_4.4.2     tidyselect_1.2.1  
+ [5] Rcpp_1.1.1         stringr_1.5.1      jquerylib_0.1.4    scales_1.4.0      
+ [9] yaml_2.3.10        fastmap_1.2.0      R6_2.6.1           plyr_1.8.9        
+[13] labeling_0.4.3     generics_0.1.3     knitr_1.49         htmlwidgets_1.6.4 
+[17] bslib_0.8.0        pillar_1.11.0      RColorBrewer_1.1-3 rlang_1.1.7       
+[21] cachem_1.1.0       stringi_1.8.4      xfun_0.49          sass_0.4.9        
+[25] S7_0.2.1           viridisLite_0.4.2  cli_3.6.5          withr_3.0.2       
+[29] magrittr_2.0.3     crosstalk_1.2.1    digest_0.6.39      grid_4.4.2        
+[33] lifecycle_1.0.4    vctrs_0.6.5        evaluate_1.0.5     glue_1.8.0        
+[37] farver_2.1.2       purrr_1.0.2        reshape2_1.4.4     rmarkdown_2.29    
+[41] tools_4.4.2        pkgconfig_2.0.3    htmltools_0.5.8.1 </code></pre>
 </div>
 </div>
 
@@ -1100,13 +931,14 @@ loaded via a namespace (and not attached):
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

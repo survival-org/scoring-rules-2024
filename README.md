@@ -9,16 +9,9 @@ It also links code outputs to manuscript figures and tables for clarity.
 
 The report includes:
 
-- **High variability for generated survival and censoring distributions** [[link](https://survival-org.github.io/scoring-rules-2024/#high-variability-for-generated-survival-and-censoring-distributions)]  
-  (corresponds to *Figure 1* in the main manuscript)
-  
-- **Appendix D experiment results:**  
-  - *Table D1*: Empirical violations of properness [[link](https://survival-org.github.io/scoring-rules-2024/#table-d1)]
-  - *Table D2*: Empirical violations of properness using G(t) [[link](https://survival-org.github.io/scoring-rules-2024/#table-d2)]
-  
-- **Degenerate Model Exploits ISBS Scoring Rule** [[link](https://survival-org.github.io/scoring-rules-2024/#degenerate-model-exploits-isbs-scoring-rule)]  
-  A minimal model that outperforms established methods under ISBS, illustrating its vulnerability to gaming.
-
+- **High variability for generated survival and censoring distributions** [[link](https://survival-org.github.io/scoring-rules-2024/#high-variability-for-generated-survival-and-censoring-distributions)] (corresponds to *Figure 1* in the main manuscript)
+- **Table 1** Empirical violations of properness [[link](https://survival-org.github.io/scoring-rules-2024/#table-1)]
+- **Table D1** Empirical violations of properness using G(t) [[link](https://survival-org.github.io/scoring-rules-2024/#table-d1)] 
 - **Real-World Benchmark Evaluation** [[link](https://survival-org.github.io/scoring-rules-2024/#real-world-benchmark-evaluation)]  
   An exploratory comparison of survival metrics including 3 scoring rules (RCLL, RCLL\*, ISBS), the C-index and D-calibration, on validation tasks using real-world survival datasets.
 

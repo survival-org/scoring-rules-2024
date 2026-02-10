@@ -168,7 +168,7 @@ data$metric = factor(
 )
 ```
 
-For example, the violation results for the first simulation and $n = 250$ across all scoring rules are:
+For example, the results for the first simulation and $n = 250$ across all scoring rules show no violations of properness:
 ```{r}
 data |> 
   filter(sim == 1, n == 250) |>

@@ -8,6 +8,7 @@
 #' Conclusion: this "ISBS gaming" doesn't work broadly
 #' 
 #' Full results: results/degenerate_model_bm.rds (9 tasks × 50 resamplings)
+#' Execute: `Rscript degenerate_model.R`
 library(R6)
 library(mlr3proba)
 library(mlr3extralearners)
@@ -108,7 +109,11 @@ res = data.table::as.data.table(res) |>
   dplyr::select(task_id, learner_id, RCLL, `C-index`, `D-calib`, `ISBS`)
 saveRDS(res, file = "results/degenerate_model_bm.rds")
 
-res |>
+# plot results nicely
+if (FALSE) {
+  res = readRDS(file = "results/degenerate_model_bm.rds")
+
+  res |>
   dplyr::mutate(
     learner_id = dplyr::recode(
       learner_id,
@@ -121,3 +126,5 @@ res |>
   DT::datatable(rownames = FALSE, filter = "top", options = list(searching = TRUE)) |>
   DT::formatRound(columns = 3:7, digits = 3) |>
   DT::formatSignif(columns = 5, digits = 3) # scientific notation for D-calib
+}
+

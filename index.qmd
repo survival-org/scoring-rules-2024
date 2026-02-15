@@ -23,6 +23,18 @@ execute:
 knitr::opts_chunk$set(echo = TRUE, cache = FALSE)
 ```
 
+Load libraries:
+```{r, message=FALSE}
+library(dplyr)
+library(tibble)
+library(ggplot2)
+library(patchwork)
+library(akima)
+library(purrr)
+library(tidyr)
+library(DT)
+```
+
 ## High variability for generated survival and censoring distributions {-}
 
 To illustrate the diversity of the Weibull distributions used in our simulation design, we plot both the density $f(t)$ and survival $S(t)$ functions for 10 randomly sampled shape $\alpha$ and scale $\sigma$ parameter pairs.
@@ -32,11 +44,6 @@ By construction, all data-generating mechanisms assume $Y$ independent of $C$, s
 
 ```{r, message=FALSE}
 #| fig-cap: "Weibull density (top) and survival (bottom) curves for randomly generated shape, α, and scale, σ parameters. Each curve corresponds to a different parameter pair, illustrating the broad variability across simulated distributions."
-
-library(ggplot2)
-library(patchwork)
-library(dplyr)
-
 set.seed(20250408)
 
 shape = runif(10, 0.5, 5)
@@ -53,15 +60,15 @@ pw = mapply(function(shape,scale) pweibull(seq.int(1,5,0.1), shape,scale, lower.
         group = rep(sprintf("(%.2f,%.2f)",shape,scale), each = 41)) |>
   select(x, group, value)
 
-(ggplot(dw, aes(x = x, y = value, group = group, color = group)) + ylab("f(x)")) /
-(ggplot(pw, aes(x = x, y = value, group = group, color = group)) + ylab("S(x)")) +
+(ggplot(dw, aes(x = x, y = value, group = group, color = group)) + ylab("f(t)") + xlab("t")) /
+(ggplot(pw, aes(x = x, y = value, group = group, color = group)) + ylab("S(t)") + xlab("t")) +
   plot_layout(guides='collect') &
   geom_line() &
-  theme_classic() &
+  theme_classic(base_size = 14) &
   guides(color = guide_legend(title='(α,σ)')) &
   scale_color_viridis_d(option = "turbo")
 
-# ggsave("weibull_plots.png", device = png, dpi=600, width =7, height = 4)
+#ggsave("weibull_plots.png", device = png, dpi = 600, width = 7, height = 4)
 ```
 
 ## Table 1 {-}
@@ -74,13 +81,8 @@ To run for different sample sizes `n`, use [run_tests.sh](https://github.com/sur
 Merged simulation results for all $n$ are available [here](https://github.com/survival-org/scoring-rules-2024/blob/main/results/res_sims10000_distrs1000_0.rds).
 :::
 
-Load libraries and explore data:
+Explore data:
 ```{r, message=FALSE}
-library(dplyr)
-library(tibble)
-library(tidyr)
-library(DT)
-
 res = readRDS("results/res_sims10000_distrs1000_0.rds")
 
 res[sample(1:nrow(res), 10), ] |>
@@ -115,7 +117,6 @@ Scoring rules analyzed:
 
 We compute 95% confidence intervals (CIs) for the mean score difference $D$ (true - predicted) using a $t$-distribution.
 A violation is marked statistically significant if:
-
 - The mean score difference exceeds a positive threshold: $\bar{D} > 0.0001$
 - The CI excludes zero (i.e., $\text{CI}_\text{lower} > 0$)
 
@@ -215,14 +216,14 @@ all_stats |>
 - **RCLL** and **RCLL\*** show practically no violations across any simulation or sample size.
 - **SBS** shows time- and sample-size-dependent violations, mostly at smaller $n$, especially for early evaluation times ($\tau = q_{0.1}$).
 All differences are small (typically < 0.01).
-- **ISBS** showed minor violations only at $n < 50$; none for $n > 100$.
+- **ISBS** showed minor violations only at $n \le 50$; none for $n > 100$.
 :::
 
 ## Quantifying Impropriety in the Survival Brier Score (SBS)
 
-The theoretical shift from the global minimum $x^*$ of the expected SBS (i.e. the bias) is:
+The theoretical shift (i.e. bias) of the global minimum $x^*$ of the expected SBS from the true survival probability is the survival tail product $\times$ a survival probability ratio term at $\tau^*$ (for small $\varepsilon$):
 
-$$x^* - S_Y(\tau^*) = - \frac{\epsilon (1-S_Y(\tau^*))}{S_C(\tau^*) - \epsilon}$$
+$$x^\star - S_Y(\tau^*) = - \frac{\varepsilon (1-S_Y(\tau^*))}{S_C(\tau^*) - \varepsilon} \approx - \varepsilon \cdot \frac{1 - S_Y(\tau^*)}{S_C(\tau^*)}$$
 
 Filter SBS simulation data for plotting:
 ```{r}
@@ -249,8 +250,11 @@ plot_data = data |>
   select(-S_Y_q10, -S_Y_med, -S_Y_q90, -S_C_q10, -S_C_med, -S_C_q90)
 ```
 
+::: {.panel-tabset}
+
+### $\varepsilon$ vs bias
 ```{r}
-#| fig-cap: "Relationship between survival tail product ε and theoretical shift from the global minimum, using a sample of data from the Weibull simulation experiments"
+#| fig-cap: "Relationship between survival tail product $\\epsilon$ and theoretical shift from the global minimum, using a sample of data from the Weibull simulation experiments"
 #| cache: true
 #| fig-width: 9
 #| fig-height: 5
@@ -267,21 +271,20 @@ ann_df = data.frame(
 # shift vs epsilon
 set.seed(42)
 plot_data |> 
-  slice_sample(prop = 0.2) |> # 3 SBS metrics x 10 sample sizes (n) x 1000 simulations per n
+  slice_sample(prop = 0.2) |> # 3 SBS metrics x 10 sample sizes (n) x 10000 simulations per n
   ggplot(aes(x = epsilon, y = shift, color = factor(n))) +
     geom_point(alpha = 0.5, size = 0.1) +
     facet_wrap(~metric, scales = "fixed") +
     scale_color_discrete(
       name = "Sample size (n)",
-      breaks = rev(sort(unique(plot_data$n)))  # reverse legend
     ) +
     scale_x_continuous(
       limits = c(0, 0.11), 
       breaks = c(0, 0.025, 0.05, 0.075, 0.1)
     ) +
     labs(
-      x = expression(epsilon == S[Y](t[max]) %*% S[C](t[max])),
-      y = expression(x^"*" - S[Y](tau^"*")), # shift from optimal prediction
+      x = expression(varepsilon == S[Y](t[max]) %*% S[C](t[max])),
+      y = expression(x^"*" ~ "-" ~ S[Y](tau^ ~ symbol("\052"))), # shift from optimal prediction
       color = "Sample size (n)"
     ) +
     theme_bw(base_size = 14, base_family = "Arial") +
@@ -303,15 +306,16 @@ plot_data |>
     )
 ```
 
+### $S_Y(\tau^*)$ vs bias
 ```{r}
-#| fig-cap: "Relationship between true survival at τ* and theoretical shift from the global minimum, using a sample of data from the Weibull simulation experiments"
+#| fig-cap: "Relationship between true survival $S_Y(\\tau^*)$ and theoretical shift from the global minimum, using a sample of data from the Weibull simulation experiments"
 #| cache: true
 #| fig-width: 9
 #| fig-height: 5
 
 set.seed(42)
 plot_data |> 
-  slice_sample(prop = 0.2) |> # 3 SBS metrics x 10 sample sizes (n) x 1000 simulations per n
+  slice_sample(prop = 0.2) |> # 3 SBS metrics x 10 sample sizes (n) x 10000 simulations per n
   ggplot(aes(x = S_Y, y = shift, color = factor(n))) +
   geom_point(alpha = 0.5, size = 0.3) +
   facet_wrap(~metric, scales = "fixed") +
@@ -321,8 +325,8 @@ plot_data |>
     breaks = c(0, 0.25, 0.5, 0.75, 1)
   ) +
   labs(
-    x = expression(S[Y](tau^"*")),
-    y = expression(x^"*" - S[Y](tau^"*"))
+    x = expression(S[Y](tau^ ~ symbol("\052"))),
+    y = expression(x^"*" ~ "-" ~ S[Y](tau^ ~ symbol("\052"))),
   ) +
   theme_bw(base_size = 14) +
   theme(panel.spacing = unit(1, "lines")) +
@@ -343,15 +347,16 @@ plot_data |>
   )
 ```
 
+### $S_C(\tau^*)$ vs bias
 ```{r}
-#| fig-cap: "Relationship between censoring survival at τ* and theoretical shift from the global minimum, using a sample of data from the Weibull simulation experiments"
+#| fig-cap: "Relationship between censoring survival $S_C(\\tau^*)$ and theoretical shift from the global minimum, using a sample of data from the Weibull simulation experiments"
 #| cache: true
 #| fig-width: 9
 #| fig-height: 5
 
 set.seed(42)
 plot_data |> 
-  slice_sample(prop = 0.2) |> # 3 SBS metrics x 10 sample sizes (n) x 1000 simulations per n
+  slice_sample(prop = 0.2) |> # 3 SBS metrics x 10 sample sizes (n) x 10000 simulations per n
   ggplot(aes(x = S_C, y = shift, color = factor(n))) +
   geom_point(alpha = 0.5, size = 0.3) +
   facet_wrap(~metric, scales = "fixed") +
@@ -361,8 +366,8 @@ plot_data |>
     breaks = c(0, 0.25, 0.5, 0.75, 1)
   ) +
   labs(
-    x = expression(S[C](tau^"*")),
-    y = expression(x^"*" - S[Y](tau^"*"))
+    x = expression(S[C](tau^ ~ symbol("\052"))),
+    y = expression(x^"*" ~ "-" ~ S[Y](tau^ ~ symbol("\052"))),
   ) +
   theme_bw(base_size = 14) +
   theme(panel.spacing = unit(1, "lines")) +
@@ -382,6 +387,187 @@ plot_data |>
     fontface = "bold"
   )
 ```
+
+### Ratio term vs bias ($S_Y$ color)
+```{r}
+#| fig-cap: "Relationship between $(1-S_Y(\\tau^*))/S_C(\\tau^*)$ and theoretical shift from the global minimum, using a sample of data from the Weibull simulation experiments (n = 100, with $\\varepsilon$ ~ 0.01). Color annotation: $S_Y(\\tau^*)$"
+#| cache: true
+#| fig-width: 10
+#| fig-height: 5
+
+temp_data = plot_data |> 
+  filter(n == 100) |> # epsilon ~ 0.01
+  mutate(approx_term = (1 - S_Y)/S_C) |>
+  # Bin S_Y and S_C
+  mutate(
+    S_Y_bin = cut(
+      S_Y,
+      #breaks = quantile(S_C, probs = seq(0, 1, 0.25), na.rm = TRUE),
+      breaks = seq(0, 1, by = 0.2),
+      include.lowest = TRUE,
+      labels = c("[0,0.2)", "[0.2,0.4)", "[0.4,0.6)", "[0.6,0.8)", "[0.8,1]")
+    ),
+    S_C_bin = cut(
+      S_C,
+      breaks = seq(0, 1, by = 0.2),
+      include.lowest = TRUE,
+      labels = c("[0,0.2)", "[0.2,0.4)", "[0.4,0.6)", "[0.6,0.8)", "[0.8,1]")
+    )
+  )
+
+ann_df = data.frame(
+  metric = unique(temp_data$metric)[1],
+  x = 0.03,
+  y = -0.01,
+  xend = 0.03,
+  yend = -0.03,
+  label = "more improper"
+)
+
+temp_data |> 
+  ggplot(aes(x = approx_term, y = shift, color = S_Y_bin)) +
+  geom_point(alpha = 0.4, size = 0.2) +
+  facet_wrap(~metric, scales = "fixed") +
+  scale_color_manual(
+    values = c(
+      "#2166AC",  # dark blue
+      "#67A9CF",  # light blue
+      "#BDBDBD",  # grey
+      "#EF8A62",  # light red
+      "#B2182B"   # dark red
+    ),
+    name = expression(S[Y](tau^ ~ symbol("\052")))
+  ) +
+  labs(
+    x = expression((1 - S[Y](tau^ ~ symbol("\052")))/S[C](tau^ ~ symbol("\052"))),
+    y = expression(x^"*" ~ "-" ~ S[Y](tau^ ~ symbol("\052")))
+  ) +
+  theme_bw(base_size = 14) +
+  theme(panel.spacing = unit(1, "lines")) +
+  guides(color = guide_legend(override.aes = list(size = 8))) +
+  geom_segment(
+    data = ann_df,
+    aes(x = x, y = y, xend = xend, yend = yend),
+    inherit.aes = FALSE,linewidth = 1,
+    arrow = arrow(length = unit(0.25, "cm"))
+  ) +
+  geom_text(
+    data = ann_df,
+    aes(x = x + 0.2, y = y - 0.01, label = label),
+    inherit.aes = FALSE,
+    angle = 90,
+    size = 6,
+    fontface = "bold"
+  )
+```
+
+### Ratio term vs bias ($S_C$ color)
+```{r}
+#| fig-cap: "Relationship between $(1-S_Y(\\tau^*))/S_C(\\tau^*)$ and theoretical shift from the global minimum, using a sample of data from the Weibull simulation experiments (n = 100, with $\\varepsilon$ ~ 0.01). Color annotation: $S_C(\\tau^*)$"
+#| cache: true
+#| fig-width: 10
+#| fig-height: 5
+
+temp_data |> 
+  ggplot(aes(x = approx_term, y = shift, color = S_C_bin)) +
+  geom_point(alpha = 0.4, size = 0.2) +
+  facet_wrap(~metric, scales = "fixed") +
+  scale_color_manual(
+    values = c(
+      "#2166AC",  # dark blue
+      "#67A9CF",  # light blue
+      "#BDBDBD",  # grey
+      "#EF8A62",  # light red
+      "#B2182B"   # dark red
+    ),
+    name = expression(S[C](tau^ ~ symbol("\052")))
+  ) +
+  labs(
+    x = expression((1 - S[Y](tau^ ~ symbol("\052")))/S[C](tau^ ~ symbol("\052"))),
+    y = expression(x^"*" ~ "-" ~ S[Y](tau^ ~ symbol("\052")))
+  ) +
+  theme_bw(base_size = 14) +
+  theme(panel.spacing = unit(1, "lines")) +
+  guides(color = guide_legend(override.aes = list(size = 8))) +
+  geom_segment(
+    data = ann_df,
+    aes(x = x, y = y, xend = xend, yend = yend),
+    inherit.aes = FALSE,linewidth = 1,
+    arrow = arrow(length = unit(0.25, "cm"))
+  ) +
+  geom_text(
+    data = ann_df,
+    aes(x = x + 0.2, y = y - 0.01, label = label),
+    inherit.aes = FALSE,
+    angle = 90,
+    size = 6,
+    fontface = "bold"
+  )
+```
+
+### Bias surface over ($S_Y,S_C$) (n = 100)
+```{r}
+#| fig-cap: "Interpolated surface of theoretical shift $x^\\star - S_Y(\\tau^*)$ as a function of $S_Y(\\tau^*)$ and $S_C(\\tau^*)$ for $n = 100$. Panels correspond to early, median, and late evaluation times."
+#| cache: true
+#| fig-width: 10
+#| fig-height: 5
+
+base_data = plot_data |>
+  filter(n == 100)
+
+interp_list = base_data |>
+  dplyr::group_split(metric, .keep = TRUE) |>
+  purrr::map(function(df) {
+
+    if (nrow(df) == 0) return(NULL)
+    
+    interp_res = with(df,
+      akima::interp(
+        x = S_C,
+        y = S_Y,
+        z = shift,
+        nx = 150,
+        ny = 150,
+        duplicate = "mean"
+      )
+    )
+    
+    expand.grid(
+      S_C = interp_res$x,
+      S_Y = interp_res$y
+    ) |>
+    mutate(
+       shift = as.vector(interp_res$z),
+       metric = unique(df$metric)
+     )
+  })
+
+surface_data = bind_rows(interp_list) |>
+  dplyr::filter(!is.na(shift))
+
+range_shift = range(surface_data$shift, na.rm = TRUE)
+
+min_shift = range_shift[1] # most negative
+max_shift = range_shift[2] # closest to zero
+
+ggplot(surface_data, aes(x = S_C, y = S_Y, fill = shift)) +
+  geom_tile() +
+  facet_wrap(~ metric) +
+  scale_fill_gradientn(
+    colours = c("#B2182B", "grey80", "#2166AC"),
+    values = scales::rescale(c(min_shift, (min_shift + max_shift)/2, max_shift)),
+    limits = c(min_shift, 0), # Extend upper limit to 0
+    name = expression(x^"*" ~ "-" ~ S[Y](tau^ ~ symbol("\052")))
+  ) +
+  labs(
+    x = expression(S[C](tau^ ~ symbol("\052"))),
+    y = expression(S[Y](tau^ ~ symbol("\052")))
+  ) +
+  theme_bw(base_size = 14) +
+  theme(panel.spacing = unit(1, "lines"))
+#ggsave(filename = "a.png", dpi = 300, height = 5, width = 10, units = "in")
+```
+:::
 
 ## Table D1 {-}
 

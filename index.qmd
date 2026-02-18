@@ -103,7 +103,7 @@ The output columns are:
 - `S_Y_q10`, `S_Y_med`, `S_Y_q90`: values of the true event-time survival function $S_Y(t)$ evaluated at the 10th percentile, median, and 90th percentile of the observed time points.
 - `S_C_q10`, `S_C_med`, `S_C_q90`: Values of the censoring survival function $S_C(t)$ evaluated at the 10th percentile, median, and 90th percentile of the observed time points.
 - `S_Y_tail`, `S_C_tail`: tail survival probability at `max_t` for event and censoring distributions
-- `epsilon`: $\epsilon = S_Y(t_{max}) \times S_C(t_{max})$
+- `epsilon`: $\varepsilon = S_Y(t_{max}) \times S_C(t_{max})$
 - `{surv|pred|cens|}_{scale|shape}` the scale and shape of the Weibull distributions for true, predicted and censoring times respectively
 - `prop_cens`: proportion of censoring in each simulation
 - `tv_dist`: the total variation distance between the true and the predicted Weibull distribution (closer to 0 means more similar distributions)
@@ -214,14 +214,14 @@ all_stats |>
 ## Summary
 
 - **RCLL** and **RCLL\*** show practically no violations across any simulation or sample size.
-- **SBS** shows time- and sample-size-dependent violations, mostly at smaller $n$, especially for early evaluation times ($\tau = q_{0.1}$).
+- **SBS** shows time- and sample-size-dependent violations, mostly at smaller $n$, especially for early evaluation times ($\tau^* = q_{0.1}$).
 All differences are small (typically < 0.01).
 - **ISBS** showed minor violations only at $n \le 50$; none for $n > 100$.
 :::
 
 ## Quantifying Impropriety in the Survival Brier Score (SBS)
 
-The theoretical shift (i.e. bias) of the global minimum $x^*$ of the expected SBS from the true survival probability is the survival tail product $\times$ a survival probability ratio term at $\tau^*$ (for small $\varepsilon$):
+The theoretical shift (i.e. bias) of the global minimum $x^*$ of the expected SBS from the true survival probability is the survival tail product $\times$ a survival probability ratio term at $\tau^*$ (for small $\varepsilon > 0$):
 
 $$x^\star - S_Y(\tau^*) = - \frac{\varepsilon (1-S_Y(\tau^*))}{S_C(\tau^*) - \varepsilon} \approx - \varepsilon \cdot \frac{1 - S_Y(\tau^*)}{S_C(\tau^*)}$$
 
@@ -252,9 +252,9 @@ plot_data = data |>
 
 ::: {.panel-tabset}
 
-### $\varepsilon$ vs bias
+### $\hat \varepsilon$ vs bias
 ```{r}
-#| fig-cap: "Relationship between survival tail product $\\epsilon$ and theoretical shift from the global minimum, using a sample of data from the Weibull simulation experiments"
+#| fig-cap: "Relationship between survival tail product estimate $\\hat\\epsilon = S_Y(t_{max}) \\times S_C(t_{max})$ and theoretical shift from the global minimum, using a sample of data from the Weibull simulation experiments"
 #| cache: true
 #| fig-width: 9
 #| fig-height: 5
@@ -283,12 +283,12 @@ plot_data |>
       breaks = c(0, 0.025, 0.05, 0.075, 0.1)
     ) +
     labs(
-      x = expression(varepsilon == S[Y](t[max]) %*% S[C](t[max])),
+      x = expression(S[Y](t[max]) ~ "\u00D7" ~ S[C](t[max])),
       y = expression(x^"*" ~ "-" ~ S[Y](tau^ ~ symbol("\052"))), # shift from optimal prediction
       color = "Sample size (n)"
     ) +
     theme_bw(base_size = 14, base_family = "Arial") +
-    theme(axis.text.x = element_text(angle = 35, hjust = 1)) +
+    #theme(axis.text.x = element_text(angle = 35, hjust = 1)) +
     guides(color = guide_legend(override.aes = list(size = 4))) +
     geom_segment(
       data = ann_df,
@@ -304,7 +304,22 @@ plot_data |>
       size = 6,
       fontface = "bold"
     )
+#ggsave(filename = "epsilon_vs_bias.png", dpi = 300, height = 5, width = 10, units = "in")
 ```
+
+```{r}
+plot_data |> 
+  group_by(n) |> 
+  summarise(
+    mean_epsilon = mean(epsilon)
+  ) |>
+  DT::datatable(
+    rownames = FALSE,
+    options = list(searching = FALSE)
+  ) |>
+  formatRound(columns = 2, digits = 4)
+```
+
 
 ### $S_Y(\tau^*)$ vs bias
 ```{r}
@@ -505,42 +520,31 @@ temp_data |>
   )
 ```
 
-### Bias surface over ($S_Y,S_C$) (n = 100)
+### Bias surface over ($S_Y,S_C$) (n = 50)
 ```{r}
-#| fig-cap: "Interpolated surface of theoretical shift $x^\\star - S_Y(\\tau^*)$ as a function of $S_Y(\\tau^*)$ and $S_C(\\tau^*)$ for $n = 100$. Panels correspond to early, median, and late evaluation times."
+#| fig-cap: "Interpolated surface of theoretical shift $x^\\star - S_Y(\\tau^*)$ as a function of $S_Y(\\tau^*)$ and $S_C(\\tau^*)$ for $n = 50$ (with $\\varepsilon$ ~ 0.02). Panels correspond to early, median, and late evaluation times."
 #| cache: true
 #| fig-width: 10
 #| fig-height: 5
 
 base_data = plot_data |>
-  filter(n == 100)
+  dplyr::filter(n == 50)
+
+interp_shift = function(df, nx = 150, ny = 150) {
+  if (nrow(df) == 0) return(NULL)
+  
+  interp_res = with(df, 
+    akima::interp(x = S_C, y = S_Y, z = shift, nx = nx, ny = ny, duplicate = "mean")
+  )
+  
+  expand.grid(S_C = interp_res$x, S_Y = interp_res$y) |>
+    mutate(shift = as.vector(interp_res$z),
+           metric = unique(df$metric))
+}
 
 interp_list = base_data |>
   dplyr::group_split(metric, .keep = TRUE) |>
-  purrr::map(function(df) {
-
-    if (nrow(df) == 0) return(NULL)
-    
-    interp_res = with(df,
-      akima::interp(
-        x = S_C,
-        y = S_Y,
-        z = shift,
-        nx = 150,
-        ny = 150,
-        duplicate = "mean"
-      )
-    )
-    
-    expand.grid(
-      S_C = interp_res$x,
-      S_Y = interp_res$y
-    ) |>
-    mutate(
-       shift = as.vector(interp_res$z),
-       metric = unique(df$metric)
-     )
-  })
+  purrr::map(.f = interp_shift)
 
 surface_data = bind_rows(interp_list) |>
   dplyr::filter(!is.na(shift))
@@ -565,7 +569,47 @@ ggplot(surface_data, aes(x = S_C, y = S_Y, fill = shift)) +
   ) +
   theme_bw(base_size = 14) +
   theme(panel.spacing = unit(1, "lines"))
-#ggsave(filename = "a.png", dpi = 300, height = 5, width = 10, units = "in")
+#ggsave(filename = "bias_surface_n50.png", dpi = 300, height = 5, width = 10, units = "in")
+```
+
+### Bias surface over ($S_Y,S_C$) (n = 100)
+```{r}
+#| fig-cap: "Interpolated surface of theoretical shift $x^\\star - S_Y(\\tau^*)$ as a function of $S_Y(\\tau^*)$ and $S_C(\\tau^*)$ for $n = 100$ (with $\\varepsilon$ ~ 0.01). Panels correspond to early, median, and late evaluation times."
+#| cache: true
+#| fig-width: 10
+#| fig-height: 5
+
+base_data2 = plot_data |>
+  dplyr::filter(n == 100)
+
+interp_list2 = base_data2 |>
+  dplyr::group_split(metric, .keep = TRUE) |>
+  purrr::map(.f = interp_shift)
+
+surface_data2 = bind_rows(interp_list2) |>
+  dplyr::filter(!is.na(shift))
+
+range_shift2 = range(surface_data2$shift, na.rm = TRUE)
+
+min_shift = range_shift2[1] # most negative
+max_shift = range_shift2[2] # closest to zero
+
+ggplot(surface_data2, aes(x = S_C, y = S_Y, fill = shift)) +
+  geom_tile() +
+  facet_wrap(~ metric) +
+  scale_fill_gradientn(
+    colours = c("#B2182B", "grey80", "#2166AC"),
+    values = scales::rescale(c(min_shift, (min_shift + max_shift)/2, max_shift)),
+    limits = c(min_shift, 0), # Extend upper limit to 0
+    name = expression(x^"*" ~ "-" ~ S[Y](tau^ ~ symbol("\052")))
+  ) +
+  labs(
+    x = expression(S[C](tau^ ~ symbol("\052"))),
+    y = expression(S[Y](tau^ ~ symbol("\052")))
+  ) +
+  theme_bw(base_size = 14) +
+  theme(panel.spacing = unit(1, "lines"))
+#ggsave(filename = "sbs_shift_surface_n100.png", dpi = 300, height = 5, width = 10, units = "in")
 ```
 :::
 
@@ -656,9 +700,9 @@ all_stats |>
     options = list(searching = FALSE),
     caption = htmltools::tags$caption(
       style = "caption-side: top; text-align: center; font-size:150%",
-      "Table D2: Empirical violations of properness using G(t)")
+      "Table D1: Empirical violations of properness using G(t)")
   ) |>
-  formatRound(columns = 4:8, digits = 5)
+  DT::formatRound(columns = 4:8, digits = 5)
 ```
 
 :::{.callout-tip}

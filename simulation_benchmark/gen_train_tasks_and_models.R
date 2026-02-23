@@ -1,18 +1,18 @@
-#' Generate training tasks and train learners for `sensitivity_benchmark.R`
+#' Generate training data and train learners for `sensitivity_benchmark.R`
 library(mlr3)
 library(mlr3proba)
-source("simulate.R")
+library(mlr3extralearners)
+library(mlr3pipelines)
+library(future)
+source("simulation_benchmark/simulate.R")
 
-if (file.exists("data/train_tasks.rds")) {
-  tasks = readRDS("data/tasks.rds")
-  trained_models_low = readRDS("data/trained_models_low.rds")
-  trained_models_high = readRDS("data/trained_models_high.rds")
-} else {
-  source("train_learners.R") # trains all learners on both tasks (low, high censoring) and saves the trained models in "trained_models.rds"
-}
-saveRDS(trained_models, "trained_models.rds")
-## 2 tasks: (low, high) censoring
-n_train = 1000  # training sample size (fixed)
+plan("multicore", workers = 10)
+
+# training sample size (fixed)
+n_train = 1000
+
+# 2 tasks => (low, high) censoring
+set.seed(42)
 
 # ~25% total censoring (split ~50:50 between x2-groups)
 sim_low = simulate(
@@ -50,6 +50,7 @@ tasks = list(
   low  = sim_low$task,
   high = sim_high$task
 )
+saveRDS(tasks, "simulation_benchmark/tasks.rds")
 
 # Learners ----
 ## 10 learners in total
@@ -87,9 +88,11 @@ learners = list(
               lrn("surv.coxph") |>
               as_learner(),
   KM = lrn("surv.kaplan", id = "KM"),
-  RSF = lrn("surv.ranger", id = "RSF", time.interest = 1000)
+  RSF = lrn("surv.ranger", id = "RSF")
 )
 learners$CoxPH_int$id = "CoxPH_int"
+
+saveRDS(names(learners), "simulation_benchmark/learner_ids.rds")
 
 # Train once each task ----
 bm_grid = benchmark_grid(
@@ -110,5 +113,11 @@ trained_models = lapply(
   }
 )
 
-saveRDS(trained_models$low,  "trained_low.rds")
-saveRDS(trained_models$high, "trained_high.rds")
+# save RSF separately as it is large in size
+saveRDS(trained_models$low$RSF, "simulation_benchmark/trained_low_rsf.rds")
+trained_models$low$RSF = NULL
+saveRDS(trained_models$low, "simulation_benchmark/trained_low.rds")
+
+saveRDS(trained_models$high$RSF, "simulation_benchmark/trained_high_rsf.rds")
+trained_models$high$RSF = NULL
+saveRDS(trained_models$high, "simulation_benchmark/trained_high.rds")

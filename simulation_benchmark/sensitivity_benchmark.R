@@ -8,7 +8,7 @@ library(data.table)
 library(future)
 library(future.apply)
 library(progressr)
-source("simulate.R")
+source("simulation_benchmark/simulate.R")
 source("weighted_RCLL.R") # estimates both f from S and f_C from S_C (C estimated via Kaplan-Meier)
 
 plan("multicore", workers = 14)
@@ -21,113 +21,16 @@ handlers("progress")
 set.seed(42)
 
 # Training Tasks ----
-if (file.exists("trained_models.rds")) {
-  trained_models = readRDS("trained_models.rds")
-} else {
-  source("train_learners.R") # trains all learners on both tasks (low, high censoring) and saves the trained models in "trained_models.rds"
+if (!file.exists("simulation_benchmark/tasks.rds") && 
+    !file.exists("simulation_benchmark/trained_low.rds") && 
+    !file.exists("simulation_benchmark/trained_high.rds")) {
+  message("Execute `gen_train_tasks_and_models.R` to generate train tasks and train the models.")
 }
-saveRDS(trained_models, "trained_models.rds")
-## 2 tasks: (low, high) censoring
-n_train = 1000  # training sample size (fixed)
-
-# ~25% total censoring (split ~50:50 between x2-groups)
-sim_low = simulate(
-  n = n_train,
-  b0 = 1.15, b1 = 0.15, b2 = -0.55, b12 = -0.75,
-  sigma = c(0.5, 1.5),
-  lambdaC = 0.075
-)
-
-if (FALSE) {
-  sim_low$task$kaplan(strata="x2") |> plot()
-  sim_low$task$cens_prop()
-
-  # per group
-  print(mean(sim_low$data$status == 0 & sim_low$data$x2 == 0))
-  print(mean(sim_low$data$status == 0 & sim_low$data$x2 == 1))
-  # administrative censoring
-  print(mean(sim_low$data$time == 10))
-  # proportion: admin censoring / total censoring
-  print(mean(sim_low$data$time == 10) / (mean(sim_low$data$status == 0)))
-}
-
-# ~65% total censoring (split ~50:50 between x2-groups), 
-sim_high = simulate(
-  n = n_train,
-  b0 = 1.15, b1 = 0.15, b2 = -0.55, b12 = -0.75,
-  sigma = c(0.5, 1.5),
-  lambdaC = 0.45
-)
-
-sim_low$task$id  = "low"
-sim_high$task$id = "high"
-
-tasks = list(
-  low  = sim_low$task,
-  high = sim_high$task
-)
-
-# Learners ----
-## 10 learners in total
-learners = list(
-  LogNorm_int_shape_x2 = lrn("surv.flexreg", id = "LogNorm_int_shape_x2",
-    formula = survival::Surv(time, status) ~ x1 + x2 + x1:x2,
-    anc = list(sdlog = ~ x2),
-    dist = "lognormal"
-  ),
-  LogNorm_noint_shape_x2 = lrn("surv.flexreg", id = "LogNorm_noint_shape_x2",
-    formula = survival::Surv(time, status) ~ x1 + x2,
-    anc = list(sdlog = ~ x2),
-    dist = "lognormal"
-  ),
-  LogNorm_int_noshape = lrn("surv.flexreg", id = "LogNorm_int_noshape",
-    formula = survival::Surv(time, status) ~ x1 + x2 + x1:x2,
-    dist = "lognormal"
-  ),
-  LogNorm_noint_noshape = lrn("surv.flexreg", id = "LogNorm_noint_noshape",
-    formula = survival::Surv(time, status) ~ x1 + x2,
-    dist = "lognormal"
-  ),
-  Weib_int_shape_x2 = lrn("surv.flexreg", id = "Weib_int_shape_x2",
-    formula = survival::Surv(time, status) ~ x1 + x2 + x1:x2,
-    anc = list(shape = ~ x2),
-    dist = "weibull"
-  ),
-  LogLog_int_shape_x2 = lrn("surv.flexreg", id = "LogLog_int_shape_x2",
-    formula = survival::Surv(time, status) ~ x1 + x2 + x1:x2,
-    anc = list(shape = ~ x2),
-    dist = "llogis"
-  ),
-  CoxPH = lrn("surv.coxph", id = "CoxPH"),
-  CoxPH_int = po("modelmatrix", formula =  ~ -1 + x1 + x2) %>>%
-              lrn("surv.coxph") |>
-              as_learner(),
-  KM = lrn("surv.kaplan", id = "KM"),
-  RSF = lrn("surv.ranger", id = "RSF", time.interest = 1000)
-)
-learners$CoxPH_int$id = "CoxPH_int"
-
-# Train once each task ----
-bm_grid = benchmark_grid(
-  tasks = tasks,
-  learners = learners,
-  resamplings = rsmp("insample")
-)
-bm = benchmark(bm_grid, store_models = TRUE)
-
-bm_tbl = as.data.table(bm)
-bm_tbl[, model := bm_tbl$learner]
-
-# list of lists (1st level tasks (low, high), 2nd level: trained models)
-trained_models = lapply(
-  split(bm_tbl, bm_tbl$task_id),
-  function(dt) {
-    setNames(dt$model, dt$learner_id)
-  }
-)
 
 # Benchmark Grid ----
-task_id = names(trained_models) # low, high censoring tasks
+learner_ids = readRDS("simulation_benchmark/learner_ids.rds")
+tasks = readRDS("simulation_benchmark/tasks.rds")
+task_id = names(tasks) # low and high censoring tasks
 n_rsmps = 100 # number of Monte Carlo repetitions (sampling `n_test` obs for prediction)
 rsmp_id = seq_len(n_rsmps) # 100 test sets
 n_test_sizes = c(10, 25, 50, 100, 250, 500, 1000) # number of test observations (sampled from DGP for prediction)
@@ -138,7 +41,6 @@ sim_grid[, config_id := .I]
 # Measures ----
 rcll = msr("surv.rcll")
 cindex = msr("surv.cindex")
-wrcll = msr("surv.wrcll")
 sbs_1 = msr("surv.graf", integrated = FALSE, times = 1) # early
 sbs_5 = msr("surv.graf", integrated = FALSE, times = 5) # ~median 
 sbs_9 = msr("surv.graf", integrated = FALSE, times = 9) # late
@@ -161,6 +63,7 @@ mise = function(S_true, S_pred, times) {
   sq_diff = (S_true - S_pred)^2
   mean(rowSums(0.5 * (sq_diff[, -ncol(sq_diff)] + sq_diff[, -1]) * dt_vec))
 }
+
 # alternative S(t) distance: mean integrated absolute error
 miae = function(S_true, S_pred, times) {
   dt_vec = diff(times)
@@ -170,7 +73,9 @@ miae = function(S_true, S_pred, times) {
 
 # Eval function ----
 eval_config = function(row, p) {
-  source("weighted_RCLL.R") # to ensure the function is available in each parallel worker
+  # to ensure that the functions inside the sourced file are available in each parallel worker
+  source("weighted_RCLL.R")
+  wrcll = msr("surv.wrcll")
   cens    = row$task_id
   rsmp_id = row$rsmp_id
   n       = row$n_test_sizes
@@ -219,8 +124,13 @@ eval_config = function(row, p) {
 
   # Evaluate learner predictions
   out = list()
-  for (learner_id in names(trained_models[[cens]])) {
-    learner = trained_models[[cens]][[learner_id]]$clone(deep = TRUE)
+  for (learner_id in learner_ids) {
+    if (learner_id == "RSF") {
+      # load trained RSF model separately (as it is large in size)
+      learner = readRDS(sprintf("simulation_benchmark/trained_%s_rsf.rds", cens))
+    } else {
+      learner = readRDS(sprintf("simulation_benchmark/trained_%s.rds", cens))[[learner_id]]
+    }
 
     # flexsurv learners → set prediction grid
     if (inherits(learner, "LearnerSurvFlexreg")) {
@@ -229,7 +139,7 @@ eval_config = function(row, p) {
 
     pred = learner$predict(test_task)
 
-    # Cox / KM / RSF → hack: discretize prediction time grid 
+    # Cox / KM / RSF → hack: discretize predicted time grid 
     # via constant interpolation
     if (!inherits(learner, "LearnerSurvFlexreg")) {
       pred$data$distr = survdistr::mat_interp(
@@ -245,7 +155,7 @@ eval_config = function(row, p) {
         mise = mise(S_true = s_true, S_pred = pred$data$distr, times = times),
         miae = miae(S_true = s_true, S_pred = pred$data$distr, times = times),
         cindex = pred$score(cindex),
-        rcll = pred$score(rcll), # true S, estimated f!
+        rcll = pred$score(rcll), # pred S(t), estimated f(t) via linear interpolation of S(t)
         wrcll = pred$score(wrcll, task = train_task),
         sbs_1 = pred$score(sbs_1, task = train_task, train_set = train_task$row_ids),
         sbs_5 = pred$score(sbs_5, task = train_task, train_set = train_task$row_ids),
@@ -267,9 +177,8 @@ eval_config = function(row, p) {
 }
 
 execute_sim = function(bm_grid) {
-  row_seq = sim_grid$config_id
-  # Progress tracking
-  p = progressr::progressor(along = row_seq)
+  row_seq = sim_grid$config_id[15:25]
+  p = progressr::progressor(along = row_seq) # progress tracking
 
   results = future.apply::future_lapply(
     row_seq,
@@ -280,12 +189,12 @@ execute_sim = function(bm_grid) {
   rbindlist(results)
 }
 
-options(future.globals.maxSize = 1500 * 1024^2) # 1.5 GB (avoid hitting RAM limits)
+# options(future.globals.maxSize = 1500 * 1024^2) # 1.5 GB (avoid hitting RAM limits)
 with_progress({
   results_dt = execute_sim(sim_grid)
 })
 
-saveRDS(results_dt, "results/sens_bench_results.rds")
+saveRDS(results_dt, "simulation_benchmark/sim_bm_res.rds")
 
 ## Setting 1 - Notes
 # RCLL: 

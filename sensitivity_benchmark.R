@@ -143,9 +143,11 @@ q90_low = quantile(tasks$low$unique_event_times(), 0.9) # ~ 5.3
 q90_high = quantile(tasks$high$unique_event_times(), 0.9) # ~ 3.4
 tau = 9.99 # close to admin censoring time
 
-isbs = msr("surv.graf", integrated = TRUE, times = seq(0.05, tau, length.out = 100))
-isbs_q90_low = msr("surv.graf", integrated = TRUE, times = seq(0.05, q90_low, length.out = 100))
-isbs_q90_high = msr("surv.graf", integrated = TRUE, times = seq(0.05, q90_high, length.out = 100))
+# we keep evaluation grid for SBS fixed, as we want to test its sensitivity to
+# the granularity of the prediction time grid
+isbs = msr("surv.graf", integrated = TRUE, times = seq(0.05, tau, length.out = 300))
+isbs_q90_low = msr("surv.graf", integrated = TRUE, times = seq(0.05, q90_low, length.out = 300))
+isbs_q90_high = msr("surv.graf", integrated = TRUE, times = seq(0.05, q90_high, length.out = 300))
 
 # measure distance between predictions and true S(t) (mean integrated squared error)
 mise = function(S_true, S_pred, times) {
@@ -161,12 +163,16 @@ miae = function(S_true, S_pred, times) {
 }
 
 # Eval function ----
-eval_config = function(row) {
+eval_config = function(row, p) {
   source("weighted_RCLL.R") # to ensure the function is available in each parallel worker
   cens    = row$task_id
   rsmp_id = row$rsmp_id
   n       = row$n_test_sizes
-  n_times = row$n_time_grid
+  n_times = row$n_times_grid
+
+  # Notify progress via `p = progressr::progressor()`
+  p(sprintf("Task: %s, RSMP-id: %s, N_test: %i, Time grid: %i", cens, rsmp_id, n, n_times))
+
   times = seq(0, 9.99, length.out = n_times)
   train_task = tasks[[cens]]
 
@@ -254,15 +260,25 @@ eval_config = function(row) {
   combined_dt
 }
 
-options(future.globals.maxSize = 1500 * 1024^2) # 1.5 GB (to not hit some limits)
-bench_list = split(bench_grid, bench_grid$config_id)
-results = future.apply::future_lapply(
-  bench_list[1:5],
-  eval_config,
-  future.seed = TRUE
-)
+execute_bench = function(bm_grid) {
+  row_seq = bench_grid$config_id
+  # Progress tracking
+  p = progressr::progressor(along = row_seq)
 
-results_dt = rbindlist(results)
+  results = future.apply::future_lapply(
+    row_seq,
+    function(i) eval_config(bm_grid[i, ], p),
+    future.seed = TRUE
+  )
+
+  rbindlist(results)
+}
+
+options(future.globals.maxSize = 1500 * 1024^2) # 1.5 GB (avoid hitting RAM limits)
+with_progress({
+  results_dt = execute_bench(bench_grid)
+})
+
 saveRDS(results_dt, "results/sens_bench_results.rds")
 
 ## Setting 1 - Notes

@@ -118,8 +118,9 @@ eval_config = function(row, p) {
     test_task = test_sim$task
     cp = test_task$cens_prop()
 
-    # require at least one event and one censored obs
-    if (cp > 0 && cp < 1) {
+    # guard against low sample size (n) and extreme censoring in test set
+    # which can cause C-index to be undefined
+    if (!is.null(cp) && length(cp) == 1 && !is.na(cp) && cp > 0 && cp < 0.9) {
       break
     }
   }

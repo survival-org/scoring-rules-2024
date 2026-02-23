@@ -5,15 +5,17 @@
 #' sizes.
 #' 
 #' Run: `Rscript simulation_benchmark/execute.R`
-library(mlr3) # v1.3.0
-library(mlr3proba) # v0.8.6
-library(mlr3extralearners) # v1.4.0
-library(mlr3pipelines) # v0.10.0
-library(survdistr) # v0.0.1
-library(data.table)
-library(future)
-library(future.apply)
-library(progressr)
+suppressPackageStartupMessages({
+  library(mlr3) # v1.3.0
+  library(mlr3proba) # v0.8.6
+  library(mlr3extralearners) # v1.4.0
+  library(mlr3pipelines) # v0.10.0
+  library(survdistr) # v0.0.1
+  library(data.table)
+  library(future)
+  library(future.apply)
+  library(progressr)
+})
 source("simulation_benchmark/simulate.R")
 source("weighted_RCLL.R") # estimates both f from S and f_C from S_C (C estimated via Kaplan-Meier)
 

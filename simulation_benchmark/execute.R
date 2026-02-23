@@ -106,14 +106,24 @@ eval_config = function(row, p) {
   set.seed(seed)
 
   # simulate test data
-  test_sim = simulate(
-    n = n,
-    b0 = 1.15, b1 = 0.15, b2 = -0.55, b12 = -0.75,
-    sigma = c(0.5, 1.5),
-    lambdaC = if (cens == "low") 0.075 else 0.45,
-    times = times
-  )
-  test_task = test_sim$task
+  while (TRUE) {
+    test_sim = simulate(
+      n = n,
+      b0 = 1.15, b1 = 0.15, b2 = -0.55, b12 = -0.75,
+      sigma = c(0.5, 1.5),
+      lambdaC = if (cens == "low") 0.075 else 0.45,
+      times = times
+    )
+
+    test_task = test_sim$task
+    cp = test_task$cens_prop()
+
+    # require at least one event and one censored obs
+    if (cp > 0 && cp < 1) {
+      break
+    }
+  }
+
   true_pred = test_sim$pred
   s_true = true_pred$data$distr
 

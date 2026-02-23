@@ -19,7 +19,7 @@ suppressWarnings({
 source("simulation_benchmark/simulate.R")
 source("weighted_RCLL.R") # estimates both f from S and f_C from S_C (C estimated via Kaplan-Meier)
 
-plan("multicore", workers = 10)
+plan("multisession", workers = 50)
 
 # Enable progress bars
 options(progressr.enable = TRUE)

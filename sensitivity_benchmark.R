@@ -97,7 +97,7 @@ learners = list(
               lrn("surv.coxph") |>
               as_learner(),
   KM = lrn("surv.kaplan", id = "KM"),
-  RSF = lrn("surv.ranger", id = "RSF", time.interest = 1000, num.threads = 4)
+  RSF = lrn("surv.ranger", id = "RSF", time.interest = 1000)
 )
 learners$CoxPH_int$id = "CoxPH_int"
 
@@ -126,7 +126,7 @@ n_rsmps = 100 # number of Monte Carlo repetitions (sampling `n_test` obs for pre
 rsmp_id = seq_len(n_rsmps) # 100 test sets
 n_test_sizes = c(10, 25, 50, 100, 250, 500, 1000) # number of test observations (sampled from DGP for prediction)
 n_times_grid = c(10, 25, 50, 100, 250, 500, 1000) # number of prediction time points
-bench_grid = data.table::CJ(task_id, rsmp_id, n_test_sizes, n_time_grid)
+bench_grid = data.table::CJ(task_id, rsmp_id, n_test_sizes, n_times_grid)
 bench_grid[, config_id := .I]
 
 # Measures ----

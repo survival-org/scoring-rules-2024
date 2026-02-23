@@ -41,9 +41,9 @@ tasks = readRDS("simulation_benchmark/tasks.rds")
 task_id = names(tasks) # low and high censoring tasks
 n_rsmps = 100 # number of Monte Carlo repetitions (sampling `n_test` obs for prediction)
 rsmp_id = seq_len(n_rsmps) # 100 test sets
-n_test_sizes = c(10, 25, 50, 100, 250, 500, 1000) # number of test observations (sampled from DGP for prediction)
-n_times_grid = c(10, 25, 50, 100, 250, 500, 1000) # number of prediction time points
-sim_grid = data.table::CJ(task_id, rsmp_id, n_test_sizes, n_times_grid)
+n_test = c(10, 25, 50, 100, 250, 500, 1000) # number of test observations (sampled from DGP for prediction)
+n_times = c(10, 25, 50, 100, 250, 500, 1000) # number of prediction time points
+sim_grid = data.table::CJ(task_id, rsmp_id, n_test, n_times)
 sim_grid[, config_id := .I]
 
 # Measures ----
@@ -87,8 +87,8 @@ eval_config = function(row, p) {
   config_id = row$config_id
   cens    = row$task_id
   rsmp_id = row$rsmp_id
-  n       = row$n_test_sizes
-  n_times = row$n_times_grid
+  n       = row$n_test
+  n_times = row$n_times
 
   # Notify progress via `p = progressr::progressor()`
   p(sprintf("Config-id: %i, Task: %s, RSMP-id: %s, N_test: %i, Time grid: %i", 
@@ -97,8 +97,13 @@ eval_config = function(row, p) {
   times = seq(0, 9.99, length.out = n_times)
   train_task = tasks[[cens]]
 
-  # reproducibility
-  set.seed(config_id)
+  # Reproducible Monte Carlo design:
+  # Seed depends on (task_id, rsmp_id, n_test) only.
+  # - Different rsmp_id -> different MC replicate
+  # - Different n_test  -> different sampled dataset (by design)
+  # - Different n_times -> same dataset (only evaluation grid changes)
+  seed = 100000 * rsmp_id + 1000 * n + ifelse(cens == "low", 1, 2)
+  set.seed(seed)
 
   # simulate test data
   test_sim = simulate(
@@ -199,7 +204,6 @@ execute_sim = function(bm_grid) {
   rbindlist(results)
 }
 
-# options(future.globals.maxSize = 1500 * 1024^2) # 1.5 GB (avoid hitting RAM limits)
 with_progress({
   results_dt = execute_sim(sim_grid)
 })

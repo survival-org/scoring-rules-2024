@@ -1,4 +1,10 @@
-# Under misspecification, which scoring rule is most discriminative?
+#' Under misspecification, which scoring rule is most discriminative?
+#' `Experiment`: simulate data from a known DGP, evaluate different scoring rules on 
+#' predictions from the true model and various misspecified models (Cox, RSF, KM,
+#' flexible parametric) across different test set sizes and prediction time grid 
+#' sizes.
+#' 
+#' Run: `Rscript simulation_benchmark/execute.R`
 library(mlr3)
 library(mlr3proba)
 library(mlr3extralearners)

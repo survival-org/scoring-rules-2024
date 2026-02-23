@@ -5,7 +5,7 @@
 #' sizes.
 #' 
 #' Run: `Rscript simulation_benchmark/execute.R`
-suppressPackageStartupMessages({
+suppressWarnings({
   library(mlr3) # v1.3.0
   library(mlr3proba) # v0.8.6
   library(mlr3extralearners) # v1.4.0
@@ -19,7 +19,7 @@ suppressPackageStartupMessages({
 source("simulation_benchmark/simulate.R")
 source("weighted_RCLL.R") # estimates both f from S and f_C from S_C (C estimated via Kaplan-Meier)
 
-plan("multicore", workers = 14)
+plan("multicore", workers = 10)
 
 # Enable progress bars
 options(progressr.enable = TRUE)
@@ -84,19 +84,21 @@ eval_config = function(row, p) {
   # to ensure that the functions inside the sourced file are available in each parallel worker
   source("weighted_RCLL.R")
   wrcll = msr("surv.wrcll")
+  config_id = row$config_id
   cens    = row$task_id
   rsmp_id = row$rsmp_id
   n       = row$n_test_sizes
   n_times = row$n_times_grid
 
   # Notify progress via `p = progressr::progressor()`
-  p(sprintf("Task: %s, RSMP-id: %s, N_test: %i, Time grid: %i", cens, rsmp_id, n, n_times))
+  p(sprintf("Config-id: %i, Task: %s, RSMP-id: %s, N_test: %i, Time grid: %i", 
+             config_id, cens, rsmp_id, n, n_times))
 
   times = seq(0, 9.99, length.out = n_times)
   train_task = tasks[[cens]]
 
   # reproducibility
-  set.seed(row$config_id)
+  set.seed(config_id)
 
   # simulate test data
   test_sim = simulate(

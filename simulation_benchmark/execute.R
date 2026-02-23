@@ -5,11 +5,11 @@
 #' sizes.
 #' 
 #' Run: `Rscript simulation_benchmark/execute.R`
-library(mlr3)
-library(mlr3proba)
-library(mlr3extralearners)
-library(mlr3pipelines)
-library(survdistr)
+library(mlr3) # v1.3.0
+library(mlr3proba) # v0.8.6
+library(mlr3extralearners) # v1.4.0
+library(mlr3pipelines) # v0.10.0
+library(survdistr) # v0.0.1
 library(data.table)
 library(future)
 library(future.apply)

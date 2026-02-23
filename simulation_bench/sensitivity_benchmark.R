@@ -20,7 +20,13 @@ handlers("progress")
 
 set.seed(42)
 
-# Training Tasks ---- 
+# Training Tasks ----
+if (file.exists("trained_models.rds")) {
+  trained_models = readRDS("trained_models.rds")
+} else {
+  source("train_learners.R") # trains all learners on both tasks (low, high censoring) and saves the trained models in "trained_models.rds"
+}
+saveRDS(trained_models, "trained_models.rds")
 ## 2 tasks: (low, high) censoring
 n_train = 1000  # training sample size (fixed)
 

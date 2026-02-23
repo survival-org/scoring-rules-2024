@@ -126,8 +126,8 @@ n_rsmps = 100 # number of Monte Carlo repetitions (sampling `n_test` obs for pre
 rsmp_id = seq_len(n_rsmps) # 100 test sets
 n_test_sizes = c(10, 25, 50, 100, 250, 500, 1000) # number of test observations (sampled from DGP for prediction)
 n_times_grid = c(10, 25, 50, 100, 250, 500, 1000) # number of prediction time points
-bench_grid = data.table::CJ(task_id, rsmp_id, n_test_sizes, n_times_grid)
-bench_grid[, config_id := .I]
+sim_grid = data.table::CJ(task_id, rsmp_id, n_test_sizes, n_times_grid)
+sim_grid[, config_id := .I]
 
 # Measures ----
 rcll = msr("surv.rcll")
@@ -260,8 +260,8 @@ eval_config = function(row, p) {
   combined_dt
 }
 
-execute_bench = function(bm_grid) {
-  row_seq = bench_grid$config_id
+execute_sim = function(bm_grid) {
+  row_seq = sim_grid$config_id
   # Progress tracking
   p = progressr::progressor(along = row_seq)
 
@@ -276,7 +276,7 @@ execute_bench = function(bm_grid) {
 
 options(future.globals.maxSize = 1500 * 1024^2) # 1.5 GB (avoid hitting RAM limits)
 with_progress({
-  results_dt = execute_bench(bench_grid)
+  results_dt = execute_sim(sim_grid)
 })
 
 saveRDS(results_dt, "results/sens_bench_results.rds")

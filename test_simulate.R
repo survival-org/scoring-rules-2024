@@ -1,3 +1,6 @@
+# Example use of the simulate function to generate non-PH data and 
+# evaluate predictions from a correctly specified model 
+# (Log AFT parametric) and a misspecified model (Cox PH).
 source("simulate.R")
 
 # simulate non-PH data for training
@@ -15,7 +18,8 @@ library(survdistr)
 m1 = lrn("surv.flexreg", id = "LogNorm_int_shape_x2",
          formula = survival::Surv(time, status) ~ x1 + x2 + x1:x2,
          anc = list(sdlog = ~ x2),
-         dist = "lognormal") # times = times) # get survival predictions exactly on the `times`
+         dist = "lognormal",
+         times = times) # get survival predictions exactly on the `times`
 # misspecified model
 m2 = lrn("surv.coxph")
 
@@ -103,18 +107,19 @@ p1$score(isbs, task = task, train_set = task$row_ids)
 p2$score(isbs, task = task, train_set = task$row_ids)
 
 # MULTIPLE TEST SETS
-B = 20 # number of test replications
+B = 100 # number of test replications
 n_test = 10 # n_test
 
 #  predicted S(t) resolution (time grid) => MATTERS FOR ESTIMATION OF f(t)!
-times = seq(0, 9.99, length.out = 500)
+times = seq(0, 9.99, length.out = 1000)
 
 scores = matrix(NA_real_, nrow = B, ncol = 8)
-colnames(scores) = c("true", "true_S_dens_est", "p1", "p2",
-                     "p1_same_grid_conS", "p2_same_grid_conS",
-                     "p1_same_grid_linS", "p2_same_grid_linS")
+colnames(scores) = c("true", "true_S_est_f", "p1", "p2",
+                     "p1_pred_grid_conS", "p2_pred_grid_conS",
+                     "p1_pred_grid_linS", "p2_pred_grid_linS")
 
 for (b in seq_len(B)) {
+  message(b)
   test_sim = simulate(
     n = n_test,
     b0 = 1.65,
@@ -132,7 +137,7 @@ for (b in seq_len(B)) {
   p2 = m2$predict(test_task)
 
   scores[b, "true"] = test_sim$rcll
-  scores[b, "true_S_dens_est"] = true_pred$score(rcll)
+  scores[b, "true_S_est_f"] = true_pred$score(rcll)
   scores[b, "p1"] = p1$score(rcll)
   scores[b, "p2"] = p2$score(rcll)
 
@@ -141,14 +146,14 @@ for (b in seq_len(B)) {
   p1$data$distr = survdistr::mat_interp(x = p1_distr, eval_times = times, constant = TRUE)
   p2$data$distr = survdistr::mat_interp(x = p2_distr, eval_times = times, constant = TRUE)
 
-  scores[b, "p1_same_grid_conS"] = p1$score(rcll)
-  scores[b, "p2_same_grid_conS"] = p2$score(rcll)
+  scores[b, "p1_pred_grid_conS"] = p1$score(rcll)
+  scores[b, "p2_pred_grid_conS"] = p2$score(rcll)
 
   p1$data$distr = survdistr::mat_interp(x = p1_distr, eval_times = times, constant = FALSE)
   p2$data$distr = survdistr::mat_interp(x = p2_distr, eval_times = times, constant = FALSE)
 
-  scores[b, "p1_same_grid_linS"] = p1$score(rcll)
-  scores[b, "p2_same_grid_linS"] = p2$score(rcll)
+  scores[b, "p1_pred_grid_linS"] = p1$score(rcll)
+  scores[b, "p2_pred_grid_linS"] = p2$score(rcll)
 }
 
 sort(colMeans(scores))

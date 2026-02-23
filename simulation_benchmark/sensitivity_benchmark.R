@@ -177,7 +177,7 @@ eval_config = function(row, p) {
 }
 
 execute_sim = function(bm_grid) {
-  row_seq = sim_grid$config_id[15:25]
+  row_seq = sim_grid$config_id
   p = progressr::progressor(along = row_seq) # progress tracking
 
   results = future.apply::future_lapply(
@@ -194,10 +194,4 @@ with_progress({
   results_dt = execute_sim(sim_grid)
 })
 
-saveRDS(results_dt, "simulation_benchmark/sim_bm_res.rds")
-
-## Setting 1 - Notes
-# RCLL: 
-# - Distributional assumption not as important as interaction and correct scaling.
-# - Lower Cens has worse RCLL than higher cens. Structurally the same observation though
-# - with increasing misspecification in the log normal, decreasing RCLL
+saveRDS(results_dt, "results/sim_bm.rds")

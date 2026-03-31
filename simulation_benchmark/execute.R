@@ -1,9 +1,9 @@
 #' Under misspecification, which scoring rule is most discriminative?
-#' `Experiment`: simulate data from a known DGP, evaluate different scoring rules on 
+#' `Experiment`: simulate data from a known DGP, evaluate different scoring rules on
 #' predictions from the true model and various misspecified models (Cox, RSF, KM,
-#' flexible parametric) across different test set sizes and prediction time grid 
+#' flexible parametric) across different test set sizes and prediction time grid
 #' sizes.
-#' 
+#'
 #' Run: `Rscript simulation_benchmark/execute.R`
 suppressWarnings({
   library(mlr3) # v1.3.0
@@ -17,7 +17,9 @@ suppressWarnings({
   library(progressr)
 })
 source("simulation_benchmark/simulate.R")
-source("weighted_RCLL.R") # estimates both f from S and f_C from S_C (C estimated via Kaplan-Meier)
+# weighted RCLL computes f(t) via linear interpolation of S(t) and S_C via Kaplan-Meier
+# (f_C is similarly linearly interpolated from S_C)
+source("weighted_RCLL.R")
 
 plan("multisession", workers = 50)
 
@@ -29,8 +31,8 @@ handlers("progress")
 set.seed(42)
 
 # Training Tasks ----
-if (!file.exists("simulation_benchmark/tasks.rds") && 
-    !file.exists("simulation_benchmark/trained_low.rds") && 
+if (!file.exists("simulation_benchmark/tasks.rds") &&
+    !file.exists("simulation_benchmark/trained_low.rds") &&
     !file.exists("simulation_benchmark/trained_high.rds")) {
   message("Execute `gen_train_tasks_and_models.R` to generate train tasks and train the models.")
 }
@@ -42,15 +44,16 @@ task_id = names(tasks) # low and high censoring tasks
 n_rsmps = 100 # number of Monte Carlo repetitions (sampling `n_test` obs for prediction)
 rsmp_id = seq_len(n_rsmps) # 100 test sets
 n_test = c(10, 25, 50, 100, 250, 500, 1000) # number of test observations (sampled from DGP for prediction)
-n_times = c(10, 25, 50, 100, 250, 500, 1000) # number of prediction time points
+n_times = c(10, 25, 50, 100, 250, 500, 1000) # number of prediction time points (anchors)
 sim_grid = data.table::CJ(task_id, rsmp_id, n_test, n_times)
 sim_grid[, config_id := .I]
 
 # Measures ----
+# RCLL => negative log-likelihood based on predicted S(t) and estimated f(t) via linear interpolation of S(t)
 rcll = msr("surv.rcll")
 cindex = msr("surv.cindex")
 sbs_1 = msr("surv.graf", integrated = FALSE, times = 1) # early
-sbs_5 = msr("surv.graf", integrated = FALSE, times = 5) # ~median 
+sbs_5 = msr("surv.graf", integrated = FALSE, times = 5) # ~median
 sbs_9 = msr("surv.graf", integrated = FALSE, times = 9) # late
 # 2 ISBS variants (per task): change the upper limit of integration
 # 1) up to admin censoring time (tau = 9.99)
@@ -91,9 +94,10 @@ eval_config = function(row, p) {
   n_times = row$n_times
 
   # Notify progress via `p = progressr::progressor()`
-  p(sprintf("Config-id: %i, Task: %s, RSMP-id: %s, N_test: %i, Time grid: %i", 
+  p(sprintf("Config-id: %i, Task: %s, RSMP-id: %s, N_test: %i, Time grid: %i",
              config_id, cens, rsmp_id, n, n_times))
 
+  # anchor times = prediction time grid (same for all learners, including true model)
   times = seq(0, 9.99, length.out = n_times)
   train_task = tasks[[cens]]
 
@@ -128,7 +132,7 @@ eval_config = function(row, p) {
   true_pred = test_sim$pred
   s_true = true_pred$data$distr
 
-  # Evaluate true model's predictions
+  # ---- Evaluate true model's predictions ----
   isbs_q90 = if (cens == "low") isbs_q90_low else isbs_q90_high
 
   true_model_res = suppressWarnings(
@@ -148,7 +152,7 @@ eval_config = function(row, p) {
     )
   )
 
-  # Evaluate learner predictions
+  # ---- Evaluate learner predictions ----
   out = list()
   for (learner_id in learner_ids) {
     if (learner_id == "RSF") {
@@ -165,7 +169,7 @@ eval_config = function(row, p) {
 
     pred = learner$predict(test_task)
 
-    # Cox / KM / RSF → hack: discretize predicted time grid 
+    # Cox / KM / RSF → hack: discretize predicted time grid
     # via constant interpolation
     if (!inherits(learner, "LearnerSurvFlexreg")) {
       pred$data$distr = survdistr::mat_interp(

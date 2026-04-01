@@ -200,8 +200,9 @@ plot_score_grid(res, measure_id = "isbs_q90", task_id_val = "high", n_test_vals 
                 n_times_vals = c(10, 100, 500))
 
 # Plot all measures ----
-# Plot score differences vs. MIAE/MISE for different measures, compared to the true model
-# not very accurate for RCLL, C-index
+# Plot score differences vs. MIAE/MISE for different measures, compared to
+# the true model scores (i.e. full oracle - true likelihood - for RCLL, half-oracle
+# for wRCLL and others)
 plot_score_diff = function(
   res,
   y = "miae",

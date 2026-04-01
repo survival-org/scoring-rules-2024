@@ -154,10 +154,6 @@ learner_ids = c("CoxPH", "CoxPH_int", "LogNorm_noint_noshape",
 plot_score_grid(res, measure_id = "rcll", task_id_val = "low",
                 n_test_vals = c(10, 50, 100, 500), n_times_vals = c(10, 100, 500))
 
-plot_score_grid(res, measure_id = "rcll", task_id_val = "low",
-                n_test_vals = c(10, 50, 100, 500), n_times_vals = c(10, 100, 500),
-                drop_learners = learner_ids)
-
 # RCLL* is not proper!!! (negative Pred - True)
 plot_score_grid(res, measure_id = "wrcll", task_id_val = "low", n_test_vals = c(10, 50, 100),
                 n_times_vals = c(10, 100, 500))
@@ -177,6 +173,15 @@ plot_score_grid(res, measure_id = "isbs", task_id_val = "low", n_test_vals = c(1
 # ISBS (τ = q90)
 plot_score_grid(res, measure_id = "isbs_q90", task_id_val = "low", n_test_vals = c(10, 50, 100, 500),
                 n_times_vals = c(10, 100, 500))
+
+
+## impact of interpolation
+plot_score_grid(res, measure_id = "rcll", task_id_val = "low",
+                n_test_vals = c(10, 50, 100, 500), n_times_vals = c(10, 100, 500),
+                drop_learners = learner_ids)
+plot_score_grid(res, measure_id = "isbs", task_id_val = "low",
+                n_test_vals = c(10, 50, 100, 500), n_times_vals = c(10, 100, 500),
+                drop_learners = learner_ids)
 
 ## High-cens DGP ----
 # RCLL* is not proper!!! (negative Pred - True)
@@ -353,3 +358,5 @@ plot_score_diff = function(
 }
 
 plot_score_diff(res, task_id_val = "low", n_test_val = 1000, n_times_val = 500)
+plot_score_diff(res, task_id_val = "high", n_test_val = 1000, n_times_val = 500)
+

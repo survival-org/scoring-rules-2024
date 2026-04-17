@@ -113,7 +113,8 @@ Scoring rules analyzed:
 
 - The **SBS** at the 10th, 50th and 90th percentiles of observed times
 - The **ISBS**, using 50 equidistant points between the 5th and 80th percentile of observed times
-- The **RCLL** and its weighted version **wRCLL** (or **RCLL\***)
+- The **RCLL**
+- An experimental weighted version of RCLL, which we called **wRCLL** (or **RCLL\***), see [weighted_RCLL.R](https://github.com/survival-org/scoring-rules-2024/blob/main/weighted_RCLL.R) for more details. This is not a proper scoring rule, but we included it to explore the impact of weighting on properness violations.
 
 We compute 95% confidence intervals (CIs) for the mean score difference $D$ (true - predicted) using a $t$-distribution.
 A violation is marked statistically significant if:

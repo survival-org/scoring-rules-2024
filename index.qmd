@@ -633,6 +633,8 @@ plot_data |>
   formatRound(columns = 2, digits = 4)
 ```
 
+## SBS Improperness: administrative censoring {-#sbs-admin}
+
 :::{.callout-note}
 Here we investigate the impact of administritive censoring on SBS properness.
 **Administritive censoring is applied at the 80% percentile of true times**.

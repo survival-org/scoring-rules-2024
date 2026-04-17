@@ -35,7 +35,7 @@ library(tidyr)
 library(DT)
 ```
 
-## Weibull distribution variability {-}
+## Weibull distribution variability {-#weib}
 
 To illustrate the diversity of the Weibull distributions used in our simulation design, we plot both the density $f(t)$ and survival $S(t)$ functions for 10 randomly sampled shape $\alpha$ and scale $\sigma$ parameter pairs.
 These distributions represent either the true survival, predicted survival, or censoring times across simulations.
@@ -71,7 +71,7 @@ pw = mapply(function(shape,scale) pweibull(seq.int(1,5,0.1), shape,scale, lower.
 #ggsave("weibull_plots.png", device = png, dpi = 600, width = 7, height = 4)
 ```
 
-## Table 1 {-}
+## Table 1 {-#tab1}
 
 :::{.callout-note}
 This section supports the "Simulation Experiments" section of the paper.
@@ -219,7 +219,7 @@ All differences are small (typically < 0.01).
 - **ISBS** showed minor violations only at $n \le 50$; none for $n > 100$.
 :::
 
-## SBS Improperness: Bias and Tail Effects
+## SBS Improperness: Bias and Tail Effects {-#sbs-bias}
 
 The theoretical shift (i.e. bias) of the global minimum $x^*$ of the expected SBS from the true survival probability is the survival tail product $\times$ a survival probability ratio term at $\tau^*$ (for small $\varepsilon \ge 0$):
 
@@ -633,7 +633,7 @@ plot_data |>
 
 
 
-## Table D1 {-}
+## Table C1 {-#tabc1}
 
 :::{.callout-note}
 The only difference with the previous experiment is that $S_C(t)$ is now being estimated using the marginal Kaplan-Meier model via `survival::survfit()` instead of using the true Weibull censoring distribution (see [helper.R](https://github.com/survival-org/scoring-rules-2024/blob/main/helper.R)).
@@ -720,7 +720,7 @@ all_stats |>
     options = list(searching = FALSE),
     caption = htmltools::tags$caption(
       style = "caption-side: top; text-align: center; font-size:150%",
-      "Table D1: Empirical violations of properness using G(t)")
+      "Table C1: Empirical violations of properness using G(t)")
   ) |>
   DT::formatRound(columns = 4:8, digits = 5)
 ```
@@ -731,7 +731,7 @@ all_stats |>
 Estimating $S_C(t)$ via Kaplan-Meier produced nearly identical results to using the true distribution, with no violations for RCLL/RCLL* and only small-sample effects for SBS and ISBS.
 :::
 
-## Benchmark (Real-World Data) {-}
+## Benchmark (Real-World Data) {-#bench}
 
 :::{.callout-note}
 To run the experiment use [real_data_benchmark.R](https://github.com/survival-org/scoring-rules-2024/blob/main/real_data_benchmark.R).
@@ -767,11 +767,10 @@ res |>
 Our experiment demonstrates substantial divergences in model assessment depending on the chosen metric (especially in the case of the scoring rules).
 
 For instance, on datasets such as `veteran` and `whas`, which exhibit non-proportional hazards, RSF is more suitable to model non-linear effects compared to the CoxPH.
-In these cases, RCLL* identifies RSF as superior, whereas RCLL and ISBS still prefer CoxPH — suggesting potential practical limitations of the latter metrics in such settings.
+In these cases, RCLL* identifies RSF as superior, whereas RCLL and ISBS still prefer CoxPH.
 
-Additionally, RCLL* appears to better capture both discrimination and calibration.
 In the `gbcs` dataset, CoxPH achieves the best RCLL, ISBS and C-index scores, yet shows extremely poor calibration ($\text{D-calib} \approx 15.7$), while RCLL* ranks Kaplan-Meier as the best — possibly reflecting better-calibrated risk estimates.
-This discrepancy becomes even more pronounced in the `lung` dataset, where CoxPH again yields high RCLL/C-index/ISBS performance despite severe calibration failure ($\text{D-calib} \approx 23.5$), whereas RCLL* selects RSF instead.
+This discrepancy becomes even more pronounced in the `lung` dataset, where CoxPH again yields high RCLL/C-index/ISBS performance despite low calibration ($\text{D-calib} \approx 23.5$), whereas RCLL* selects RSF instead.
 
 These findings highlight a critical need for further research: **not all metrics labeled as "proper" in theory behave equally in practice.**
 :::

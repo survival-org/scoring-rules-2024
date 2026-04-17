@@ -81,7 +81,7 @@ To run for different sample sizes `n`, use [run_tests.sh](https://github.com/sur
 Merged simulation results for all $n$ are available [here](https://github.com/survival-org/scoring-rules-2024/blob/main/results/res_sims10000_distrs1000_0.rds).
 :::
 
-Explore data:
+Results from 10 randomly sampled simulations:
 ```{r, message=FALSE}
 res = readRDS("results/res_sims10000_distrs1000_0.rds")
 
@@ -90,7 +90,7 @@ res[sample(1:nrow(res), 10), ] |>
   formatRound(columns = 3:40, digits = c(rep(3,8), rep(5,30)))
 ```
 
-Each row corresponds to one simulation, using $m = 1000$ draws from Weibull survival distributions at a fixed sample size $n \in {10, \dots, 10\,000}$.
+Each row corresponds to one simulation, and the quantites are averaged across $m = 1000$ draws from Weibull survival distributions at a fixed sample size $n \in {10, \dots, 10\,000}$.
 
 The output columns are:
 
@@ -103,7 +103,7 @@ The output columns are:
 - `S_Y_q10`, `S_Y_med`, `S_Y_q90`: values of the true event-time survival function $S_Y(t)$ evaluated at the 10th percentile, median, and 90th percentile of the observed time points.
 - `S_C_q10`, `S_C_med`, `S_C_q90`: Values of the censoring survival function $S_C(t)$ evaluated at the 10th percentile, median, and 90th percentile of the observed time points.
 - `S_Y_tail`, `S_C_tail`: tail survival probability at `max_t` for event and censoring distributions
-- `epsilon`: $\varepsilon = S_Y(t_{max}) \times S_C(t_{max})$
+- `epsilon`: $\hat\varepsilon = \frac{\sum_{d=1}^{1000} \left[S_Y^d(t_{\\max}^d) \times S_C^d(t_{\max}^d)\right]}{1000}$
 - `{surv|pred|cens|}_{scale|shape}` the scale and shape of the Weibull distributions for true, predicted and censoring times respectively
 - `prop_cens`: proportion of censoring in each simulation
 - `tv_dist`: the total variation distance between the true and the predicted Weibull distribution (closer to 0 means more similar distributions)
@@ -117,6 +117,7 @@ Scoring rules analyzed:
 
 We compute 95% confidence intervals (CIs) for the mean score difference $D$ (true - predicted) using a $t$-distribution.
 A violation is marked statistically significant if:
+
 - The mean score difference exceeds a positive threshold: $\bar{D} > 0.0001$
 - The CI excludes zero (i.e., $\text{CI}_\text{lower} > 0$)
 
@@ -221,7 +222,7 @@ All differences are small (typically < 0.01).
 
 ## SBS Improperness: Bias and Tail Effects {-#sbs-bias}
 
-The theoretical shift (i.e. bias) of the global minimum $x^*$ of the expected SBS from the true survival probability is the survival tail product $\times$ a survival probability ratio term at $\tau^*$ (for small $\varepsilon \ge 0$):
+The theoretical shift (i.e. bias) of the global minimum $x^*$ of the expected SBS from the true survival probability at $\tau^*$ is (for $\varepsilon \ge 0$):
 
 $$x^\star - S_Y(\tau^*) = - \frac{\varepsilon (1-S_Y(\tau^*))}{S_C(\tau^*) - \varepsilon} \approx - \varepsilon \cdot \frac{1 - S_Y(\tau^*)}{S_C(\tau^*)}$$
 
@@ -623,6 +624,7 @@ plot_data |>
   ) |>
   DT::datatable(
     rownames = FALSE,
+    width = "42%",
     options = list(searching = FALSE),
     caption = htmltools::tags$caption(
       style = "caption-side: top; text-align: center; font-size:150%",

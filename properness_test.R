@@ -1,6 +1,6 @@
 #' Testing properness of scoring rules
 #' Execute: `Rscript properness_test.R 20 1000 50 FALSE 2434234`
-#' CMD arguments are: `n_sims n_distrs n_samples cens_estimate seed`
+#' CMD arguments are: `num_sims num_distrs num_samples cens_estimate seed`
 
 library(parallel)
 library(tibble)
@@ -299,9 +299,9 @@ num_samples = as.integer(args[3])
 estimate_cens = as.logical(args[4]) # Accepts "TRUE" or "FALSE"
 seed = as.integer(args[5])
 
-#' `n_sims` = 10000 # number of independent simulations (different distribution choices for {Y,C,S})
-#' `n_distrs` = 1000 # number of random sampled distributions
-#' `n_samp` = 50 # how many samples to draw from the distributions
+#' `num_sims` = 10000 # number of independent simulations (different distribution choices for {Y,C,S})
+#' `num_distrs` = 1000 # number of random sampled distributions
+#' `num_samples` = 50 # how many samples to draw from the distributions
 #' `estimate_cens` = FALSE # whether to use an estimated censoring distribution (via Kaplan-Meier) or the true {C} in scores
 #' `seed` = 20240402 # seed for reproducibility
 

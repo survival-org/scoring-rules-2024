@@ -616,7 +616,6 @@ ggplot(surface_data2, aes(x = S_C, y = S_Y, fill = shift)) +
 ```
 :::
 
-
 ```{r}
 plot_data |>
   group_by(n) |>
@@ -634,7 +633,91 @@ plot_data |>
   formatRound(columns = 2, digits = 4)
 ```
 
+:::{.callout-note}
+Here we investigate the impact of administritive censoring on SBS properness.
+**Administritive censoring is applied at the 80% percentile of true times**.
+SBS is calculated at the 10th, 50th and 90th percentile of *observed times (after application of the administrative censoring).
 
+Use [properness_test_admin_cens.R](https://github.com/survival-org/scoring-rules-2024/blob/main/properness_test_admin_cens.R) to run the experiment.
+
+Execute: `Rscript properness_test_admin_cens.R 10000 1000 10000 FALSE 42` to run for $n = 10000$.
+
+Simulation results are available [here](https://github.com/survival-org/scoring-rules-2024/blob/main/results/res_sims10000_distrs1000_n10000_0_admin_cens.rds).
+:::
+
+```{r}
+res = readRDS("results/res_sims10000_distrs1000_n10000_0_admin_cens.rds") |>
+  select(!matches("shape|scale|prop_cens|tv_dist|n_events|max_t|m_true|m_pred"))
+
+measures = c("SBS_q10", "SBS_median", "SBS_q90", "ISBS")
+n_distrs = 1000 # `m` value from paper's experiment
+tcrit = qt(0.975, df = n_distrs - 1) # 95% t-test
+threshold = 1e-4
+
+data = measures |>
+  lapply(function(m) {
+    mean_diff_col = paste0(m, "_diff")
+    mean_sd_col = paste0(m, "_sd")
+
+    res |>
+      select(sim, n, !!mean_diff_col, !!mean_sd_col, starts_with("shift_"),
+             epsilon, starts_with("S_")) |>
+      select(-ends_with("tail")) |>
+      mutate(
+        se = .data[[mean_sd_col]] / sqrt(n_distrs),
+        CI_lower = .data[[mean_diff_col]] - tcrit * se,
+        CI_upper = .data[[mean_diff_col]] + tcrit * se,
+        signif_violation = .data[[mean_diff_col]] > threshold & CI_lower > 0,
+        # Keep relevant SBS columns
+        shift_q10 = if (m == "SBS_q10") shift_q10 else NA_real_,
+        S_Y_q10   = if (m == "SBS_q10") S_Y_q10 else NA_real_,
+        S_C_q10   = if (m == "SBS_q10") S_C_q10 else NA_real_,
+        shift_med = if (m == "SBS_median") shift_med else NA_real_,
+        S_Y_med   = if (m == "SBS_median") S_Y_med else NA_real_,
+        S_C_med   = if (m == "SBS_median") S_C_med else NA_real_,
+        shift_q90 = if (m == "SBS_q90") shift_q90 else NA_real_,
+        S_Y_q90   = if (m == "SBS_q90") S_Y_q90 else NA_real_,
+        S_C_q90   = if (m == "SBS_q90") S_C_q90 else NA_real_
+      ) |>
+      select(!se) |>
+      mutate(metric = !!m) |>
+      relocate(metric, .after = 1) |>
+      rename(diff = !!mean_diff_col,
+             sd   = !!mean_sd_col)
+  }) |>
+  bind_rows()
+
+data$metric = factor(
+  data$metric,
+  levels = measures,
+  labels = c("SBS (Early, q10)", "SBS (Median, q50)", "SBS (Late, q90)", "ISBS")
+)
+
+admin_all_stats =
+  data |>
+  group_by(n, metric) |>
+  summarize(
+    n_violations = sum(signif_violation),
+    violation_rate = mean(signif_violation),
+    mean_hat_epsilon = mean(epsilon),
+    diff_mean = if (any(signif_violation)) mean(diff[signif_violation]) else NA_real_,
+    diff_median = if (any(signif_violation)) median(diff[signif_violation]) else NA_real_,
+    diff_min = if (any(signif_violation)) min(diff[signif_violation]) else NA_real_,
+    diff_max = if (any(signif_violation)) max(diff[signif_violation]) else NA_real_,
+    .groups = "drop"
+  )
+
+admin_all_stats |>
+  arrange(metric) |>
+  DT::datatable(
+    rownames = FALSE,
+    options = list(searching = FALSE),
+    caption = htmltools::tags$caption(
+      style = "caption-side: top; text-align: center; font-size:150%",
+      "SBS: Empirical violations of properness for large sample size + administrative censoring")
+  ) |>
+  formatRound(columns = 4:9, digits = 5)
+```
 
 ## Table C1 {-#tabc1}
 

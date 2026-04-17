@@ -6,11 +6,12 @@ See the [supplementary HTML report](https://survival-org.github.io/scoring-rules
 
 ## Contents of the HTML Report
 
-- **High variability for generated survival and censoring distributions** [[link](https://survival-org.github.io/scoring-rules-2024/#high-variability-for-generated-survival-and-censoring-distributions)] (main manuscript; Figure 1)
-- **Empirical violations of properness** [[link](https://survival-org.github.io/scoring-rules-2024/#table-1)] (main manuscript; Table 1)
-- **Empirical violations of properness using G(t)** [[link](https://survival-org.github.io/scoring-rules-2024/#table-d1)] (main manuscript; Table D1)
-- **Real-World Benchmark Evaluation** [[link](https://survival-org.github.io/scoring-rules-2024/#real-world-benchmark-evaluation)]  
-  An exploratory comparison of survival metrics including 3 scoring rules (RCLL, RCLL\*, ISBS), the C-index and D-calibration, on validation tasks using real-world survival datasets.
+- **Weibull distribution variability** [[link](https://survival-org.github.io/scoring-rules-2024/#weib)] (main manuscript; Figure 1)
+- **Empirical violations of properness** [[link](https://survival-org.github.io/scoring-rules-2024/#sbs-bias)] (main manuscript; Table 1)
+- **SBS improperness: Bias and Tail Effects** [[link](https://survival-org.github.io/scoring-rules-2024/#tab1)] (main manuscript; Figures 2,3)
+- **Empirical violations of properness using G(t)** [[link](https://survival-org.github.io/scoring-rules-2024/#tabc1)] (main manuscript; Table C1)
+- **Real-World Benchmark Evaluation** [[link](https://survival-org.github.io/scoring-rules-2024/#bench)]
+  An exploratory comparison of survival metrics including 3 scoring rules (RCLL, RCLL\*, ISBS), the C-index and D-calibration, on a few real-world survival datasets.
 
 ## Citation
 

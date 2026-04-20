@@ -159,7 +159,6 @@ eval_config = function(row, p) {
         miae = miae(s_true, pred$data$distr, times),
         cindex = pred$score(cindex),
         rcll = pred$score(rcll),
-        wrcll = pred$score(wrcll, task = train_task),
         sbs = pred$score(sbs, task = train_task, train_set = train_task$row_ids),
         isbs = pred$score(isbs, task = train_task, train_set = train_task$row_ids)
       )

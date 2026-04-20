@@ -1,8 +1,9 @@
-#' Generate training data and train learners for `sensitivity_benchmark.R`
-library(mlr3)
-library(mlr3proba)
-library(mlr3extralearners)
-library(mlr3pipelines)
+#' Generate training data (tasks) and train learners for `sensitivity_benchmark.R`
+#' Execute: `Rscript simulation_benchmark/train.R`
+library(mlr3) # 1.6.0
+library(mlr3proba) # 0.8.9
+library(mlr3extralearners) # 1.5.1
+library(mlr3pipelines) # 0.10.0
 library(future)
 source("simulation_benchmark/simulate.R")
 
@@ -22,20 +23,7 @@ sim_low = simulate(
   lambdaC = 0.075
 )
 
-if (FALSE) {
-  sim_low$task$kaplan(strata="x2") |> plot()
-  sim_low$task$cens_prop()
-
-  # per group
-  print(mean(sim_low$data$status == 0 & sim_low$data$x2 == 0))
-  print(mean(sim_low$data$status == 0 & sim_low$data$x2 == 1))
-  # administrative censoring
-  print(mean(sim_low$data$time == 10))
-  # proportion: admin censoring / total censoring
-  print(mean(sim_low$data$time == 10) / (mean(sim_low$data$status == 0)))
-}
-
-# ~65% total censoring (split ~50:50 between x2-groups), 
+# ~65% total censoring (split ~50:50 between x2-groups),
 sim_high = simulate(
   n = n_train,
   b0 = 1.15, b1 = 0.15, b2 = -0.55, b12 = -0.75,
@@ -55,11 +43,13 @@ saveRDS(tasks, "simulation_benchmark/tasks.rds")
 # Learners ----
 ## 10 learners in total
 learners = list(
+  # Oracle
   LogNorm_int_shape_x2 = lrn("surv.flexreg", id = "LogNorm_int_shape_x2",
     formula = survival::Surv(time, status) ~ x1 + x2 + x1:x2,
     anc = list(sdlog = ~ x2),
     dist = "lognormal"
   ),
+  # Misspecified models based on lognormal distribution
   LogNorm_noint_shape_x2 = lrn("surv.flexreg", id = "LogNorm_noint_shape_x2",
     formula = survival::Surv(time, status) ~ x1 + x2,
     anc = list(sdlog = ~ x2),
@@ -73,6 +63,7 @@ learners = list(
     formula = survival::Surv(time, status) ~ x1 + x2,
     dist = "lognormal"
   ),
+  # Misspecified models based on other distributions
   Weib_int_shape_x2 = lrn("surv.flexreg", id = "Weib_int_shape_x2",
     formula = survival::Surv(time, status) ~ x1 + x2 + x1:x2,
     anc = list(shape = ~ x2),
@@ -83,6 +74,7 @@ learners = list(
     anc = list(shape = ~ x2),
     dist = "llogis"
   ),
+  # Other misspecified models
   CoxPH = lrn("surv.coxph", id = "CoxPH"),
   CoxPH_int = po("modelmatrix", formula =  ~ -1 + x1 + x2) %>>%
               lrn("surv.coxph") |>

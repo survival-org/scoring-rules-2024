@@ -1,5 +1,6 @@
-library(mlr3)
-library(mlr3proba)
+library(mlr3) # 1.5.1
+library(mlr3proba) # 0.8.9
+library(survdistr) # 0.0.3
 
 #' Simulate Log-Normal Survival Data with Independent and Administrative Censoring
 #'

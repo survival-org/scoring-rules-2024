@@ -2,7 +2,7 @@ library(mlr3)
 library(mlr3proba)
 
 #' Simulate Log-Normal Survival Data with Independent and Administrative Censoring
-#' 
+#'
 #' @description
 #' Simulates right-censored survival data under a log-normal AFT model with:
 #'   - Continuous covariate x1 ~ N(0,1)
@@ -12,7 +12,7 @@ library(mlr3proba)
 #'   - Independent exponential censoring
 #'   - Additional administrative censoring at `admin_time`
 #'
-#' True model: 
+#' True model:
 #'   log(T_i) = eta_i + sigma_i * Z_i, with Z_i ~ N(0,1)
 #'
 #' Therefore T_i ~ LogNormal(meanlog = eta_i, sdlog = sigma_i)
@@ -23,10 +23,10 @@ library(mlr3proba)
 #' @param lambdaC Numeric. Exponential censoring rate.
 #' @param times Numeric vector. Time grid for survival matrix output.
 #' @param admin_time Numeric. Administrative censoring time.
-#' 
+#'
 #' @return List with elements:
 #'   - `task`: mlr3proba survival `TaskSurv` object
-#'   - `pred`: mlr3proba `PredictionSurv` object containing true survival distribution 
+#'   - `pred`: mlr3proba `PredictionSurv` object containing true survival distribution
 #' (n x length(times)) and sign-reverse linear predictor
 #'   - `data`: Simulated data.frame
 #' @noRd
@@ -63,7 +63,7 @@ simulate = function(
   # log(Y) = eta + sigma * Z
   df$true_y = rlnorm(n, meanlog = df$eta, sdlog = df$sigma_i)
   # df$true_y = exp(df$eta + df$sigma_i * rnorm(n)) # same, more manual
-  
+
   # -----------------------------
   # 3. Independent censoring
   # -----------------------------
@@ -81,6 +81,8 @@ simulate = function(
   # -----------------------------------------------------------------
   # For delta = 1 (event):  -log[f(t|x)]
   # For delta = 0 (censored):  -log[S(t|x)]
+  # The true RCLL value here depends on the observed times so it's not affected
+  # by the choice of the prediction time grid
   log_f = dlnorm(df$time, meanlog = df$eta, sdlog = df$sigma_i, log = TRUE)
   log_S = plnorm(df$time, meanlog = df$eta, sdlog = df$sigma_i, lower.tail = FALSE, log.p = TRUE)
   df$rcll_i = - (df$status * log_f + (1 - df$status) * log_S)
@@ -106,7 +108,7 @@ simulate = function(
     surv_mat[, 1] = 1
   }
   # check S(t)
-  survdistr::assert_prob_matrix(surv_mat, times = times)
+  survdistr::assert_prob(surv_mat, times = times)
 
   # create mlr3proba survival task
   task = mlr3proba::as_task_surv(

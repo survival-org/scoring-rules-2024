@@ -1,7 +1,7 @@
 #' Under misspecification, which scoring rule is most discriminative?
 #' `Experiment`: simulate data from a known DGP, evaluate different scoring rules on
 #' predictions from the true model and various misspecified models (Cox, RSF, KM,
-#' flexible parametric) across large sample sizes (n_test = 1000) and dense
+#' flexible parametric) across increasing test sets (sample sizes) and dense
 #' prediction time grid (unique event times from the training task).
 #' All learners use the same grid.
 #'
@@ -34,11 +34,11 @@ learner_ids = readRDS("simulation_benchmark/learner_ids.rds")
 n_rsmps = 100
 rsmp_id = seq_len(n_rsmps)
 
-# Fixed test set size
-n_test = 1000
+# Test set size (sampled from DGP for prediction)
+n_test = c(10, 25, 50, 100, 250, 500, 1000)
 
 # Grid: only task and replicate
-sim_grid = data.table::CJ(task_id = names(tasks), rsmp_id = rsmp_id)
+sim_grid = data.table::CJ(task_id = names(tasks), rsmp_id = rsmp_id, n_test = n_test)
 sim_grid[, config_id := .I]
 
 # Measures
@@ -74,6 +74,7 @@ eval_config = function(row, p) {
   config_id = row$config_id
   cens_id = row$task_id
   rsmp_id = row$rsmp_id
+  n_test  = row$n_test
 
   p(sprintf("Config-id: %i, Task: %s, RSMP-id: %i, n_test = %i (fixed)",
             config_id, cens_id, rsmp_id, n_test))
@@ -83,8 +84,8 @@ eval_config = function(row, p) {
   # Dense prediction grid: unique event times from training task
   times = train_task$unique_event_times()
 
-  # Reproducible seed based on task and replicate
-  seed = 100000 * rsmp_id + ifelse(cens_id == "low", 1, 2)
+  # Reproducible seed based on task, n_test and replicate
+  seed = 100000 * rsmp_id + 1000 * n_test + ifelse(cens_id == "low", 1, 2)
   set.seed(seed)
 
   # Simulate test data (using the same dense grid for true survival)
@@ -140,8 +141,9 @@ eval_config = function(row, p) {
     pred = learner$predict(test_task)
 
     # Cox / KM / RSF → use only the unique event times (intepolate here just to
-    # be on the safe side, by default these learners will have the prediction grid
-    # on the total train time points, events + censoring)
+    # be on the safe side, by default Cox and KM will have the prediction grid
+    # on the total train time points, events + censoring, RSF will be the unique
+    # event times
     if (!inherits(learner, "LearnerSurvFlexreg")) {
       pred$data$distr = survdistr::interp(
         x = pred$data$distr,

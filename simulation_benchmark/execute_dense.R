@@ -54,14 +54,15 @@ q90_high = unname(quantile(tasks$high$times(), 0.9)) # ~ 3.35
 isbs_q90_low = msr("surv.graf", integrated = TRUE, times = seq(0, q90_low, length.out = 100))
 isbs_q90_high = msr("surv.graf", integrated = TRUE, times = seq(0, q90_high, length.out = 100))
 
-# measure distance between predictions and true S(t) (mean integrated squared error)
+# measure distance between predictions and true S(t)
+# MISE => mean integrated squared error
 mise = function(S_true, S_pred, times) {
   dt_vec = diff(times)
   sq_diff = (S_true - S_pred)^2
   mean(rowSums(0.5 * (sq_diff[, -ncol(sq_diff)] + sq_diff[, -1]) * dt_vec))
 }
 
-# alternative S(t) distance: mean integrated absolute error
+# alternative S(t) distance: MIAE => mean integrated absolute error
 miae = function(S_true, S_pred, times) {
   dt_vec = diff(times)
   abs_diff = abs(S_true - S_pred)

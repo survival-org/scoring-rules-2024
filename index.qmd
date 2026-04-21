@@ -43,32 +43,49 @@ The wide parameter range induces substantial variability, ensuring a rich family
 By construction, all data-generating mechanisms assume $Y$ independent of $C$, satisfying the random censoring assumption.
 
 ```{r, message=FALSE}
-#| fig-cap: "Weibull density (top) and survival (bottom) curves for randomly generated shape, α, and scale, σ parameters. Each curve corresponds to a different parameter pair, illustrating the broad variability across simulated distributions."
-set.seed(20250408)
+#| fig-cap: "Weibull density (top) and survival (bottom) curves for randomly generated shape, $\\alpha$, and scale, $\\sigma$ parameters. Each curve corresponds to a different parameter pair, illustrating the broad variability across simulated distributions."
+set.seed(0L)
 
-shape = runif(10, 0.5, 5)
-scale = runif(10, 0.5, 5)
+shape = runif(9, 0.5, 5)
+scale = runif(9, 0.5, 5)
 
-dw = mapply(function(shape,scale) dweibull(seq.int(1,5,0.1), shape,scale),shape,scale) |>
-  reshape2::melt() |>
-  mutate(x = rep(seq.int(1,5,0.1), 10),
-        group = rep(sprintf("(%.2f,%.2f)",shape,scale), each = 41)) |>
-  select(x, group, value)
-pw = mapply(function(shape,scale) pweibull(seq.int(1,5,0.1), shape,scale, lower.tail=F),shape,scale) |>
-  reshape2::melt() |>
-  mutate(x = rep(seq.int(1,5,0.1), 10),
-        group = rep(sprintf("(%.2f,%.2f)",shape,scale), each = 41)) |>
-  select(x, group, value)
+time_grid = seq(0, 6, 0.1)
 
-(ggplot(dw, aes(x = x, y = value, group = group, color = group)) + ylab("f(t)") + xlab("t")) /
-(ggplot(pw, aes(x = x, y = value, group = group, color = group)) + ylab("S(t)") + xlab("t")) +
-  plot_layout(guides='collect') &
-  geom_line() &
-  theme_classic(base_size = 14) &
-  guides(color = guide_legend(title='(α,σ)')) &
-  scale_color_viridis_d(option = "turbo")
+params = tibble(
+  id = seq_along(shape),
+  shape = shape,
+  scale = scale,
+  group = sprintf("(%0.2f, %0.2f)", shape, scale)
+)
 
-#ggsave("weibull_plots.png", device = png, dpi = 600, width = 7, height = 4)
+grid = tidyr::expand_grid(params, t = time_grid)
+
+dw = grid |>
+  mutate(value = dweibull(t, shape, scale), type = "Density f(t)")
+
+pw = grid |>
+  mutate(value = pweibull(t, shape, scale, lower.tail = FALSE), type = "Survival S(t)")
+
+plot_df = bind_rows(dw, pw) |>
+  mutate(type = factor(type, levels = c("Density f(t)", "Survival S(t)")))
+
+ggplot(plot_df, aes(x = t, y = value, color = group, group = group)) +
+  geom_line(linewidth = 0.8, alpha = 0.9) +
+  facet_wrap(~ type, ncol = 1, scales = "free_y") +
+  scale_color_brewer(palette = "Set1") +
+  scale_x_continuous(breaks = 0:6) +
+  labs(
+    x = expression("Time"),
+    y = NULL,
+    color = expression("(" * alpha * "," * sigma * ")"),
+    title = "Weibull Density and Survival Curves"
+  ) +
+  theme_bw(base_size = 16) +
+  theme(
+    legend.position = "right",
+    strip.text = element_text(face = "bold")
+  )
+#ggsave("weibull_plots.png", device = png, dpi = 600, width = 8, height = 5)
 ```
 
 ## Table 1 {-#tab1}

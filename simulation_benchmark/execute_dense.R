@@ -20,7 +20,7 @@ suppressWarnings({
 source("simulation_benchmark/simulate.R")
 
 # Parallelization + progress bars
-plan("multisession", workers = 50)
+plan("multisession", workers = 80)
 options(progressr.enable = TRUE)
 handlers(global = TRUE)
 handlers("progress")
@@ -76,7 +76,7 @@ eval_config = function(row, p) {
   rsmp_id = row$rsmp_id
   n_test  = row$n_test
 
-  p(sprintf("Config-id: %i, Task: %s, RSMP-id: %i, n_test = %i (fixed)",
+  p(sprintf("Config-id: %i, Task: %s, RSMP-id: %i, n_test = %i",
             config_id, cens_id, rsmp_id, n_test))
 
   train_task = tasks[[cens_id]]

@@ -15,7 +15,7 @@ n_train = 1000
 # 2 tasks => (low, high) censoring
 set.seed(42)
 
-# ~25% total censoring (split ~50:50 between x2-groups)
+# ~24% total censoring (split ~50:50 between x2-groups)
 sim_low = simulate(
   n = n_train,
   b0 = 1.15, b1 = 0.15, b2 = -0.55, b12 = -0.75,
@@ -23,7 +23,7 @@ sim_low = simulate(
   lambdaC = 0.075
 )
 
-# ~65% total censoring (split ~50:50 between x2-groups),
+# ~64% total censoring (split ~50:50 between x2-groups),
 sim_high = simulate(
   n = n_train,
   b0 = 1.15, b1 = 0.15, b2 = -0.55, b12 = -0.75,

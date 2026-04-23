@@ -93,7 +93,7 @@ eval_config = function(row, p) {
   times = time_grids[[cens_id]][[as.character(prop)]]
 
   # Seed depends on task, replicate, and proportion (n_test fixed)
-  seed = 100000 * rsmp + 1000 * as.integer(prop * 100) + ifelse(cens_id == "low", 1, 2)
+  seed = 100000 * rsmp_id + 1000 * as.integer(prop * 100) + ifelse(cens_id == "low", 1, 2)
   set.seed(seed)
 
   # Simulate test data (using the same dense grid for true survival)

@@ -33,7 +33,7 @@ n_rsmps = 100
 rsmp_id = seq_len(n_rsmps)
 
 # Test set sizes (sampled from DGP for prediction)
-n_tests = c(50, 100, 250)
+n_tests = c(50, 100, 250, 500)
 
 # Proportions of unique event times to use as prediction grid
 proportions = c(0.02, 0.05, 0.1, 0.2, 0.5, 0.8, 1)

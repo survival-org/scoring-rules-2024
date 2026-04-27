@@ -1,5 +1,5 @@
 #' Investigation: Fixed test set size, varying prediction grid coarseness.
-#' Grid defined by proportions (0.02, 0.05, 0.1, 0.2, 0.5, 0.8) of unique event times.
+#' Grid defined by proportions (0.02, 0.05, 0.1, 0.2, 0.5, 0.8, 1) of unique event times.
 #' How much does the density approximation affects the sensitivity of RCLL to model
 #' misspecification.
 #'

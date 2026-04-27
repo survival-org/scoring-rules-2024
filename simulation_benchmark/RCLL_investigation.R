@@ -1,5 +1,5 @@
 #' Investigation: Fixed test set size, varying prediction grid coarseness.
-#' Grid defined by proportions (0.02, 0.05, 0.1, 0.2, 0.5, 0.8, 1) of unique event times.
+#' Grid defined by proportions (0.02, 0.05, 0.1, 0.2, 0.5, 0.8, 1.0) of unique event times.
 #' How much does the density approximation affects the sensitivity of RCLL to model
 #' misspecification.
 #'
@@ -40,24 +40,24 @@ proportions = c(0.02, 0.05, 0.1, 0.2, 0.5, 0.8, 1)
 
 # Precompute deterministic time grids for each task and proportion
 # (ensures same grid across replicates)
-time_grids = list()
-for (task_name in names(tasks)) {
-  train_task = tasks[[task_name]]
-  all_times = train_task$unique_event_times()
-  n_total = length(all_times)
-  for (prop in proportions) {
-    if (prop == 1) {
-      sampled_times = all_times  # full grid
-    } else {
-      n_times = ceiling(prop * n_total)
-      # Deterministic sampling: seed based on task and proportion
-      set.seed(1000 * (which(names(tasks) == task_name)) +
-               100 * (which(proportions == prop)))
-      sampled_times = sort(sample(all_times, size = n_times))
-    }
-    time_grids[[task_name]][[as.character(prop)]] = sampled_times
-  }
-}
+# time_grids = list()
+# for (task_name in names(tasks)) {
+#   train_task = tasks[[task_name]]
+#   all_times = train_task$unique_event_times()
+#   n_total = length(all_times)
+#   for (prop in proportions) {
+#     if (prop == 1) {
+#       sampled_times = all_times  # full grid
+#     } else {
+#       n_times = ceiling(prop * n_total)
+#       # Deterministic sampling: seed based on task and proportion
+#       set.seed(1000 * (which(names(tasks) == task_name)) +
+#                100 * (which(proportions == prop)))
+#       sampled_times = sort(sample(all_times, size = n_times))
+#     }
+#     time_grids[[task_name]][[as.character(prop)]] = sampled_times
+#   }
+# }
 
 # Simulation grid: task, replicate, proportion
 sim_grid = data.table::CJ(
@@ -101,7 +101,7 @@ eval_config = function(row, p) {
   train_task = tasks[[cens_id]]
 
   # Retrieve precomputed time grid for this task and proportion
-  times = time_grids[[cens_id]][[as.character(prop)]]
+  # times = time_grids[[cens_id]][[as.character(prop)]]
 
   # Seed depends on task, replicate, and proportion
   seed = 100000 * rsmp_id +
@@ -109,6 +109,12 @@ eval_config = function(row, p) {
          10 * n_test +
          ifelse(cens_id == "low", 1, 2)
   set.seed(seed)
+
+  # Sample prediction grid times as a proportion of unique event times
+  uevents = train_task$unique_event_times()
+  n_total = length(uevents)
+  n_times = ceiling(prop * n_total)
+  times = sort(sample(uevents, size = n_times, replace = FALSE))
 
   # Simulate test data (using the same dense grid for true survival)
   while (TRUE) {

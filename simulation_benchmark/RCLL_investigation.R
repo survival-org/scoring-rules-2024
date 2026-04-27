@@ -32,30 +32,40 @@ learner_ids = readRDS("simulation_benchmark/learner_ids.rds")
 n_rsmps = 100
 rsmp_id = seq_len(n_rsmps)
 
-# Fxied test set size (sampled from DGP for prediction)
-n_test = 250
+# Test set sizes (sampled from DGP for prediction)
+n_tests = c(50, 100, 250)
 
 # Proportions of unique event times to use as prediction grid
-proportions = c(0.02, 0.05, 0.1, 0.2, 0.5, 0.8)
+proportions = c(0.02, 0.05, 0.1, 0.2, 0.5, 0.8, 1)
 
 # Precompute deterministic time grids for each task and proportion
 # (ensures same grid across replicates)
 time_grids = list()
 for (task_name in names(tasks)) {
   train_task = tasks[[task_name]]
-  all_times = sort(unique(c(0, train_task$unique_event_times())))  # include 0
+  all_times = train_task$unique_event_times()
   n_total = length(all_times)
   for (prop in proportions) {
-    n_times = ceiling(prop * n_total)
-    # Deterministic sampling: seed based on task and proportion
-    set.seed(1000 * (which(names(tasks) == task_name)) + 100 * (which(proportions == prop)))
-    sampled_times = sort(sample(all_times, size = n_times))
+    if (prop == 1) {
+      sampled_times = all_times  # full grid
+    } else {
+      n_times = ceiling(prop * n_total)
+      # Deterministic sampling: seed based on task and proportion
+      set.seed(1000 * (which(names(tasks) == task_name)) +
+               100 * (which(proportions == prop)))
+      sampled_times = sort(sample(all_times, size = n_times))
+    }
     time_grids[[task_name]][[as.character(prop)]] = sampled_times
   }
 }
 
 # Simulation grid: task, replicate, proportion
-sim_grid = data.table::CJ(task_id = names(tasks), rsmp_id = rsmp_id, prop = proportions)
+sim_grid = data.table::CJ(
+  task_id = names(tasks),
+  rsmp_id = rsmp_id,
+  prop = proportions,
+  n_test = n_tests
+)
 sim_grid[, config_id := .I]
 
 # Measures
@@ -83,17 +93,21 @@ eval_config = function(row, p) {
   cens_id = row$task_id
   rsmp_id = row$rsmp_id
   prop = row$prop
+  n_test = row$n_test
 
-  p(sprintf("Config-id: %i, Task: %s, RSMP-id: %i, Prop: %f",
-            config_id, cens_id, rsmp_id, prop))
+  p(sprintf("Config-id: %i, Task: %s, RSMP-id: %i, Prop: %f, n_test: %i",
+            config_id, cens_id, rsmp_id, prop, n_test))
 
   train_task = tasks[[cens_id]]
 
   # Retrieve precomputed time grid for this task and proportion
   times = time_grids[[cens_id]][[as.character(prop)]]
 
-  # Seed depends on task, replicate, and proportion (n_test fixed)
-  seed = 100000 * rsmp_id + 1000 * as.integer(prop * 100) + ifelse(cens_id == "low", 1, 2)
+  # Seed depends on task, replicate, and proportion
+  seed = 100000 * rsmp_id +
+         1000 * as.integer(prop * 100) +
+         10 * n_test +
+         ifelse(cens_id == "low", 1, 2)
   set.seed(seed)
 
   # Simulate test data (using the same dense grid for true survival)
@@ -166,7 +180,8 @@ eval_config = function(row, p) {
   }
 
   combined = rbind(true_model_res, rbindlist(out), fill = TRUE)
-  combined[, c("task_id", "rsmp_id", "prop", "n_times") := list(cens_id, rsmp_id, prop, length(times))]
+  combined[, c("task_id", "rsmp_id", "prop", "n_times", "n_test") :=
+           list(cens_id, rsmp_id, prop, length(times), n_test)]
   combined
 }
 

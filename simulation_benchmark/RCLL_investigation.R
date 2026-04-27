@@ -123,7 +123,7 @@ eval_config = function(row, p) {
       b0 = 1.15, b1 = 0.15, b2 = -0.55, b12 = -0.75,
       sigma = c(0.5, 1.5),
       lambdaC = if (cens_id == "low") 0.075 else 0.45,
-      times = times # get sparse time grid for true survival matrix
+      times = uevents
     )
     test_task = test_sim$task
     cp = test_task$cens_prop()
@@ -133,7 +133,18 @@ eval_config = function(row, p) {
   }
 
   true_pred = test_sim$pred
-  s_true = true_pred$data$distr
+  s_true = true_pred$data$distr # True S(t) on the dense grid (for MISE/MIAE calculation)
+
+  # interpolate true S(t) on the sparse grid for RCLL calculation
+  true_pred$data$distr = survdistr::interp(
+    x = true_pred$data$distr,
+    times = uevents,
+    eval_times = times, # times is a subset of uevents, so we just filter columns here
+    method = "const_surv",
+    output = "surv",
+    add_times = TRUE,
+    check = FALSE
+  )
 
   # True model results
   true_model_res = suppressWarnings(

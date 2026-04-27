@@ -110,7 +110,7 @@ eval_config = function(row, p) {
          ifelse(cens_id == "low", 1, 2)
   set.seed(seed)
 
-  # Sample prediction grid times as a proportion of unique event times
+  # Sample prediction grid times (proportion of unique event times)
   uevents = train_task$unique_event_times()
   n_total = length(uevents)
   n_times = ceiling(prop * n_total)
@@ -123,7 +123,7 @@ eval_config = function(row, p) {
       b0 = 1.15, b1 = 0.15, b2 = -0.55, b12 = -0.75,
       sigma = c(0.5, 1.5),
       lambdaC = if (cens_id == "low") 0.075 else 0.45,
-      times = times
+      times = times # get sparse time grid for true survival matrix
     )
     test_task = test_sim$task
     cp = test_task$cens_prop()
@@ -139,8 +139,8 @@ eval_config = function(row, p) {
   true_model_res = suppressWarnings(
     data.table(
       learner_id = "true",
-      mise = mise(s_true, s_true, times),
-      miae = miae(s_true, s_true, times),
+      mise = 0,
+      miae = 0,
       rcll = true_pred$score(rcll),
       true_rcll = test_sim$rcll
     )
@@ -156,18 +156,20 @@ eval_config = function(row, p) {
       learner = readRDS(sprintf("simulation_benchmark/trained_%s.rds", cens_id))[[learner_id]]
     }
 
-    # flexsurv learners → set prediction grid
+    # flexsurv learners → specifically set prediction grid to all unique event times (dense grid)
     if (inherits(learner, "LearnerSurvFlexreg")) {
-      learner$param_set$set_values(times = times)
+      learner$param_set$set_values(times = uevents)
     }
 
+    # get predictions
     pred = learner$predict(test_task)
 
-    # Cox / KM / RSF → inteprolate to the sparse grid
+    # Cox / KM / RSF → prediction grid has both unique events + censoring times
+    # Interpolate to the event times
     if (!inherits(learner, "LearnerSurvFlexreg")) {
       pred$data$distr = survdistr::interp(
         x = pred$data$distr,
-        eval_times = times,
+        eval_times = uevents,
         method = "const_surv",
         output = "surv",
         add_times = TRUE,
@@ -175,11 +177,26 @@ eval_config = function(row, p) {
       )
     }
 
+    # calculate MISE and MIAE on the dense events grid (before sparsifying for RCLL evaluation)
+    mise = mise(s_true, pred$data$distr, uevents)
+    miae = miae(s_true, pred$data$distr, uevents)
+
+    # Sparsify prediction time grid
+    pred$data$distr = survdistr::interp(
+      x = pred$data$distr, # survival prediction matrix
+      times = uevents, # original dense grid (unique event times)
+      eval_times = times, # sampled events (sparse grid)
+      method = "const_surv",
+      output = "surv",
+      add_times = TRUE,
+      check = FALSE
+    )
+
     out[[learner_id]] = suppressWarnings(
       data.table(
         learner_id = learner_id,
-        mise = mise(s_true, pred$data$distr, times),
-        miae = miae(s_true, pred$data$distr, times),
+        mise = mise,
+        miae = miae,
         rcll = pred$score(rcll)
       )
     )

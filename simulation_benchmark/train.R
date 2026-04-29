@@ -43,6 +43,10 @@ saveRDS(tasks, "simulation_benchmark/tasks.rds")
 # Learners ----
 ## 10 learners in total
 learners = list(
+  # For the Log-normal models we write "shape" (incorrect) instead of "scale" (correct)
+  # to have more consistent names across the different models.
+  # We change this naming in the plotting code to avoid confusion.
+
   # Oracle
   LogNorm_int_shape_x2 = lrn("surv.flexreg", id = "LogNorm_int_shape_x2",
     formula = survival::Surv(time, status) ~ x1 + x2 + x1:x2,

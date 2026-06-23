@@ -2,7 +2,7 @@
 title: "Supplementary Material"
 author: "[John Zobolas](https://github.com/bblodfon)"
 date: last-modified
-description: "Supporting information for paper 'Examining  properness in the external validation of survival models with squared and logarithmic losses'"
+description: "Supporting information for paper: 'When Are Scoring Rules Proper? Bridging Theory and Practice in Survival Model Evaluation'"
 format:
   html:
     date: last-modified
@@ -32,6 +32,7 @@ library(patchwork)
 library(akima)
 library(purrr)
 library(tidyr)
+library(data.table)
 library(DT)
 ```
 
@@ -91,11 +92,16 @@ ggplot(plot_df, aes(x = t, y = value, color = group, group = group)) +
 ## Table 1 {-#tab1}
 
 :::{.callout-note}
-This section supports the "Simulation Experiments" section of the paper.
-
 Use [properness_test.R](https://github.com/survival-org/scoring-rules-2024/blob/main/properness_test.R) to run the experiments.
+
+Example execution: `Rscript properness_test.R 10000 1000 10000 FALSE 42`.
+
+The above arguments correspond to (in that order): $K = 10\,000$ simulations, $m = 1\,000$ distributions per simulation and $n = 10\,000$ samples drawn from each distribution.
+`FALSE` means that $S_C(t)$ is used directly from the true Weibull distribution and not estimated, $42$ is just a seed number we used for reproducibility.
+
 To run for different sample sizes `n`, use [run_tests.sh](https://github.com/survival-org/scoring-rules-2024/blob/main/run_tests.sh).
-Merged simulation results for all $n$ are available [here](https://github.com/survival-org/scoring-rules-2024/blob/main/results/res_sims10000_distrs1000_0.rds).
+
+Merged simulation results for all sample sizes are available [here](https://github.com/survival-org/scoring-rules-2024/blob/main/results/res_sims10000_distrs1000_0.rds).
 :::
 
 Results from 10 randomly sampled simulations:
@@ -107,7 +113,7 @@ res[sample(1:nrow(res), 10), ] |>
   formatRound(columns = 3:40, digits = c(rep(3,8), rep(5,30)))
 ```
 
-Each row corresponds to one simulation, and the quantites are averaged across $m = 1000$ draws from Weibull survival distributions at a fixed sample size $n \in {10, \dots, 10\,000}$.
+Each row corresponds to one simulation, and the quantites are averaged across $m = 1000$ draws from Weibull survival distributions at a fixed sample size $n \in \{10, \dots, 10\,000\}$.
 
 The output columns are:
 
@@ -131,13 +137,15 @@ Scoring rules analyzed:
 - The **SBS** at the 10th, 50th and 90th percentiles of observed times
 - The **ISBS**, using 50 equidistant points between the 5th and 80th percentile of observed times
 - The **RCLL**
-- An experimental weighted version of RCLL, which we called **wRCLL** (or **RCLL\***), see [weighted_RCLL.R](https://github.com/survival-org/scoring-rules-2024/blob/main/weighted_RCLL.R) for more details. This is not a proper scoring rule, but we included it to explore the impact of weighting on properness violations.
+- An experimental weighted version of RCLL, which we called **wRCLL** (or **RCLL\***), see [weighted_RCLL.R](https://github.com/survival-org/scoring-rules-2024/blob/main/weighted_RCLL.R) for more details. This is not a proper scoring rule in general (at least in theory), and was included in initial versions of this work as a possible (even more proper) extension of RCLL.
 
-We compute 95% confidence intervals (CIs) for the mean score difference $D$ (true - predicted) using a $t$-distribution.
+:::{.callout-important}
+We compute 95% confidence intervals (CIs) for the mean score difference $\bar{D}$ (true - predicted) using a $t$-distribution.
 A violation is marked statistically significant if:
 
 - The mean score difference exceeds a positive threshold: $\bar{D} > 0.0001$
 - The CI excludes zero (i.e., $\text{CI}_\text{lower} > 0$)
+:::
 
 ```{r}
 res = res |>
@@ -641,7 +649,7 @@ plot_data |>
   ) |>
   DT::datatable(
     rownames = FALSE,
-    width = "42%",
+    width = "52%",
     options = list(searching = FALSE),
     caption = htmltools::tags$caption(
       style = "caption-side: top; text-align: center; font-size:150%",
@@ -654,8 +662,8 @@ plot_data |>
 
 :::{.callout-note}
 Here we investigate the impact of administritive censoring on SBS properness.
-**Administritive censoring is applied at the 80% percentile of true times**.
-SBS is calculated at the 10th, 50th and 90th percentile of *observed times (after application of the administrative censoring).
+**Administritive censoring is applied at the 80% percentile of true event times**.
+SBS is calculated at the 10th, 50th and 90th percentile of *observed* times (after application of the administrative censoring).
 
 Use [properness_test_admin_cens.R](https://github.com/survival-org/scoring-rules-2024/blob/main/properness_test_admin_cens.R) to run the experiment.
 
@@ -741,7 +749,7 @@ admin_all_stats |>
 ## Table C1 {-#tabc1}
 
 :::{.callout-note}
-The only difference with the previous experiment is that $S_C(t)$ is now being estimated using the marginal Kaplan-Meier model via `survival::survfit()` instead of using the true Weibull censoring distribution (see [helper.R](https://github.com/survival-org/scoring-rules-2024/blob/main/helper.R)).
+The only difference with the [previous experiment](#tab1) is that $S_C(t)$ is now being estimated using the marginal Kaplan-Meier model via `survival::survfit()` instead of using the true Weibull censoring distribution (see [helper.R](https://github.com/survival-org/scoring-rules-2024/blob/main/helper.R)).
 For SBS/ISBS we use *constant interpolation* of the censoring survival distribution $S_C(t)$.
 For RCLL\* we use *linear interpolation* of $S_C(t)$ to mitigate density estimation issues, i.e. for $f_C(t)$.
 
@@ -833,7 +841,406 @@ all_stats |>
 :::{.callout-tip}
 ## Summary
 
-Estimating $S_C(t)$ via Kaplan-Meier produced nearly identical results to using the true distribution, with no violations for RCLL/RCLL* and only small-sample effects for SBS and ISBS.
+Estimating $S_C(t)$ via Kaplan-Meier produced nearly identical results to using the true censoring distribution, with no violations for RCLL/RCLL* and only small-sample effects for SBS and ISBS.
+:::
+
+## Sensitivity to Model Misspecification {-#sen}
+
+To evaluate how effectively each scoring rule discriminates between increasingly misspecified models, we designed a simulation study based on a non-proportional hazards data-generating process (DGP).
+The DGP is a log-normal accelerated failure time (AFT) model with covariate-dependent location and group-specific scale, inducing crossing survival curves.
+See more details in the manuscript.
+
+:::{.callout-note}
+The simulation and benchmarking pipeline is implemented in the [simulation_benchmark](https://github.com/survival-org/scoring-rules-2024/tree/main/simulation_benchmark) directory.
+Key scripts include:
+
+- [simulate.R](https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/simulate.R): Defines the DGP and can generate data sets under **low** and **high** censoring settings.
+- [train.R](https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/train.R): Trains all models on the generated tasks. The trained models are saved as `trained_low.rds`, `trained_high.rds`, and separate files for the large Random Survival Forest objects (`trained_low_rsf.rds`, `trained_high_rsf.rds`).
+- [execute_dense.R](https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/execute_dense.R): Runs a benchmark where the specified models are evaluated on test sets of varying sizes using a dense prediction time grid (unique event times from the training task). Results are saved in [`results/sim_bm_dense.rds`](https://github.com/survival-org/scoring-rules-2024/blob/main/results/sim_bm_dense.rds).
+- [RCLL_investigation.R](https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/RCLL_investigation.R): Investigates the sensitivity of the RCLL to the resolution of the prediction time grid. Results are saved in [`results/rcll_sim.rds`](https://github.com/survival-org/scoring-rules-2024/blob/main/results/rcll_sim.rds).
+:::
+
+The following code produces Kaplan–Meier curves for both tasks with additional summary statistics, stratified by the binary treatment variable.
+
+```{r}
+#| cache: true
+#| warning: false
+tasks = readRDS("simulation_benchmark/tasks.rds")
+
+plot_km_task = function(task, title, show_censor = FALSE, extend_to_last_time = TRUE) {
+  d = task$data()
+
+  # summary quantities
+  cens_total = mean(d$status == 0)
+  cens_x20 = mean(d$status == 0 & d$x2 == 0)
+  cens_x21 = mean(d$status == 0 & d$x2 == 1)
+  n_events = sum(d$status == 1)
+  admin_cens = mean(d$time == 10)
+
+  subtitle =
+    paste0(
+      sprintf("Total censoring: %.1f%% (x2 = 0: %.1f%%, x2 = 1: %.1f%%)\n",
+        100 * cens_total, 100 * cens_x20, 100 * cens_x21
+      ),
+      sprintf("Number of events: %d\n", n_events),
+      sprintf("Administrative censoring: %.1f%%", 100*admin_cens)
+    )
+
+  # Kaplan-Meier fit
+  fit = survival::survfit(
+    survival::Surv(time, status) ~ factor(x2),
+    data = d
+  )
+
+  s = summary(fit)
+  df = data.frame(
+    time = s$time,
+    surv = s$surv,
+    lower = s$lower,
+    upper = s$upper,
+    strata = s$strata,
+    n_censor = s$n.censor
+  )
+
+  # ensure S(0) = 1 for each strata
+  by_strata = split(df, df$strata)
+  s0_rows = lapply(by_strata, function(dd) {
+    if (any(dd$time == 0)) {
+      NULL
+    } else {
+      data.frame(
+        time = 0,
+        surv = 1,
+        lower = 1,
+        upper = 1,
+        strata = dd$strata[1],
+        n_censor = 0
+      )
+    }
+  })
+  s0_rows = do.call(rbind, s0_rows)
+  if (!is.null(s0_rows)) {
+    df = rbind(s0_rows, df)
+  }
+
+  if (extend_to_last_time) {
+    max_time = max(d$time)
+    by_strata = split(df, df$strata)
+    ext = lapply(by_strata, function(dd) {
+      last_row = dd[nrow(dd), , drop = FALSE]
+      if (max_time > last_row$time) {
+        last_row$time = max_time
+        last_row
+      } else {
+        NULL
+      }
+    })
+    ext = do.call(rbind, ext)
+    if (!is.null(ext)) {
+      df = rbind(df, ext)
+    }
+  }
+
+  censor_df = df[df$n_censor > 0, , drop = FALSE]
+
+  p =
+    ggplot(df, aes(x = time, y = surv, color = strata, linetype = strata)) +
+    geom_ribbon(
+      aes(ymin = lower, ymax = upper, group = strata),
+      fill = "grey80",
+      alpha = 0.4,
+      color = NA
+    ) +
+    geom_step() +
+    scale_color_manual(
+      values = c("black", "red"),
+      labels = c(
+        expression(x[2] == 0 ~ paste("(", sigma, "  = ", 0.5, ")")),
+        expression(x[2] == 1 ~ paste("(", sigma, "  = ", 1.5, ")"))
+      )
+    ) +
+    scale_linetype_manual(
+      values = c(1, 1),
+      labels = c(
+        expression(x[2] == 0 ~ paste("(", sigma, "  = ", 0.5, ")")),
+        expression(x[2] == 1 ~ paste("(", sigma, "  = ", 1.5, ")"))
+      )
+    ) +
+    labs(
+      title = title,
+      subtitle = subtitle,
+      x = "Time",
+      y = "Survival probability",
+      color = NULL,
+      linetype = NULL
+    ) +
+    theme_bw(base_size = 14) +
+    theme(
+      legend.position = c(0.98, 0.98),
+      legend.justification = c(1, 1),
+      legend.background = element_rect(fill = "white", color = "grey80"),
+      legend.text = element_text(size = 16),
+      legend.title = element_text(size = 16),
+      legend.key.size = grid::unit(1, "lines")
+    )
+
+  if (show_censor && nrow(censor_df) > 0) {
+    p = p + geom_point(
+      data = censor_df,
+      aes(x = time, y = surv, color = strata),
+      shape = 3,
+      stroke = 0.9,
+      size = 2,
+      show.legend = FALSE
+    )
+  }
+
+  p
+}
+```
+
+:::{.panel-tabset}
+
+### Low censoring DGP
+```{r}
+#| warning: false
+#| fig-width: 8
+#| fig-height: 6
+p_low  = plot_km_task(tasks$low, title = "Low censoring task", show_censor = TRUE)
+p_low
+```
+
+### High censoring DGP
+```{r}
+#| warning: false
+#| fig-width: 8
+#| fig-height: 6
+p_high = plot_km_task(tasks$high, title = "High censoring task", show_censor = TRUE)
+p_high
+```
+
+```{r}
+#| include: false
+#| eval: false
+(p_low | p_high) # combine using patchwork
+ggsave("kaplan_meier_plots_DPG.png", device = png, dpi = 600, width = 11, height = 6)
+```
+:::
+
+We now evaluate how effectively each scoring rule discriminates between increasingly misspecified models.
+For each of the two censoring tasks (low and high), we compare the excess loss, i.e. the difference in empirical loss between a candidate model and the true data-generating process, i.e. $\Delta L = L(\hat S) - L(S_Y)$, against the mean integrated absolute error (MIAE) between the predicted and true survival functions.
+See more details in the manuscript regarding the benchmark setup.
+
+The plots below show results for test sets of size $n = 1000$, with panels corresponding to three scoring rules:
+
+- **RCLL**: right-censored log-loss (density estimated via linear interpolation of the survival function)
+- **SBS**: Survival Brier Score evaluated at $t = 5$
+- **ISBS**: Integrated Survival Brier Score up to the 90th percentile of observed times
+
+In each panel, models are arranged by increasing MIAE, i.e. greater deviation from the true survival distribution (left to right).
+
+```{r}
+#| cache: true
+res = readRDS("results/sim_bm_dense.rds")
+
+# Plot score differences vs. MIAE/MISE for multiple measures and one test size value
+# Score diffs are (predicted - true)
+plot_score_diff = function(
+  res,
+  y = "miae", # "mise" or "miae"
+  task_id_val = "low", # "low" or "high"
+  n_test_val = 1000, # test set size to display
+  drop_learners = c("CoxPH"), # remove undesired learners
+  rcll_truth = "interp", # "true" => (true S, true f), "interp" => (true S, interpolated f from linear S)
+  meas = c("rcll", "cindex", "sbs", "isbs"), # measures to display
+  legend_position = "right" # "right", "left", "top", "bottom", "none"
+) {
+  # Subset to the chosen task
+  dt = res[task_id == task_id_val & n_test == n_test_val]
+  # Remove unwanted learners
+  dt = dt[!learner_id %in% drop_learners]
+
+  # Rename learner_ids
+  label_map = c(
+    "LogNorm_int_shape_x2"   = "Oracle",
+    "LogLog_int_shape_x2"    = "LLogis",
+    "Weib_int_shape_x2"      = "Weibull",
+    "LogNorm_noint_shape_x2" = "LogNorm_scale",
+    "LogNorm_int_noshape"    = "LogNorm_int",
+    "LogNorm_noint_noshape"  = "LogNorm",
+    "CoxPH_int"              = "Cox_int",
+    "RSF"                    = "RSF",
+    "KM"                     = "KM"
+  )
+
+  dt[, learner_id := ifelse(
+    learner_id %in% names(label_map),
+    label_map[learner_id],
+    learner_id
+  )]
+
+  # --- Extract true model references per replicate ---
+  true_dt = dt[learner_id == "true",
+    .(rsmp_id,
+      rcll_true_full = true_rcll,
+      rcll_true_interp = rcll,
+      true_cindex = cindex,
+      true_sbs = sbs,
+      true_isbs = isbs)]
+
+  dt = merge(dt, true_dt, by = "rsmp_id")
+
+  # --- Compute differences ---
+  # RCLL: compare to either full true Likelihood or f interpolated from linear S
+  if (rcll_truth == "interp") {
+    dt[, diff_rcll := rcll - rcll_true_interp]
+  } else if (rcll_truth == "true") {
+    # comparing with the true model's RCLL, makes the rest of the
+    # metric comparisons a bit less comparable (as we don't have the true ISBS or SBS)
+    dt[, diff_rcll := rcll - rcll_true_full]
+  }
+
+  # C‑index: error = 1 - cindex
+  # error_pred - error_true = (1 - cindex_pred) - (1 - cindex_true) = cindex_true - cindex_pred
+  dt[, diff_cindex := true_cindex - cindex]
+
+  # Brier score
+  dt[, diff_sbs := sbs - true_sbs]
+
+  # Integrated Brier score
+  dt[, diff_isbs := isbs - true_isbs]
+
+  # Remove true model
+  dt = dt[learner_id != "true"]
+
+  # --- Reshape to long format ---
+  measures = c("rcll", "cindex", "sbs", "isbs")
+  measures = intersect(measures, meas)
+
+  long_dt = melt(dt,
+                 id.vars = c("learner_id", "mise", "miae", "rsmp_id"),
+                 measure.vars = paste0("diff_", measures),
+                 variable.name = "measure",
+                 value.name = "diff")
+  long_dt[, measure := sub("diff_", "", measure)]
+
+  # Learner colours
+  cols = c(
+    Oracle        = "#dfce0cff",
+    LogNorm_scale = "#2171B5",
+    LogNorm_int   = "#6BAED6",
+    LogNorm       = "#C6DBEF",
+    LLogis        = "#FFA500",
+    Weibull       = "#756BB1",
+    Cox_int       = "#238B45",
+    RSF           = "#D62728",
+    KM            = "#7F7F7F"
+  )
+
+  # Keep only colours that appear in the data
+  present_learners = unique(long_dt$learner_id)
+  cols = cols[names(cols) %in% present_learners]
+
+  # Label measures nicely
+  measure_labels = c(
+    rcll   = if (rcll_truth == "interp") "RCLL" else "RCLL (difference to true likelihood)",
+    sbs    = "SBS (t = 5)",
+    isbs   = "ISBS (τ* = q90)",
+    cindex = "1 − C‑index (error)"
+  )
+  measure_labels = measure_labels[names(measure_labels) %in% measures]
+  long_dt[, measure_label := factor(measure,
+                                    levels = names(measure_labels),
+                                    labels = measure_labels)]
+
+  # Order learners for the legend
+  learner_order = c(
+    "Oracle",
+    "LLogis",
+    "Weibull",
+    "LogNorm_scale",
+    "LogNorm_int",
+    "LogNorm",
+    "Cox_int",
+    "RSF",
+    "KM"
+  )
+  learner_order = learner_order[learner_order %in% present_learners]
+  long_dt[, learner_id := factor(learner_id, levels = learner_order)]
+
+  # Create the plot
+  ggplot(long_dt, aes(x = .data[[y]], y = diff, color = learner_id)) +
+    geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.5) +
+    geom_point(alpha = 0.6, size = 1.5) +
+    scale_color_manual(values = cols) +
+    facet_wrap(~ measure_label, scales = "free_y") +
+    labs(
+      title = sprintf(
+        "%s censoring task (Test set size = %d)", # unique event times as grid by default
+        paste0(toupper(substring(task_id_val, 1, 1)), substring(task_id_val, 2)),
+        n_test_val
+      ),
+      x = ifelse(y == "mise",
+                 "MISE (distance to true S)",
+                 "MIAE (distance to true S)"),
+      #y = "Score difference (predicted − true model)",
+      y = expression(L[pred] - ~L[true]),
+      color = "Model"
+    ) +
+    theme_bw(base_size = 12, base_family = "Arial") +
+    theme(
+      strip.background = element_rect(fill = "grey95"),
+      strip.text = element_text(face = "bold"),
+      legend.position = if (legend_position == "none") "none" else legend_position,
+      legend.title = element_text(size = 14),
+      legend.text = element_text(size = 12)
+    ) +
+    guides(color = guide_legend(override.aes = list(size = 5)))
+}
+```
+
+:::{.panel-tabset}
+
+### Low censoring DGP
+```{r}
+#| fig-width: 8
+#| fig-height: 6
+p1 = plot_score_diff(res, task_id_val = "low", meas = c("rcll", "sbs", "isbs"),
+                     n_test_val = 1000, legend_position = "bottom")
+p1
+```
+
+### High censoring DGP
+```{r}
+#| fig-width: 8
+#| fig-height: 6
+p2 = plot_score_diff(res, task_id_val = "high", meas = c("rcll", "sbs", "isbs"),
+                     n_test_val = 1000, legend_position = "bottom")
+p2
+```
+
+```{r}
+#| include: false
+#| eval: false
+# figure 5
+p11 = plot_score_diff(res, task_id_val = "low", meas = c("rcll", "sbs", "isbs"),
+                     n_test_val = 1000, legend_position = "none")
+p22 = plot_score_diff(res, task_id_val = "high", meas = c("rcll", "sbs", "isbs"),
+                     n_test_val = 1000, legend_position = "bottom") +
+      guides(color = guide_legend(override.aes = list(size = 5, alpha = 1), nrow = 1, byrow = TRUE)) +
+      theme(legend.direction = "horizontal")
+(p11 / p22)
+ggsave(filename = "sensitivity_large_n.png", dpi = 600, height = 8, width = 11, units = "in")
+ggsave(filename = "sensitivity_large_n.pdf", dpi = 600, height = 8, width = 11, units = "in", device = cairo_pdf)
+```
+:::
+
+:::{.callout-tip}
+## Summary
+
+- **RCLL** provides the best discrimination: point clouds are well separated by model, closely track the MIAE ordering, and show low variability. All misspecified models yield positive excess loss confirming empirical properness.
+- **SBS** (at $t = 5$) shows poor discrimination: substantial overlap between models, weak alignment with MIAE, and high variability, particularly under high censoring. It is unsuitable for model comparison.
+- **ISBS** preserves the global MIAE ranking but tends to form a small number of coarse clusters of models with similar excess loss, within which models are largely indistinguishable. Occasional negative $\Delta L$ values indicate finite‑sample properness violations, especially under high censoring.
 :::
 
 ## Benchmark (Real-World Data) {-#bench}

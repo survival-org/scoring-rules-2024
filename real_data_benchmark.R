@@ -1,5 +1,6 @@
 source("weighted_RCLL.R") # add RCLL*
 library(mlr3extralearners)
+library(mlr3proba)
 library(progressr)
 
 # get all survival tasks in mlr3proba
@@ -7,6 +8,9 @@ keys = as.data.table(mlr_tasks)[task_type == "surv"][["key"]]
 tasks = lapply(keys, function(key) {
   tsk(key)
 })
+# remove actg dataset
+index = which(mlr3misc::map(tasks, `[[`, "id") == "actg")
+tasks[[index]] = NULL
 
 # logging
 lgr::get_logger("mlr3")$set_threshold("warn")
@@ -17,13 +21,29 @@ handlers(global = TRUE)
 handlers("progress")
 
 # parallelization
-future::plan("multisession", workers = 15)
+future::plan("multicore", workers = 10)
 
-# conduct benchmark (<=2 min on a modern laptop)
+# define learners
+learners = list(
+  lrn("surv.kaplan", id = "KM"), # baseline
+  lrn("surv.coxph", id = "Cox"), # semi-parametric
+  lrn("surv.ranger", id = "RSF"), # non-parametric
+  # Add two parametric learners
+  lrn("surv.flexreg", id = "LogNorm", dist = "lognormal"),
+  lrn("surv.flexreg", id = "Weibull", dist = "weibull")
+)
+
+# encapsulate learners to fallback to Kaplan-Meier if they error
+learners = lapply(learners, function(learner) {
+  learner$encapsulate("evaluate", fallback = lrn("surv.kaplan"))
+  learner
+})
+
+# run benchmark
 set.seed(42)
 bm_grid = benchmark_grid(
   tasks = tasks,
-  learners = lrns(c("surv.kaplan", "surv.ranger", "surv.coxph")),
+  learners = learners,
   resamplings = rsmp("repeated_cv", repeats = 10, folds = 5)
 )
 bm = benchmark(bm_grid)

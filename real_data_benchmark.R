@@ -1,16 +1,23 @@
 source("weighted_RCLL.R") # add RCLL*
 library(mlr3extralearners)
 library(mlr3proba)
+library(data.table)
+library(mlr3misc)
 library(progressr)
 
 # get all survival tasks in mlr3proba
-keys = as.data.table(mlr_tasks)[task_type == "surv"][["key"]]
+keys = data.table::as.data.table(mlr_tasks)[task_type == "surv"][["key"]]
 tasks = lapply(keys, function(key) {
   tsk(key)
 })
 # remove actg dataset
 index = which(mlr3misc::map(tasks, `[[`, "id") == "actg")
 tasks[[index]] = NULL
+# stratify by event status for resampling
+for (i in seq_along(tasks)) {
+  task = tasks[[i]]
+  task$set_col_roles(cols = task$target_names[[2]], add_to = "stratum")
+}
 
 # logging
 lgr::get_logger("mlr3")$set_threshold("warn")
@@ -28,9 +35,8 @@ learners = list(
   lrn("surv.kaplan", id = "KM"), # baseline
   lrn("surv.coxph", id = "Cox"), # semi-parametric
   lrn("surv.ranger", id = "RSF"), # non-parametric
-  # Add two parametric learners
-  lrn("surv.flexreg", id = "LogNorm", dist = "lognormal"),
-  lrn("surv.flexreg", id = "Weibull", dist = "weibull")
+  lrn("surv.flexreg", id = "LogNorm", dist = "lognormal"), # parametric
+  lrn("surv.flexreg", id = "Weibull", dist = "weibull") # parametric
 )
 
 # encapsulate learners to fallback to Kaplan-Meier if they error
@@ -56,9 +62,9 @@ measures = c(
   msr("surv.dcalib", id = "D-calib"),
   msr("surv.graf", id = "ISBS")
 )
-res = bm$aggregate(measures)
+res = bm$score(measures)
 
 # store results
 res = data.table::as.data.table(res) |>
-  dplyr::select(task_id, learner_id, RCLL, `RCLL*`, `C-index`, `D-calib`, `ISBS`)
+  dplyr::select(task_id, learner_id, iteration, RCLL, `RCLL*`, `C-index`, `D-calib`, `ISBS`)
 saveRDS(res, file = "results/real_data_bm.rds")

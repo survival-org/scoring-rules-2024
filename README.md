@@ -15,6 +15,17 @@ See [HTML report](https://survival-org.github.io/scoring-rules-2024/).
 - **Real-World Benchmark Evaluation** [[link](https://survival-org.github.io/scoring-rules-2024/#bench)]
   An exploratory comparison of survival metrics including 3 scoring rules (RCLL, RCLL\*, ISBS), the C-index and D-calibration, on a few real-world survival datasets.
 
+## Reproducibility
+
+All scripts used for the analyses were run with the R package versions listed in the [session info](https://survival-org.github.io/scoring-rules-2024/#r-session-info).
+The most important packages, depending on the analysis script, are:
+
+- `mlr3proba` $\to$ `0.8.9`
+- `mlr3` $\to$ `1.7.1`
+- `mlr3extralearners` $\to$ `1.5.1`
+- `mlr3pipelines` $\to$ `0.10.0`
+- `survdistr` $\to$ `0.0.3`
+
 ## Citation
 
 > Sonabend, R., Zobolas, J., De Bin, R., Kopper, P., Burk, L., & Bender, A. (2024). Examining properness in the external validation of survival models with squared and logarithmic losses. https://arxiv.org/abs/2212.05260v3

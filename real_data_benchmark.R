@@ -60,11 +60,12 @@ measures = c(
   msr("surv.wrcll", id = "RCLL*", weighted = TRUE), # weighted RCLL (RCLL* in the paper)
   msr("surv.cindex", id = "C-index"),
   msr("surv.dcalib", id = "D-calib"),
-  msr("surv.graf", id = "ISBS")
+  msr("surv.graf", id = "ISBS", p_max = 0.9)
 )
 res = bm$score(measures)
 
 # store results
 res = data.table::as.data.table(res) |>
   dplyr::select(task_id, learner_id, iteration, RCLL, `RCLL*`, `C-index`, `D-calib`, `ISBS`)
+
 saveRDS(res, file = "results/real_data_bm.rds")

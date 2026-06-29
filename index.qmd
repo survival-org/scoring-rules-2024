@@ -1256,43 +1256,265 @@ ggsave(filename = "sensitivity_large_n.pdf", dpi = 600, height = 8, width = 11, 
 ## Benchmark (Real-World Data) {-#bench}
 
 :::{.callout-note}
-To run the experiment use [real_data_benchmark.R](https://github.com/survival-org/scoring-rules-2024/blob/main/real_data_benchmark.R).
+This benchmark complements the simulation study by comparing how different evaluation metrics rank survival learners across eight heterogeneous, low-dimensional, real-world datasets.
+
+To reproduce this benchmark, see [real_data_benchmark.R](https://github.com/survival-org/scoring-rules-2024/blob/main/real_data_benchmark.R).
 :::
 
-We assess the performance using three survival scoring rules (RCLL, RCLL\*, ISBS), D-calibration and Harrell's C-index on real-world survival datasets using the `mlr3proba` framework, tested with 10 repetitions of 5-fold cross-validation on the following learners:
+### Datasets
 
-- Kaplan-Meier (non-parametric)
-- Cox proportional hazards model
-- Random survival forests (RSF)
+All the datasets are available from `mlr3proba` as `mlr3` tasks.
 
-Below we show the aggregated performance metrics across all tasks and learners:
 ```{r}
+#| message: false
+#| warning: false
+#| cache: true
+library(mlr3proba)
+library(mlr3misc)
+# silence mlr3 logging messages
+lgr::get_logger("mlr3")$set_threshold(0)
+
 res = readRDS("results/real_data_bm.rds")
 
-res |>
-  dplyr::mutate(
-    learner_id = dplyr::recode(
-      learner_id,
-      "surv.kaplan" = "KM",
-      "surv.ranger" = "RSF",
-      "surv.coxph"  = "CoxPH"
+task_ids = unique(res$task_id)
+tasks = mlr3::tsks(task_ids)
+
+metrics = c("C-index", "D-calib", "RCLL*", "RCLL", "ISBS")
+res_long = melt(
+  res,
+  id.vars = c("task_id", "learner_id", "iteration"),
+  measure.vars = metrics,
+  variable.name = "metric",
+  value.name = "value"
+)
+
+# remove RCLL* from the boxplots
+res_long = res_long[metric != "RCLL*"]
+
+# truncate D-calibration to 50 to avoid extreme outliers in the boxplots
+res_long[
+  metric == "D-calib",
+  value := pmin(value, 50)
+]
+
+# Reorder metric factor to the desired sequence
+res_long[, metric := factor(metric, levels = metrics)]
+
+task_info = lapply(tasks, function(task) {
+  id = task$id
+  n = task$nrow
+  p = task$n_features
+  feature_dt = task$col_info[id %nin% c("..row_id", task$target_names)]
+  n_factor = sum(feature_dt$type == "factor")
+  n_numeric = sum(feature_dt$type %in% c("numeric", "integer"))
+  cens_rate = task$cens_prop()
+  prop_haz = ifelse(task$prop_haz() < 0.05, FALSE, TRUE)
+
+  list(
+    id = id,
+    n = n,
+    p = p,
+    n_factor = n_factor,
+    n_numeric = n_numeric,
+    censoring_rate = cens_rate,
+    prop_haz = prop_haz
+  )
+}) |> rbindlist()
+```
+
+In the following table:
+
+- **id** is the dataset identifier
+- **n** is the number of observations
+- **p** is the number of features
+- **n_factor** is the number of factor features
+- **n_numeric** is the number of numeric features
+- **censoring_rate** is the proportion of censored observations in the dataset
+- **prop_haz** is a boolean derived from the $p$-value of the global proportional hazards test computed with `survival::cox.zph()` at the 5% significance level: `TRUE` indicates no evidence against proportional hazards ($p \ge 0.05$), whereas `FALSE` indicates a violation ($p < 0.05$).
+
+```{r}
+task_info |>
+  arrange(censoring_rate) |>
+  DT::datatable(
+    rownames = FALSE,
+    filter = "top",
+    options = list(dom = "t", searching = TRUE)
+  ) |>
+  DT::formatRound(columns = 6, digits = 2) |>
+  DT::formatStyle(
+    columns = "censoring_rate",
+    backgroundColor = DT::styleInterval(
+      c(0.25, 0.5, 0.75),
+      c("#e5f5e0", "#a1d99b", "#e7785f", "#f8555b")
     )
-  )|>
-  DT::datatable(rownames = FALSE, filter = "top", options = list(searching = TRUE)) |>
-  DT::formatRound(columns = 3:7, digits = 3) |>
-  DT::formatSignif(columns = 6, digits = 3) # scientific notation for surv.dcalib
+  )
+```
+
+### Models
+
+We used the following models:
+
+- Kaplan-Meier (KM; non-parametric)
+- Cox proportional hazards model (Cox; semi-parametric)
+- Random survival forests (RSF; non-parametric)
+- Log-normal accelerated failure time model (LogNorm; parametric)
+- Weibull accelerated failure time model (Weibull; parametric)
+
+Model performance is assessed using three survival scoring rules (RCLL, RCLL*, and ISBS), D-calibration (strictly calibration metric), and Harrell's C-index (strictly discrimination metric).
+All models are evaluated using 10 repetitions of 5-fold cross-validation without
+hyperparameter tuning.
+
+### Performance per-dataset
+
+Predictive performance can vary considerably across datasets due to differences in sample size, censoring proportion, covariate distributions and the suitability of the underlying model assumptions.
+To provide a detailed overview, the following figures show the distribution of each evaluation metric across all repeated cross-validation resamples, separately for each dataset.
+D-calibration is truncated at 50 to avoid extreme outliers in the boxplots.
+In each dataset, the learners are ordered by median RCLL, which is the most discriminative metric in this benchmark.
+
+```{r}
+learner_ids = sort(unique(res_long$learner_id))
+cols = scales::hue_pal()(length(learner_ids))
+names(cols) = learner_ids
+```
+
+```{r}
+#| cache: true
+#| results: asis
+#| fig-width: 10
+#| fig-height: 7
+plot_task = function(task) {
+  dat = res_long[task_id == task]
+
+  # Order learners by median RCLL
+  rcll_medians = dat[metric == "RCLL", .(med = median(value)), by = learner_id]
+  learner_order = rcll_medians[order(med), learner_id]
+  dat[, learner_id := factor(learner_id, levels = learner_order)]
+
+  p = dat |>
+    ggplot(aes(
+      x = value,
+      y = learner_id,
+      colour = learner_id,
+      fill = learner_id
+    )) +
+    geom_boxplot(alpha = 0.25, outlier.shape = NA) +
+    geom_jitter(width = 0, height = 0.15, alpha = 0.25, size = 0.7) +
+    facet_wrap(~metric, scales = "free_x", ncol = 2) +
+    # ---- Add the manual scales ----
+    scale_colour_manual(values = cols) +
+    scale_fill_manual(values = cols) +
+    labs(
+      x = NULL,
+      y = NULL,
+      title = task
+    ) +
+    theme_bw(base_size = 14, base_family = "Arial") +
+    theme(
+      legend.position = "none",
+      # strip.background = element_blank(),
+      strip.background = element_rect(fill = "grey95"),
+      strip.text = element_text(face = "bold"),
+      panel.grid.major.y = element_blank(),
+      plot.title = element_text(face = "bold")
+    )
+
+  p
+}
+
+task_ids = unique(task_info$id)
+
+cat("::: {.panel-tabset}\n\n")
+
+for (task_id in task_ids) {
+  title = with(
+    task_info[task_info$id == task_id, ],
+    sprintf("%s (n=%d, p=%d, %s)", id, n, p, ifelse(prop_haz, "PH", "PH violated"))
+  )
+
+  cat("### ", title, "\n\n", sep = "")
+  print(plot_task(task_id))
+  cat("\n\n")
+}
+
+cat(":::\n")
+```
+
+For easier numerical comparison, the table below reports the **mean performance of every learner on each dataset**, averaged over the repeated cross-validation resamples.
+
+```{r}
+res_mean = res[,
+  lapply(.SD, mean, na.rm = TRUE), by = .(task_id, learner_id), .SDcols = metrics
+]
+
+res_mean |>
+  DT::datatable(
+    rownames = FALSE,
+    filter = "top",
+    options = list(searching = TRUE, pageLength = 10)
+  ) |>
+  DT::formatRound(columns = c("RCLL", "RCLL*", "C-index", "ISBS"), digits = 3) |>
+  DT::formatSignif(columns = "D-calib", digits = 3)
+```
+
+### Rank-correlation between evaluation metrics
+
+Absolute performance values may not be directly comparable across datasets, so we evaluate how the different metrics rank competing models within each dataset.
+
+For every dataset and resampling iteration, model performances are converted into ranks (1 = best).
+Harrell's C-index is converted to an error metric (1 - C-index) so that all metrics are oriented in the same direction (smaller values indicate better performance).
+We compute Pearson correlations between the resulting ranking vectors and visualize the empirical agreement results as a correlation heatmap.
+
+```{r}
+#| warning: false
+#| message: false
+library(ggcorrplot)
+
+# convert C-index to 1 - C
+res = res[, `C-index-error` := 1 - `C-index`]
+
+metrics = c("C-index-error", "D-calib", "RCLL*", "RCLL", "ISBS")
+
+# Compute ranks per task for each metric
+rank_cols = paste0("rank_", metrics)
+res_ranks = copy(res)
+
+# calculate ranks for each metric, grouped by task_id and iteration
+for (i in seq_along(metrics)) {
+  m = metrics[i]
+  res_ranks[,
+    paste0("rank_", m) := frank(get(m), ties.method = "min"),
+    by = .(task_id, iteration)
+  ]
+}
+
+cor_all = cor(res_ranks[, ..rank_cols], method = "pearson")
+
+ggcorrplot(
+  cor_all,
+  method = "square",
+  type = "lower",
+  hc.order = TRUE,
+  lab = TRUE,
+  lab_size = 4,
+  outline.color = "white"
+)
 ```
 
 :::{.callout-tip}
 ## Summary
 
-Our experiment demonstrates substantial divergences in model assessment depending on the chosen metric (especially in the case of the scoring rules).
+The real-world benchmark confirms that **the choice of evaluation metric can substantially affect the ranking of survival learners**.
 
-For instance, on datasets such as `veteran` and `whas`, which exhibit non-proportional hazards, RSF is more suitable to model non-linear effects compared to the CoxPH.
-In these cases, RCLL* identifies RSF as superior, whereas RCLL and ISBS still prefer CoxPH.
+Several consistent patterns emerge:
 
-In the `gbcs` dataset, CoxPH achieves the best RCLL, ISBS and C-index scores, yet shows extremely poor calibration ($\text{D-calib} \approx 15.7$), while RCLL* ranks Kaplan-Meier as the best — possibly reflecting better-calibrated risk estimates.
-This discrepancy becomes even more pronounced in the `lung` dataset, where CoxPH again yields high RCLL/C-index/ISBS performance despite low calibration ($\text{D-calib} \approx 23.5$), whereas RCLL* selects RSF instead.
+- **RCLL provides the clearest separation between competing models.** Across nearly all datasets, RCLL exhibits differences between models with relatively little overlap between the boxplots.
+
+- **ISBS shows moderate agreement with RCLL.** Among the evaluated metrics, ISBS exhibits the strongest agreement with discrimination ($\rho = 0.63$ with the C-index rankings) while also displaying moderate agreement with RCLL ($\rho = 0.43$).
+
+- **RCLL and RCLL\* often produce different learner rankings.** Although RCLL\* is derived from RCLL, their empirical agreement is relatively weak ($\rho = 0.16$), which is expected given that RCLL\* is not proper.
+
+- **D-calibration behaves largely independently of the other metrics.** Its rank
+correlations with all remaining measures are close to zero, indicating that calibration alone captures a different aspect of predictive performance.
 
 These findings highlight a critical need for further research: **not all metrics labeled as "proper" in theory behave equally in practice.**
 :::

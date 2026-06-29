@@ -1,6 +1,6 @@
 #' Generate training data (tasks) and train learners for `sensitivity_benchmark.R`
 #' Execute: `Rscript simulation_benchmark/train.R`
-library(mlr3) # 1.6.0
+library(mlr3) # 1.7.1
 library(mlr3proba) # 0.8.9
 library(mlr3extralearners) # 1.5.1
 library(mlr3pipelines) # 0.10.0

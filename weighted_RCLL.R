@@ -1,6 +1,6 @@
 source("helper.R") # interpolation functions
-library(mlr3)
-library(mlr3proba) # 0.8.5 version
+library(mlr3) # v1.7.1
+library(mlr3proba) # 0.8.9 version
 library(paradox)
 
 # Define new mlr3(proba) measure: RCLL*. RCLL is a subcase (weighted = FALSE).
@@ -94,5 +94,5 @@ MeasureSurvWeightedRCLL = R6::R6Class("MeasureSurvWeightedRCLL",
 # Add measure for easy use with `msr()`
 mlr_measures = utils::getFromNamespace("mlr_measures", ns = "mlr3")
 mlr_measures$add("surv.wrcll", MeasureSurvWeightedRCLL)
-# check measure is okay to use 
+# check measure is okay to use
 stopifnot(!is.null(msr("surv.wrcll")))

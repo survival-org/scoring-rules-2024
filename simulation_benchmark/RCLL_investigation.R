@@ -5,7 +5,7 @@
 #'
 #' Run: `Rscript simulation_benchmark/RCLL_investigation.R`
 suppressWarnings({
-  library(mlr3) # v1.6.0
+  library(mlr3) # v1.7.1
   library(mlr3proba) # v0.8.9
   library(mlr3extralearners) # v1.5.1
   library(mlr3pipelines) # v0.10.0

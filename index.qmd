@@ -1253,10 +1253,21 @@ ggsave(filename = "sensitivity_large_n.pdf", dpi = 600, height = 8, width = 11, 
 - **ISBS** preserves the global MIAE ranking but tends to form a small number of coarse clusters of models with similar excess loss, within which models are largely indistinguishable. Occasional negative $\Delta L$ values indicate finite‑sample properness violations, especially under high censoring.
 :::
 
+### Effect of Test Set Size
+
+Performance of RCLL and ISBS as test set size decreases.
+Assesses how sample size affects discriminatory power and empirical properness.
+Relates to Figure 6 (low censoring task) and Figure C1 (high censoring task) in the paper.
+
+### Impact of Prediction Grid Resolution on RCLL
+
+Sensitivity of the RCLL to the density of the prediction time grid (subsampling from 2% to 100% of unique event times).
+Shows how coarse grids affect bias, variability, and model ranking (related to Figure 7 and Table C2 in the paper).
+
 ## Benchmark (Real-World Data) {-#bench}
 
 :::{.callout-note}
-This benchmark complements the simulation study by comparing how different evaluation metrics rank survival learners across eight heterogeneous, low-dimensional, real-world datasets.
+This benchmark complements the simulation study by comparing how different evaluation metrics assess and rank survival learners across eight heterogeneous, low-dimensional, real-world datasets.
 
 To reproduce this benchmark, see [real_data_benchmark.R](https://github.com/survival-org/scoring-rules-2024/blob/main/real_data_benchmark.R).
 :::
@@ -1308,6 +1319,7 @@ task_info = lapply(tasks, function(task) {
   n_factor = sum(feature_dt$type == "factor")
   n_numeric = sum(feature_dt$type %in% c("numeric", "integer"))
   cens_rate = task$cens_prop()
+  admin_cens_rate = task$admin_cens_prop()
   prop_haz = ifelse(task$prop_haz() < 0.05, FALSE, TRUE)
 
   list(
@@ -1317,6 +1329,7 @@ task_info = lapply(tasks, function(task) {
     n_factor = n_factor,
     n_numeric = n_numeric,
     censoring_rate = cens_rate,
+    admin_censoring_rate = admin_cens_rate,
     prop_haz = prop_haz
   )
 }) |> rbindlist()
@@ -1330,6 +1343,7 @@ In the following table:
 - **n_factor** is the number of factor features
 - **n_numeric** is the number of numeric features
 - **censoring_rate** is the proportion of censored observations in the dataset
+- **admin_censoring_rate** is the proportion of observations censored due to administrative censoring
 - **prop_haz** is a boolean derived from the $p$-value of the global proportional hazards test computed with `survival::cox.zph()` at the 5% significance level: `TRUE` indicates no evidence against proportional hazards ($p \ge 0.05$), whereas `FALSE` indicates a violation ($p < 0.05$).
 
 ```{r}
@@ -1340,7 +1354,7 @@ task_info |>
     filter = "top",
     options = list(dom = "t", searching = TRUE)
   ) |>
-  DT::formatRound(columns = 6, digits = 2) |>
+  DT::formatRound(columns = c(6, 7), digits = 2) |>
   DT::formatStyle(
     columns = "censoring_rate",
     backgroundColor = DT::styleInterval(
@@ -1360,16 +1374,15 @@ We used the following models:
 - Log-normal accelerated failure time model (LogNorm; parametric)
 - Weibull accelerated failure time model (Weibull; parametric)
 
-Model performance is assessed using three survival scoring rules (RCLL, RCLL*, and ISBS), D-calibration (strictly calibration metric), and Harrell's C-index (strictly discrimination metric).
-All models are evaluated using 10 repetitions of 5-fold cross-validation without
-hyperparameter tuning.
+Model performance is evaluated using three survival scoring rules (RCLL, RCLL*, and ISBS), Harrell's C-index (discrimination), and D-calibration (calibration).
+All models are assessed using 10 repetitions of 5-fold cross-validation without hyperparameter tuning.
 
 ### Performance per-dataset
 
 Predictive performance can vary considerably across datasets due to differences in sample size, censoring proportion, covariate distributions and the suitability of the underlying model assumptions.
 To provide a detailed overview, the following figures show the distribution of each evaluation metric across all repeated cross-validation resamples, separately for each dataset.
 D-calibration is truncated at 50 to avoid extreme outliers in the boxplots.
-In each dataset, the learners are ordered by median RCLL, which is the most discriminative metric in this benchmark.
+Within each dataset, learners are ordered by their median RCLL to facilitate comparison across the different evaluation metrics.
 
 ```{r}
 learner_ids = sort(unique(res_long$learner_id))
@@ -1459,10 +1472,10 @@ res_mean |>
 ### Rank-correlation between evaluation metrics
 
 Absolute performance values may not be directly comparable across datasets, so we evaluate how the different metrics rank competing models within each dataset.
-
 For every dataset and resampling iteration, model performances are converted into ranks (1 = best).
 Harrell's C-index is converted to an error metric (1 - C-index) so that all metrics are oriented in the same direction (smaller values indicate better performance).
-We compute Pearson correlations between the resulting ranking vectors and visualize the empirical agreement results as a correlation heatmap.
+
+We compute correlations between the resulting ranking vectors and visualize the empirical agreement between evaluation metrics as a correlation heatmap.
 
 ```{r}
 #| warning: false
@@ -1503,20 +1516,17 @@ ggcorrplot(
 :::{.callout-tip}
 ## Summary
 
-The real-world benchmark confirms that **the choice of evaluation metric can substantially affect the ranking of survival learners**.
+The real-world benchmark confirms that **the choice of evaluation metric can substantially influence the ranking of survival learners.**
 
-Several consistent patterns emerge:
+Across the eight datasets, RCLL consistently provides the greatest separation between competing models, whereas Harrell's C-index often assigns similar scores to learners with noticeably different predictive distributions.
+ISBS exhibits moderate agreement with both RCLL ($\rho=0.43$) and the C-index ($\rho=0.64$).
+Across most datasets, ISBS distinguishes models generally less than RCLL.
 
-- **RCLL provides the clearest separation between competing models.** Across nearly all datasets, RCLL exhibits differences between models with relatively little overlap between the boxplots.
+while D-calibration is largely uncorrelated with the remaining metrics, reflecting its focus on calibration rather than discrimination or overall predictive accuracy.
 
-- **ISBS shows moderate agreement with RCLL.** Among the evaluated metrics, ISBS exhibits the strongest agreement with discrimination ($\rho = 0.63$ with the C-index rankings) while also displaying moderate agreement with RCLL ($\rho = 0.43$).
+Interestingly, RCLL and its variant RCLL* exhibit only weak empirical agreement ($\rho=0.16$), illustrating that seemingly similar scoring rules can induce substantially different model rankings in practice.
 
-- **RCLL and RCLL\* often produce different learner rankings.** Although RCLL\* is derived from RCLL, their empirical agreement is relatively weak ($\rho = 0.16$), which is expected given that RCLL\* is not proper.
-
-- **D-calibration behaves largely independently of the other metrics.** Its rank
-correlations with all remaining measures are close to zero, indicating that calibration alone captures a different aspect of predictive performance.
-
-These findings highlight a critical need for further research: **not all metrics labeled as "proper" in theory behave equally in practice.**
+Taken together, these results complement the simulation study by demonstrating that the empirical behaviour of survival evaluation metrics can differ substantially on real data, reinforcing the importance of selecting evaluation criteria that align with the intended prediction objective.
 :::
 
 ## R session info {-}

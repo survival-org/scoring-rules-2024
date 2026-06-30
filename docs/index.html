@@ -1533,7 +1533,7 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>This benchmark complements the simulation study by comparing how different evaluation metrics rank survival learners across eight heterogeneous, low-dimensional, real-world datasets.</p>
+<p>This benchmark complements the simulation study by comparing how different evaluation metrics assess and rank survival learners across eight heterogeneous, low-dimensional, real-world datasets.</p>
 <p>To reproduce this benchmark, see <a href="https://github.com/survival-org/scoring-rules-2024/blob/main/real_data_benchmark.R">real_data_benchmark.R</a>.</p>
 </div>
 </div>
@@ -1644,11 +1644,11 @@ Note
 <li>Log-normal accelerated failure time model (LogNorm; parametric)</li>
 <li>Weibull accelerated failure time model (Weibull; parametric)</li>
 </ul>
-<p>Model performance is assessed using three survival scoring rules (RCLL, RCLL*, and ISBS), D-calibration (strictly calibration metric), and Harrell’s C-index (strictly discrimination metric). All models are evaluated using 10 repetitions of 5-fold cross-validation without hyperparameter tuning.</p>
+<p>Model performance is evaluated using three survival scoring rules (RCLL, RCLL*, and ISBS), Harrell’s C-index (discrimination), and D-calibration (calibration). All models are assessed using 10 repetitions of 5-fold cross-validation without hyperparameter tuning.</p>
 </section>
 <section id="performance-per-dataset" class="level3">
 <h3 class="anchored" data-anchor-id="performance-per-dataset">Performance per-dataset</h3>
-<p>Predictive performance can vary considerably across datasets due to differences in sample size, censoring proportion, covariate distributions and the suitability of the underlying model assumptions. To provide a detailed overview, the following figures show the distribution of each evaluation metric across all repeated cross-validation resamples, separately for each dataset. D-calibration is truncated at 50 to avoid extreme outliers in the boxplots. In each dataset, the learners are ordered by median RCLL, which is the most discriminative metric in this benchmark.</p>
+<p>Predictive performance can vary considerably across datasets due to differences in sample size, censoring proportion, covariate distributions and the suitability of the underlying model assumptions. To provide a detailed overview, the following figures show the distribution of each evaluation metric across all repeated cross-validation resamples, separately for each dataset. D-calibration is truncated at 50 to avoid extreme outliers in the boxplots. Within each dataset, learners are ordered by their median RCLL to facilitate comparison across the different evaluation metrics.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1760,8 +1760,8 @@ Note
 </section>
 <section id="rank-correlation-between-evaluation-metrics" class="level3">
 <h3 class="anchored" data-anchor-id="rank-correlation-between-evaluation-metrics">Rank-correlation between evaluation metrics</h3>
-<p>Absolute performance values may not be directly comparable across datasets, so we evaluate how the different metrics rank competing models within each dataset.</p>
-<p>For every dataset and resampling iteration, model performances are converted into ranks (1 = best). Harrell’s C-index is converted to an error metric (1 - C-index) so that all metrics are oriented in the same direction (smaller values indicate better performance). We compute Pearson correlations between the resulting ranking vectors and visualize the empirical agreement results as a correlation heatmap.</p>
+<p>Absolute performance values may not be directly comparable across datasets, so we evaluate how the different metrics rank competing models within each dataset. For every dataset and resampling iteration, model performances are converted into ranks (1 = best). Harrell’s C-index is converted to an error metric (1 - C-index) so that all metrics are oriented in the same direction (smaller values indicate better performance).</p>
+<p>We compute correlations between the resulting ranking vectors and visualize the empirical agreement between evaluation metrics as a correlation heatmap.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1815,15 +1815,14 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The real-world benchmark confirms that <strong>the choice of evaluation metric can substantially affect the ranking of survival learners</strong>.</p>
-<p>Several consistent patterns emerge:</p>
+<p>The real-world benchmark confirms that <strong>the choice of evaluation metric can substantially influence the ranking of survival learners.</strong></p>
 <ul>
-<li><p><strong>RCLL provides the clearest separation between competing models.</strong> Across nearly all datasets, RCLL exhibits differences between models with relatively little overlap between the boxplots.</p></li>
-<li><p><strong>ISBS shows moderate agreement with RCLL.</strong> Among the evaluated metrics, ISBS exhibits the strongest agreement with discrimination (<span class="math inline">\rho = 0.63</span> with the C-index rankings) while also displaying moderate agreement with RCLL (<span class="math inline">\rho = 0.43</span>).</p></li>
-<li><p><strong>RCLL and RCLL* often produce different learner rankings.</strong> Although RCLL* is derived from RCLL, their empirical agreement is relatively weak (<span class="math inline">\rho = 0.16</span>), which is expected given that RCLL* is not proper.</p></li>
-<li><p><strong>D-calibration behaves largely independently of the other metrics.</strong> Its rank correlations with all remaining measures are close to zero, indicating that calibration alone captures a different aspect of predictive performance.</p></li>
+<li><p><strong>RCLL provides the greatest discrimination between competing models.</strong> Across nearly all datasets, RCLL produces the clearest separation between learners, whereas Harrell’s C-index often assigns similar scores to models with noticeably different predictive distributions.</p></li>
+<li><p><strong>ISBS exhibits intermediate behaviour.</strong> It generally distinguishes competing models more clearly than the C-index, although less consistently than RCLL, and shows moderate agreement with both RCLL (<span class="math inline">\rho = 0.43</span>) and the C-index (<span class="math inline">\rho = 0.64</span>).</p></li>
+<li><p><strong>D-calibration captures complementary information.</strong> Its near-zero correlation with the remaining metrics indicates that calibration reflects a different aspect of predictive performance than discrimination or probabilistic accuracy.</p></li>
+<li><p><strong>Closely related scoring rules need not rank models similarly.</strong> Despite being a variant of RCLL, RCLL* exhibits only weak agreement with RCLL (<span class="math inline">\rho = 0.16</span>), highlighting that seemingly similar evaluation metrics can induce substantially different learner rankings in practice.</p></li>
 </ul>
-<p>These findings highlight a critical need for further research: <strong>not all metrics labeled as “proper” in theory behave equally in practice.</strong></p>
+<p>Overall, these findings complement the simulation study by demonstrating that the empirical behaviour of survival evaluation metrics differs considerably on real datasets, emphasizing the importance of selecting evaluation metrics that align with the intended prediction objective.</p>
 </div>
 </div>
 </section>
@@ -1856,55 +1855,37 @@ time zone: Europe/Oslo
 tzcode source: system (glibc)
 
 attached base packages:
-[1] grid      stats     graphics  grDevices utils     datasets  methods  
-[8] base     
+[1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] ggcorrplot_0.1.4.1           mlr3misc_0.22.0             
- [3] future_1.70.0                mlr3tuning_1.5.0            
- [5] paradox_1.0.1                mlr3extralearners_1.5.2.9000
- [7] R6_2.6.1                     circlize_0.4.16             
- [9] ComplexHeatmap_2.21.1        ggpubr_0.6.2                
-[11] mlr3proba_0.8.9              mlr3_1.7.1                  
-[13] lubridate_1.9.3              forcats_1.0.0               
-[15] stringr_1.6.0                readr_2.1.5                 
-[17] tidyverse_2.0.0              DT_0.33                     
-[19] data.table_1.18.4            tidyr_1.3.1                 
-[21] purrr_1.0.2                  akima_0.6-3.6               
-[23] patchwork_1.3.2              ggplot2_4.0.2               
-[25] tibble_3.3.0                 dplyr_1.1.4                 
+ [1] ggcorrplot_0.1.4.1 DT_0.33            data.table_1.18.4  tidyr_1.3.1       
+ [5] purrr_1.0.2        akima_0.6-3.6      patchwork_1.3.2    ggplot2_4.0.2     
+ [9] tibble_3.3.0       dplyr_1.1.4       
 
 loaded via a namespace (and not attached):
- [1] rlang_1.2.0          magrittr_2.0.4       clue_0.3-66         
- [4] GetoptLong_1.0.5     matrixStats_1.4.1    compiler_4.4.2      
- [7] reshape2_1.4.4       png_0.1-8            vctrs_0.7.1         
-[10] pkgconfig_2.0.3      shape_1.4.6.1        crayon_1.5.3        
-[13] fastmap_1.2.0        backports_1.5.1      labeling_0.4.3      
-[16] rmarkdown_2.31       tzdb_0.4.0           xfun_0.57           
-[19] cachem_1.1.0         jsonlite_2.0.0       uuid_1.2-2          
-[22] cluster_2.1.6        broom_1.0.7          parallel_4.4.2      
-[25] bslib_0.10.0         stringi_1.8.7        RColorBrewer_1.1-3  
-[28] parallelly_1.47.0    car_3.1-3            jquerylib_0.1.4     
-[31] Rcpp_1.1.1           iterators_1.0.14     knitr_1.51          
-[34] IRanges_2.40.1       Matrix_1.7-1         splines_4.4.2       
-[37] timechange_0.3.0     tidyselect_1.2.1     abind_1.4-8         
-[40] yaml_2.3.12          doParallel_1.0.17    codetools_0.2-20    
-[43] param6_0.2.4         listenv_0.10.1       plyr_1.8.9          
-[46] lattice_0.22-6       withr_3.0.3          S7_0.2.1            
-[49] evaluate_1.0.5       survival_3.7-0       pillar_1.11.0       
-[52] carData_3.0-5        checkmate_2.3.4      foreach_1.5.2       
-[55] stats4_4.4.2         generics_0.1.3       bbotk_1.10.0        
-[58] sp_2.1-4             hms_1.1.3            S4Vectors_0.44.0    
-[61] scales_1.4.0         dictionar6_0.1.3     globals_0.19.1      
-[64] distr6_1.8.4         glue_1.8.0           tools_4.4.2         
-[67] mlr3pipelines_0.10.0 ggsignif_0.6.4       set6_0.2.6          
-[70] crosstalk_1.2.1      colorspace_2.1-2     palmerpenguins_0.1.1
-[73] Formula_1.2-5        cli_3.6.6            ooplah_0.2.0        
-[76] gtable_0.3.6         rstatix_0.7.2        sass_0.4.10         
-[79] digest_0.6.39        BiocGenerics_0.52.0  mlr3cmprsk_0.0.5    
-[82] lgr_0.5.2            rjson_0.2.23         htmlwidgets_1.6.4   
-[85] farver_2.1.2         htmltools_0.5.9      lifecycle_1.0.5     
-[88] GlobalOptions_0.1.2 </code></pre>
+ [1] gtable_0.3.6         xfun_0.57            bslib_0.10.0        
+ [4] htmlwidgets_1.6.4    lattice_0.22-6       vctrs_0.7.1         
+ [7] tools_4.4.2          crosstalk_1.2.1      generics_0.1.3      
+[10] parallel_4.4.2       pkgconfig_2.0.3      Matrix_1.7-1        
+[13] checkmate_2.3.4      RColorBrewer_1.1-3   S7_0.2.1            
+[16] mlr3pipelines_0.10.0 uuid_1.2-2           lifecycle_1.0.5     
+[19] stringr_1.6.0        compiler_4.4.2       farver_2.1.2        
+[22] set6_0.2.6           codetools_0.2-20     htmltools_0.5.9     
+[25] sass_0.4.10          yaml_2.3.12          pillar_1.11.0       
+[28] crayon_1.5.3         jquerylib_0.1.4      cachem_1.1.0        
+[31] parallelly_1.47.0    tidyselect_1.2.1     digest_0.6.39       
+[34] stringi_1.8.7        future_1.70.0        reshape2_1.4.4      
+[37] listenv_0.10.1       labeling_0.4.3       splines_4.4.2       
+[40] fastmap_1.2.0        grid_4.4.2           cli_3.6.6           
+[43] magrittr_2.0.4       paradox_1.0.1        survival_3.7-0      
+[46] withr_3.0.3          scales_1.4.0         backports_1.5.1     
+[49] sp_2.1-4             ooplah_0.2.0         rmarkdown_2.31      
+[52] globals_0.19.1       distr6_1.8.4         evaluate_1.0.5      
+[55] knitr_1.51           dictionar6_0.1.3     mlr3misc_0.22.0     
+[58] rlang_1.2.0          Rcpp_1.1.1           glue_1.8.0          
+[61] param6_0.2.4         palmerpenguins_0.1.1 mlr3proba_0.8.9     
+[64] jsonlite_2.0.0       plyr_1.8.9           lgr_0.5.2           
+[67] R6_2.6.1             mlr3_1.7.1          </code></pre>
 </div>
 </div>
 

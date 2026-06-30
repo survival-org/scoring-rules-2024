@@ -1518,15 +1518,15 @@ ggcorrplot(
 
 The real-world benchmark confirms that **the choice of evaluation metric can substantially influence the ranking of survival learners.**
 
-Across the eight datasets, RCLL consistently provides the greatest separation between competing models, whereas Harrell's C-index often assigns similar scores to learners with noticeably different predictive distributions.
-ISBS exhibits moderate agreement with both RCLL ($\rho=0.43$) and the C-index ($\rho=0.64$).
-Across most datasets, ISBS distinguishes models generally less than RCLL.
+- **RCLL provides the greatest discrimination between competing models.** Across nearly all datasets, RCLL produces the clearest separation between learners, whereas Harrell's C-index often assigns similar scores to models with noticeably different predictive distributions.
 
-while D-calibration is largely uncorrelated with the remaining metrics, reflecting its focus on calibration rather than discrimination or overall predictive accuracy.
+- **ISBS exhibits intermediate behaviour.** It generally distinguishes competing models more clearly than the C-index, although less consistently than RCLL, and shows moderate agreement with both RCLL ($\rho = 0.43$) and the C-index ($\rho = 0.64$).
 
-Interestingly, RCLL and its variant RCLL* exhibit only weak empirical agreement ($\rho=0.16$), illustrating that seemingly similar scoring rules can induce substantially different model rankings in practice.
+- **D-calibration captures complementary information.** Its near-zero correlation with the remaining metrics indicates that calibration reflects a different aspect of predictive performance than discrimination or probabilistic accuracy.
 
-Taken together, these results complement the simulation study by demonstrating that the empirical behaviour of survival evaluation metrics can differ substantially on real data, reinforcing the importance of selecting evaluation criteria that align with the intended prediction objective.
+- **Closely related scoring rules need not rank models similarly.** Despite being a variant of RCLL, RCLL* exhibits only weak agreement with RCLL ($\rho = 0.16$), highlighting that seemingly similar evaluation metrics can induce substantially different learner rankings in practice.
+
+Overall, these findings complement the simulation study by demonstrating that the empirical behaviour of survival evaluation metrics differs considerably on real datasets, emphasizing the importance of selecting evaluation metrics that align with the intended prediction objective.
 :::
 
 ## R session info {-}

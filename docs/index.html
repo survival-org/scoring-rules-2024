@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="John Zobolas">
-<meta name="dcterms.date" content="2026-06-30">
+<meta name="dcterms.date" content="2026-07-01">
 <meta name="description" content="Supporting information for paper: ‘When Are Scoring Rules Proper? Bridging Theory and Practice in Survival Model Evaluation’">
 
 <title>Supplementary Material</title>
@@ -231,7 +231,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 30, 2026</p>
+      <p class="date">July 1, 2026</p>
     </div>
   </div>
   
@@ -1648,7 +1648,7 @@ Note
 </section>
 <section id="performance-per-dataset" class="level3">
 <h3 class="anchored" data-anchor-id="performance-per-dataset">Performance per-dataset</h3>
-<p>Predictive performance can vary considerably across datasets due to differences in sample size, censoring proportion, covariate distributions and the suitability of the underlying model assumptions. To provide a detailed overview, the following figures show the distribution of each evaluation metric across all repeated cross-validation resamples, separately for each dataset. D-calibration is truncated at 50 to avoid extreme outliers in the boxplots. Within each dataset, learners are ordered by their median RCLL to facilitate comparison across the different evaluation metrics.</p>
+<p>Predictive performance can vary considerably across datasets due to differences in sample size, censoring proportion, covariate distributions and the suitability of the underlying model assumptions. To provide a detailed overview, the following figures show the distribution of each evaluation metric across all repeated cross-validation resamples, separately for each dataset. D-calibration is truncated at 50 to avoid extreme outliers in the boxplots. RCLL* is excluded from the boxplots as it is an experimental measure in this analysis and has not been used in practice. <strong>Datasets are ordered by increasing censoring rate</strong>, and the title of each panel includes the dataset identifier, sample size, number of features, and whether the proportional hazards assumption is satisfied. Within each dataset, learners are ordered by their median RCLL to facilitate comparison across the different evaluation metrics.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1698,12 +1698,13 @@ Note
 <span id="cb31-37"><a href="#cb31-37" aria-hidden="true" tabindex="-1"></a>  p</span>
 <span id="cb31-38"><a href="#cb31-38" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb31-39"><a href="#cb31-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-40"><a href="#cb31-40" aria-hidden="true" tabindex="-1"></a>task_ids <span class="ot">=</span> <span class="fu">unique</span>(task_info<span class="sc">$</span>id)</span>
-<span id="cb31-41"><a href="#cb31-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-42"><a href="#cb31-42" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"::: {.panel-tabset}</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb31-40"><a href="#cb31-40" aria-hidden="true" tabindex="-1"></a><span class="co"># order datasets by censoring rate</span></span>
+<span id="cb31-41"><a href="#cb31-41" aria-hidden="true" tabindex="-1"></a>task_ids <span class="ot">=</span> task_info[<span class="fu">order</span>(censoring_rate)]<span class="sc">$</span>id</span>
+<span id="cb31-42"><a href="#cb31-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-43"><a href="#cb31-43" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"::: {.panel-tabset}</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">gbcs (n=686, p=8, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">gbsg (n=686, p=8, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-3" role="tab" aria-controls="tabset-4-3" aria-selected="false" href="">grace (n=1000, p=6, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-4" role="tab" aria-controls="tabset-4-4" aria-selected="false" href="">lung (n=168, p=7, PH)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-5" role="tab" aria-controls="tabset-4-5" aria-selected="false" href="">mgus (n=176, p=7, PH)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-6-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-6" role="tab" aria-controls="tabset-4-6" aria-selected="false" href="">rats (n=300, p=3, PH)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-7-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-7" role="tab" aria-controls="tabset-4-7" aria-selected="false" href="">veteran (n=137, p=6, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-8-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-8" role="tab" aria-controls="tabset-4-8" aria-selected="false" href="">whas (n=481, p=9, PH violated)</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">mgus (n=176, p=7, PH)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">veteran (n=137, p=6, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-3" role="tab" aria-controls="tabset-4-3" aria-selected="false" href="">lung (n=168, p=7, PH)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-4" role="tab" aria-controls="tabset-4-4" aria-selected="false" href="">whas (n=481, p=9, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-5" role="tab" aria-controls="tabset-4-5" aria-selected="false" href="">gbsg (n=686, p=8, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-6-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-6" role="tab" aria-controls="tabset-4-6" aria-selected="false" href="">grace (n=1000, p=6, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-7-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-7" role="tab" aria-controls="tabset-4-7" aria-selected="false" href="">gbcs (n=686, p=8, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-8-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-8" role="tab" aria-controls="tabset-4-8" aria-selected="false" href="">rats (n=300, p=3, PH)</a></li></ul>
 <div class="tab-content">
 <div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
 <p><img src="index_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid" width="960"></p>
@@ -1760,8 +1761,8 @@ Note
 </section>
 <section id="rank-correlation-between-evaluation-metrics" class="level3">
 <h3 class="anchored" data-anchor-id="rank-correlation-between-evaluation-metrics">Rank-correlation between evaluation metrics</h3>
-<p>Absolute performance values may not be directly comparable across datasets, so we evaluate how the different metrics rank competing models within each dataset. For every dataset and resampling iteration, model performances are converted into ranks (1 = best). Harrell’s C-index is converted to an error metric (1 - C-index) so that all metrics are oriented in the same direction (smaller values indicate better performance).</p>
-<p>We compute correlations between the resulting ranking vectors and visualize the empirical agreement between evaluation metrics as a correlation heatmap.</p>
+<p>Since the evaluation metrics operate on different numerical scales and some (such as RCLL) are affected by dataset characteristics like censoring, we compare learners using within-dataset rankings rather than absolute scores. For every dataset and resampling iteration, model performances are converted into ranks (1 = best). Harrell’s C-index is converted to an error metric (1 - C-index) so that all metrics are oriented in the same direction (smaller values indicate better performance).</p>
+<p>We compute Spearman rank correlations and visualize the empirical agreement between evaluation metrics as a correlation heatmap.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1817,12 +1818,12 @@ Note
 <div class="callout-body-container callout-body">
 <p>The real-world benchmark confirms that <strong>the choice of evaluation metric can substantially influence the ranking of survival learners.</strong></p>
 <ul>
-<li><p><strong>RCLL provides the greatest discrimination between competing models.</strong> Across nearly all datasets, RCLL produces the clearest separation between learners, whereas Harrell’s C-index often assigns similar scores to models with noticeably different predictive distributions.</p></li>
-<li><p><strong>ISBS exhibits intermediate behaviour.</strong> It generally distinguishes competing models more clearly than the C-index, although less consistently than RCLL, and shows moderate agreement with both RCLL (<span class="math inline">\rho = 0.43</span>) and the C-index (<span class="math inline">\rho = 0.64</span>).</p></li>
+<li><p><strong>RCLL provides the greatest discrimination between competing models.</strong> Across nearly all datasets, RCLL produces the clearest separation between learners. With ISBS, models are bit less distinguishable, and the C-index often fails to differentiate between models with noticeably different predictive distributions. ISBS shows moderate agreement with both RCLL (<span class="math inline">\rho = 0.43</span>) and the C-index (<span class="math inline">\rho = 0.64</span>).</p></li>
+<li><p><strong>RCLL values depends strongly on the censoring rate</strong>. As censoring increases, absolute RCLL values become smaller (and vice versa), making comparisons across datasets less meaningful. This behaviour follows directly from the RCLL definition: <span class="math inline">L_{RCLL} = - (\delta \log f(t) + (1 - \delta) \log S(t))</span>. As the censoring rate increases, fewer observations contribute through the density term and more contribute through the survival term. Since the latter is typically associated with smaller loss values, the average RCLL decreases as censoring increases. Absolute RCLL scores are therefore most informative for comparing models within the same dataset (but ranks remain meaningful across datasets).</p></li>
 <li><p><strong>D-calibration captures complementary information.</strong> Its near-zero correlation with the remaining metrics indicates that calibration reflects a different aspect of predictive performance than discrimination or probabilistic accuracy.</p></li>
 <li><p><strong>Closely related scoring rules need not rank models similarly.</strong> Despite being a variant of RCLL, RCLL* exhibits only weak agreement with RCLL (<span class="math inline">\rho = 0.16</span>), highlighting that seemingly similar evaluation metrics can induce substantially different learner rankings in practice.</p></li>
 </ul>
-<p>Overall, these findings complement the simulation study by demonstrating that the empirical behaviour of survival evaluation metrics differs considerably on real datasets, emphasizing the importance of selecting evaluation metrics that align with the intended prediction objective.</p>
+<p>Overall, these findings complement the simulation study by demonstrating that the empirical behaviour of survival evaluation metrics varies considerably on real datasets. Even metrics that are theoretically related—or theoretically proper—may emphasize different aspects of predictive performance and therefore lead to different conclusions about which model performs best.</p>
 </div>
 </div>
 </section>

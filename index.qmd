@@ -1382,6 +1382,8 @@ All models are assessed using 10 repetitions of 5-fold cross-validation without 
 Predictive performance can vary considerably across datasets due to differences in sample size, censoring proportion, covariate distributions and the suitability of the underlying model assumptions.
 To provide a detailed overview, the following figures show the distribution of each evaluation metric across all repeated cross-validation resamples, separately for each dataset.
 D-calibration is truncated at 50 to avoid extreme outliers in the boxplots.
+RCLL* is excluded from the boxplots as it is an experimental measure in this analysis and has not been used in practice.
+**Datasets are ordered by increasing censoring rate**, and the title of each panel includes the dataset identifier, sample size, number of features, and whether the proportional hazards assumption is satisfied.
 Within each dataset, learners are ordered by their median RCLL to facilitate comparison across the different evaluation metrics.
 
 ```{r}
@@ -1434,7 +1436,8 @@ plot_task = function(task) {
   p
 }
 
-task_ids = unique(task_info$id)
+# order datasets by censoring rate
+task_ids = task_info[order(censoring_rate)]$id
 
 cat("::: {.panel-tabset}\n\n")
 
@@ -1471,11 +1474,11 @@ res_mean |>
 
 ### Rank-correlation between evaluation metrics
 
-Absolute performance values may not be directly comparable across datasets, so we evaluate how the different metrics rank competing models within each dataset.
+Since the evaluation metrics operate on different numerical scales and some (such as RCLL) are affected by dataset characteristics like censoring, we compare learners using within-dataset rankings rather than absolute scores.
 For every dataset and resampling iteration, model performances are converted into ranks (1 = best).
 Harrell's C-index is converted to an error metric (1 - C-index) so that all metrics are oriented in the same direction (smaller values indicate better performance).
 
-We compute correlations between the resulting ranking vectors and visualize the empirical agreement between evaluation metrics as a correlation heatmap.
+We compute Spearman rank correlations and visualize the empirical agreement between evaluation metrics as a correlation heatmap.
 
 ```{r}
 #| warning: false
@@ -1518,15 +1521,24 @@ ggcorrplot(
 
 The real-world benchmark confirms that **the choice of evaluation metric can substantially influence the ranking of survival learners.**
 
-- **RCLL provides the greatest discrimination between competing models.** Across nearly all datasets, RCLL produces the clearest separation between learners, whereas Harrell's C-index often assigns similar scores to models with noticeably different predictive distributions.
+- **RCLL provides the greatest discrimination between competing models.**
+Across nearly all datasets, RCLL produces the clearest separation between learners.
+With ISBS, models are bit less distinguishable, and the C-index often fails to differentiate between models with noticeably different predictive distributions.
+ISBS shows moderate agreement with both RCLL ($\rho = 0.43$) and the C-index ($\rho = 0.64$).
 
-- **ISBS exhibits intermediate behaviour.** It generally distinguishes competing models more clearly than the C-index, although less consistently than RCLL, and shows moderate agreement with both RCLL ($\rho = 0.43$) and the C-index ($\rho = 0.64$).
+- **RCLL values depends strongly on the censoring rate**.
+As censoring increases, absolute RCLL values become smaller (and vice versa), making comparisons across datasets less meaningful.
+This behaviour follows directly from the RCLL definition: $L_{RCLL} = - (\delta \log f(t) + (1 - \delta) \log S(t))$.
+As the censoring rate increases, fewer observations contribute through the density term and more contribute through the survival term.
+Since the latter is typically associated with smaller loss values, the average RCLL decreases as censoring increases.
+Absolute RCLL scores are therefore most informative for comparing models within the same dataset (but ranks remain meaningful across datasets).
 
 - **D-calibration captures complementary information.** Its near-zero correlation with the remaining metrics indicates that calibration reflects a different aspect of predictive performance than discrimination or probabilistic accuracy.
 
 - **Closely related scoring rules need not rank models similarly.** Despite being a variant of RCLL, RCLL* exhibits only weak agreement with RCLL ($\rho = 0.16$), highlighting that seemingly similar evaluation metrics can induce substantially different learner rankings in practice.
 
-Overall, these findings complement the simulation study by demonstrating that the empirical behaviour of survival evaluation metrics differs considerably on real datasets, emphasizing the importance of selecting evaluation metrics that align with the intended prediction objective.
+Overall, these findings complement the simulation study by demonstrating that the empirical behaviour of survival evaluation metrics varies considerably on real datasets.
+Even metrics that are theoretically related—or theoretically proper—may emphasize different aspects of predictive performance and therefore lead to different conclusions about which model performs best.
 :::
 
 ## R session info {-}

@@ -1530,8 +1530,8 @@ ISBS shows moderate agreement with both RCLL ($\rho = 0.43$) and the C-index ($\
 As censoring increases, absolute RCLL values become smaller (and vice versa), making comparisons across datasets less meaningful.
 This behaviour follows directly from the RCLL definition: $L_{RCLL} = - (\delta \log f(t) + (1 - \delta) \log S(t))$.
 As the censoring rate increases, fewer observations contribute through the density term and more contribute through the survival term.
-Since the latter is typically associated with smaller loss values, the average RCLL decreases as censoring increases.
-Absolute RCLL scores are therefore most informative for comparing models within the same dataset (but ranks remain meaningful across datasets).
+For all learners and datasets considered here, the density term is consistently larger than the survival term on average, resulting in smaller absolute RCLL values with increasing censoring.
+Absolute RCLL scores are therefore most informative for comparing models within the same dataset, although learner rankings remain meaningful across datasets.
 
 - **D-calibration captures complementary information.** Its near-zero correlation with the remaining metrics indicates that calibration reflects a different aspect of predictive performance than discrimination or probabilistic accuracy.
 

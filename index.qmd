@@ -592,12 +592,12 @@ max_shift = range_shift[2] # closest to zero
 ggplot(surface_data, aes(x = S_C, y = S_Y, fill = shift)) +
   geom_tile() +
   facet_wrap(~ metric) +
-  scale_fill_gradientn(
-    colours = c("#B2182B", "grey80", "#2166AC"),
-    values = scales::rescale(c(min_shift, (min_shift + max_shift)/2, max_shift)),
-    limits = c(min_shift, 0), # Extend upper limit to 0
+  scale_fill_viridis_c(
+    direction = -1,
+    limits = c(min_shift, 0),
     name = expression(x^"*" ~ "-" ~ S[Y](tau^ ~ symbol("\052")))
   ) +
+  coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
   labs(
     x = expression(S[C](tau^ ~ symbol("\052"))),
     y = expression(S[Y](tau^ ~ symbol("\052")))
@@ -632,12 +632,12 @@ max_shift = range_shift2[2] # closest to zero
 ggplot(surface_data2, aes(x = S_C, y = S_Y, fill = shift)) +
   geom_tile() +
   facet_wrap(~ metric) +
-  scale_fill_gradientn(
-    colours = c("#B2182B", "grey80", "#2166AC"),
-    values = scales::rescale(c(min_shift, (min_shift + max_shift)/2, max_shift)),
-    limits = c(min_shift, 0), # Extend upper limit to 0
+  scale_fill_viridis_c(
+    direction = -1,
+    limits = c(min_shift, 0),
     name = expression(x^"*" ~ "-" ~ S[Y](tau^ ~ symbol("\052")))
   ) +
+  coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
   labs(
     x = expression(S[C](tau^ ~ symbol("\052"))),
     y = expression(S[Y](tau^ ~ symbol("\052")))
@@ -675,7 +675,7 @@ SBS is calculated at the 10th, 50th and 90th percentile of *observed* times (aft
 
 Use [properness_test_admin_cens.R](https://github.com/survival-org/scoring-rules-2024/blob/main/properness_test_admin_cens.R) to run the experiment.
 
-Execute: `Rscript properness_test_admin_cens.R 10000 1000 10000 FALSE 42` to run for $n = 10000$.
+Execute: `Rscript properness_test_admin_cens.R 10000 1000 10000 FALSE 42` to run for $n = 10\,000$.
 
 Simulation results are available [here](https://github.com/survival-org/scoring-rules-2024/blob/main/results/res_sims10000_distrs1000_n10000_0_admin_cens.rds).
 :::
@@ -855,8 +855,8 @@ Estimating $S_C(t)$ via Kaplan-Meier produced nearly identical results to using 
 ## Sensitivity to Model Misspecification {-#sen}
 
 To evaluate how effectively each scoring rule discriminates between increasingly misspecified models, we designed a simulation study based on a non-proportional hazards data-generating process (DGP).
-The DGP is a log-normal accelerated failure time (AFT) model with covariate-dependent location and group-specific scale, inducing crossing survival curves.
-For more information about the DGP, generated tasks, models and benchmark details, please see the manuscript.
+The DGP is a log-normal accelerated failure time (AFT) model with covariate-dependent location and group-specific scale parameters, producing crossing survival curves.
+Further details on the DGP, generated tasks, models, and benchmark design are provided in the manuscript.
 
 :::{.callout-note}
 The simulation and benchmarking pipeline is implemented in the [simulation_benchmark](https://github.com/survival-org/scoring-rules-2024/tree/main/simulation_benchmark) directory.
@@ -870,7 +870,7 @@ Key scripts include:
 
 ### DGP and censoring scenarios
 
-The following code produces Kaplan–Meier curves for both tasks with additional summary statistics, stratified by the binary treatment variable.
+The code below generates Kaplan–Meier curves for both tasks with additional summary statistics, stratified by the binary treatment variable.
 See Figure 4 in the paper.
 
 ```{r}
@@ -1040,19 +1040,25 @@ ggsave("kaplan_meier_plots_DPG.png", device = png, dpi = 600, width = 11, height
 
 ### Large sample size sensitivity
 
-We now evaluate how effectively each scoring rule discriminates between correctly specified and increasingly misspecified models under a large test set.
-For each task, we generate 100 Monte Carlo resamplings (test sets) of size $n = 1000$.
-For each replicate, we compute the excess loss, i.e. the difference in empirical loss between a candidate model and the true data-generating process, i.e. $\Delta L = L(\hat S) - L(S_Y)$, and plot it against the mean integrated absolute error (MIAE) between the predicted and true survival functions (which is a measure of misspecification).
+We evaluate how effectively each scoring rule discriminates between correctly specified and increasingly misspecified models under a large test set.
+For each task, we generate 100 Monte Carlo test sets of size $n = 1000$.
+For each replicate, we compute the excess loss,
 
-The panels below panels corresponding to three scoring rules (left to right):
+$$
+\Delta L = L(\hat S) - L(S_Y),
+$$
+
+i.e. the difference in empirical mean loss between a candidate model and the true data-generating process.
+We then plot it against the mean integrated absolute error (MIAE) between the predicted and true survival functions, which serves as a measure of misspecification.
+
+The panels below show the relationship between excess loss and MIAE for four commonly used evaluation metrics:
 
 - **RCLL**: right-censored log-loss (density estimated via linear interpolation of the survival function)
 - **SBS**: Survival Brier Score evaluated at $t = 5$
 - **ISBS**: Integrated Survival Brier Score, integrated up to the time corresponding to the $80\%$ proportion of censoring in each test set
-- **Harrell's C-index**: a standard discrimination metric (i.e. *not* a scoring rule) which is not proper as we can see below for the high censoring task
+- **Harrell's C-index**: a discrimination metric (not a proper scoring rule), included for comparison purposes
 
 ```{r}
-#| cache: true
 res = readRDS("results/sim_bm_dense.rds")
 
 # Plot score differences vs. MIAE/MISE for multiple measures and one test size value

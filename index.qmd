@@ -1533,6 +1533,7 @@ res_long[, metric := factor(metric, levels = metrics)]
 task_info = lapply(tasks, function(task) {
   id = task$id
   n = task$nrow
+  n_events = length(task$unique_event_times())
   p = task$n_features
   feature_dt = task$col_info[id %nin% c("..row_id", task$target_names)]
   n_factor = sum(feature_dt$type == "factor")
@@ -1544,6 +1545,7 @@ task_info = lapply(tasks, function(task) {
   list(
     id = id,
     n = n,
+    n_events = n_events,
     p = p,
     n_factor = n_factor,
     n_numeric = n_numeric,
@@ -1558,6 +1560,7 @@ In the following table:
 
 - **id** is the dataset identifier
 - **n** is the number of observations
+- **n_events** is the number of unique event times
 - **p** is the number of features
 - **n_factor** is the number of factor features
 - **n_numeric** is the number of numeric features
@@ -1573,7 +1576,7 @@ task_info |>
     filter = "top",
     options = list(dom = "t", searching = TRUE)
   ) |>
-  DT::formatRound(columns = c(6, 7), digits = 2) |>
+  DT::formatRound(columns = c(7, 8), digits = 2) |>
   DT::formatStyle(
     columns = "censoring_rate",
     backgroundColor = DT::styleInterval(

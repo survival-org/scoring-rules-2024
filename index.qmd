@@ -1266,9 +1266,217 @@ Occasional negative $\Delta L$ values arise from finite-sample variability, espe
 
 ### Effect of Test Set Size
 
-Performance of RCLL and ISBS as test set size decreases.
-Assesses how sample size affects discriminatory power and empirical properness.
-Relates to Figure 6 (low censoring task) and Figure C1 (high censoring task) in the paper.
+To investigate the finite-sample behaviour of the scoring rules, we repeat the simulation benchmark while varying the test set size.
+As before, performance is assessed using the excess loss relative to the true data-generating process, but now across increasingly smaller test sets.
+This experiment illustrates how sample size affects both the discriminatory power of the scoring rules and the frequency of empirical properness violations.
+
+The figures below correspond to Figure 6 (low censoring) and Figure C1 (high censoring) in the manuscript.
+
+```{r}
+# Plot score differences vs. MIAE/MISE for one measure and multiple test set sizes
+# Score diffs are (predicted - true)
+plot_score_diff_by_ntest = function(
+  res,
+  measure_id = "rcll",# "rcll", "cindex", "sbs", "isbs"
+  y = "miae", # "mise" or "miae"
+  task_id_val = "low", # "low" or "high"
+  n_test_vals = c(10, 25, 50, 100, 250, 500), # test sizes to facet
+  drop_learners = c("CoxPH"),
+  rcll_truth = "interp", # "true" or "interp"
+  legend_position = "right" # "right", "left", "top", "bottom", "none"
+) {
+  # subset to the chosen task and test sizes
+  dt = res[task_id == task_id_val & n_test %in% n_test_vals]
+  # Remove unwanted learners
+  dt = dt[!learner_id %in% drop_learners]
+  # Rename learner_ids
+  label_map = c(
+    "LogNorm_int_shape_x2"   = "Oracle",
+    "LogLog_int_shape_x2"    = "LLogis",
+    "Weib_int_shape_x2"      = "Weibull",
+    "LogNorm_noint_shape_x2" = "LogNorm_scale",
+    "LogNorm_int_noshape"    = "LogNorm_int",
+    "LogNorm_noint_noshape"  = "LogNorm",
+    "CoxPH_int"              = "Cox_int",
+    "RSF"                    = "RSF",
+    "KM"                     = "KM"
+  )
+
+  dt[, learner_id := ifelse(
+    learner_id %in% names(label_map),
+    label_map[learner_id],
+    learner_id
+  )]
+
+  # True references
+  true_dt = dt[learner_id == "true",
+    .(rsmp_id,
+      n_test,
+      rcll_true_full = true_rcll,
+      rcll_true_interp = rcll,
+      true_cindex = cindex,
+      true_sbs = sbs,
+      true_isbs = isbs)
+  ]
+
+  dt = merge(dt, true_dt, by = c("rsmp_id", "n_test"))
+
+  # Differences
+  if (measure_id == "rcll") {
+    if (rcll_truth == "interp") {
+      dt[, diff := rcll - rcll_true_interp]
+    } else {
+      dt[, diff := rcll - rcll_true_full]
+    }
+  } else if (measure_id == "cindex") {
+    dt[, diff := true_cindex - cindex]
+  } else if (measure_id == "sbs") {
+    dt[, diff := sbs - true_sbs]
+  } else if (measure_id == "isbs") {
+    dt[, diff := isbs - true_isbs]
+  }
+
+  # Remove true model
+  dt = dt[learner_id != "true"]
+
+  # Ordering
+  dt[, n_test := factor(n_test, levels = sort(n_test_vals))]
+
+  learner_order = c(
+    "Oracle",
+    "LLogis",
+    "Weibull",
+    "LogNorm_scale",
+    "LogNorm_int",
+    "LogNorm",
+    "Cox_int",
+    "RSF",
+    "KM"
+  )
+  present_learners = unique(dt$learner_id)
+  learner_order = learner_order[learner_order %in% present_learners]
+  dt[, learner_id := factor(learner_id, levels = learner_order)]
+
+  cols = c(
+    Oracle        = "#dfce0cff",
+    LLogis        = "#FFA500",
+    Weibull       = "#756BB1",
+    LogNorm_scale = "#2171B5",
+    LogNorm_int   = "#6BAED6",
+    LogNorm       = "#C6DBEF",
+    Cox_int       = "#238B45",
+    RSF           = "#D62728",
+    KM            = "#7F7F7F"
+  )
+  cols = cols[names(cols) %in% present_learners]
+
+  measure_labels = c(
+    rcll   = if (rcll_truth == "interp") "RCLL" else "RCLL (difference to true likelihood)",
+    sbs    = "SBS (t = 5)",
+    isbs   = "ISBS (τ* = q90)",
+    cindex = "1 − C‑index (error)"
+  )
+
+  ggplot(dt, aes(x = .data[[y]], y = diff, color = learner_id)) +
+    geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.5) +
+    geom_point(alpha = 0.6, size = 1.5) +
+    scale_color_manual(values = cols) +
+    facet_grid(
+      . ~ n_test,
+      labeller = labeller(
+        n_test = function(x) paste0("n['test']==", x),
+        .default = label_parsed
+      )
+    ) +
+    labs(
+      title = sprintf(
+        "%s censoring task — %s",
+        paste0(toupper(substring(task_id_val, 1, 1)), substring(task_id_val, 2)),
+        measure_labels[[measure_id]]
+      ),
+      x = ifelse(y == "mise", "MISE (distance to true S)", "MIAE (distance to true S)"),
+      y = expression(L[pred] - ~L[true]),
+      color = "Model"
+    ) +
+    theme_bw(base_size = 14, base_family = "Arial") +
+    theme(
+      strip.background = element_rect(fill = "grey95"),
+      strip.text = element_text(size = 16, face = "bold"),
+      legend.position = if (legend_position == "none") "none" else legend_position,
+      legend.title = element_text(size = 14),
+      legend.text = element_text(size = 12)
+    ) +
+    guides(color = guide_legend(override.aes = list(size = 5)))
+}
+```
+
+:::{.panel-tabset}
+
+### Low censoring DGP
+```{r}
+#| fig-width: 9
+#| fig-height: 6
+plot_score_diff_by_ntest(res, measure_id = "rcll", task_id_val = "low", legend_position = "bottom")
+```
+
+```{r}
+#| fig-width: 9
+#| fig-height: 6
+plot_score_diff_by_ntest(res, measure_id = "isbs", task_id_val = "low", legend_position = "bottom")
+```
+
+### High censoring DGP
+```{r}
+#| fig-width: 9
+#| fig-height: 6
+plot_score_diff_by_ntest(res, measure_id = "rcll", task_id_val = "high", legend_position = "bottom")
+```
+
+```{r}
+#| fig-width: 9
+#| fig-height: 6
+plot_score_diff_by_ntest(res, measure_id = "isbs", task_id_val = "high", legend_position = "bottom")
+```
+
+```{r}
+#| include: false
+#| eval: false
+# figure 6 (low censoring task)
+p1 = plot_score_diff_by_ntest(res, measure_id = "rcll", task_id_val = "low", legend_position = "none")
+p2 = plot_score_diff_by_ntest(res, measure_id = "isbs", task_id_val = "low", legend_position = "bottom") +
+  guides(color = guide_legend(override.aes = list(size = 5, alpha = 1), nrow = 1, byrow = TRUE)) +
+  theme(legend.direction = "horizontal")
+(p1 / p2)
+#ggsave(filename = "sensitivity_small_n_low_cens.png", dpi = 600, height = 8, width = 13, units = "in")
+ggsave(filename = "sensitivity_small_n_low_cens.pdf", dpi = 600, height = 8, width = 13, units = "in", device = cairo_pdf)
+
+# figure C1 (high censoring task)
+p3 = plot_score_diff_by_ntest(res, measure_id = "rcll", task_id_val = "high", legend_position = "none")
+p4 = plot_score_diff_by_ntest(res, measure_id = "isbs", task_id_val = "high", legend_position = "bottom") +
+  guides(color = guide_legend(override.aes = list(size = 5, alpha = 1), nrow = 1, byrow = TRUE)) +
+  theme(legend.direction = "horizontal")
+(p3 / p4)
+#ggsave(filename = "sensitivity_small_n_high_cens.png", dpi = 600, height = 8, width = 13, units = "in")
+ggsave(filename = "sensitivity_small_n_high_cens.pdf", dpi = 600, height = 8, width = 13, units = "in", device = cairo_pdf)
+```
+:::
+
+:::{.callout-tip}
+## Summary
+
+- **Discriminatory power decreases as the test set becomes smaller.**
+For both RCLL and ISBS, excess loss becomes increasingly variable, leading to greater overlap between models and weaker correspondence with model misspecification.
+
+- **RCLL generally retains better discrimination at small sample sizes.**
+Although model separation deteriorates as $n_{\mathrm{test}}$ decreases, RCLL can still distinguish strongly misspecified models more effectively than ISBS.
+
+- **Empirical properness is increasingly affected by finite-sample variability.**
+Negative excess losses become more frequent as the test set size decreases, particularly for ISBS.
+For test sets of at least 100 observations, such violations are uncommon for both scoring rules.
+
+- **Heavy censoring further amplifies finite-sample effects.**
+Under high censoring, variability increases and model discrimination deteriorates more rapidly, especially when evaluating with the ISBS.
+:::
 
 ### Impact of Prediction Grid Resolution on RCLL
 

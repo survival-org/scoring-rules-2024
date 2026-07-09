@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="John Zobolas">
-<meta name="dcterms.date" content="2026-07-01">
+<meta name="dcterms.date" content="2026-07-09">
 <meta name="description" content="Supporting information for paper: ‘When Are Scoring Rules Proper? Bridging Theory and Practice in Survival Model Evaluation’">
 
 <title>Supplementary Material</title>
@@ -231,7 +231,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">July 1, 2026</p>
+      <p class="date">July 9, 2026</p>
     </div>
   </div>
   
@@ -764,12 +764,12 @@ Important
 <span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(surface_data, <span class="fu">aes</span>(<span class="at">x =</span> S_C, <span class="at">y =</span> S_Y, <span class="at">fill =</span> shift)) <span class="sc">+</span></span>
 <span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
 <span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> metric) <span class="sc">+</span></span>
-<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradientn</span>(</span>
-<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">colours =</span> <span class="fu">c</span>(<span class="st">"#B2182B"</span>, <span class="st">"grey80"</span>, <span class="st">"#2166AC"</span>),</span>
-<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> scales<span class="sc">::</span><span class="fu">rescale</span>(<span class="fu">c</span>(min_shift, (min_shift <span class="sc">+</span> max_shift)<span class="sc">/</span><span class="dv">2</span>, max_shift)),</span>
-<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">limits =</span> <span class="fu">c</span>(min_shift, <span class="dv">0</span>), <span class="co"># Extend upper limit to 0</span></span>
-<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="fu">expression</span>(x<span class="sc">^</span><span class="st">"*"</span> <span class="sc">~</span> <span class="st">"-"</span> <span class="sc">~</span> S[Y](tau<span class="sc">^</span> <span class="er">~</span> <span class="fu">symbol</span>(<span class="st">"</span><span class="sc">\052</span><span class="st">"</span>)))</span>
-<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>(</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">direction =</span> <span class="sc">-</span><span class="dv">1</span>,</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">limits =</span> <span class="fu">c</span>(min_shift, <span class="dv">0</span>),</span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="fu">expression</span>(x<span class="sc">^</span><span class="st">"*"</span> <span class="sc">~</span> <span class="st">"-"</span> <span class="sc">~</span> S[Y](tau<span class="sc">^</span> <span class="er">~</span> <span class="fu">symbol</span>(<span class="st">"</span><span class="sc">\052</span><span class="st">"</span>)))</span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
 <span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
 <span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">expression</span>(S[C](tau<span class="sc">^</span> <span class="er">~</span> <span class="fu">symbol</span>(<span class="st">"</span><span class="sc">\052</span><span class="st">"</span>))),</span>
 <span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">expression</span>(S[Y](tau<span class="sc">^</span> <span class="er">~</span> <span class="fu">symbol</span>(<span class="st">"</span><span class="sc">\052</span><span class="st">"</span>)))</span>
@@ -813,12 +813,12 @@ Important
 <span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(surface_data2, <span class="fu">aes</span>(<span class="at">x =</span> S_C, <span class="at">y =</span> S_Y, <span class="at">fill =</span> shift)) <span class="sc">+</span></span>
 <span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
 <span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> metric) <span class="sc">+</span></span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradientn</span>(</span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">colours =</span> <span class="fu">c</span>(<span class="st">"#B2182B"</span>, <span class="st">"grey80"</span>, <span class="st">"#2166AC"</span>),</span>
-<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> scales<span class="sc">::</span><span class="fu">rescale</span>(<span class="fu">c</span>(min_shift, (min_shift <span class="sc">+</span> max_shift)<span class="sc">/</span><span class="dv">2</span>, max_shift)),</span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">limits =</span> <span class="fu">c</span>(min_shift, <span class="dv">0</span>), <span class="co"># Extend upper limit to 0</span></span>
-<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="fu">expression</span>(x<span class="sc">^</span><span class="st">"*"</span> <span class="sc">~</span> <span class="st">"-"</span> <span class="sc">~</span> S[Y](tau<span class="sc">^</span> <span class="er">~</span> <span class="fu">symbol</span>(<span class="st">"</span><span class="sc">\052</span><span class="st">"</span>)))</span>
-<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>(</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">direction =</span> <span class="sc">-</span><span class="dv">1</span>,</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">limits =</span> <span class="fu">c</span>(min_shift, <span class="dv">0</span>),</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="fu">expression</span>(x<span class="sc">^</span><span class="st">"*"</span> <span class="sc">~</span> <span class="st">"-"</span> <span class="sc">~</span> S[Y](tau<span class="sc">^</span> <span class="er">~</span> <span class="fu">symbol</span>(<span class="st">"</span><span class="sc">\052</span><span class="st">"</span>)))</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
 <span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
 <span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">expression</span>(S[C](tau<span class="sc">^</span> <span class="er">~</span> <span class="fu">symbol</span>(<span class="st">"</span><span class="sc">\052</span><span class="st">"</span>))),</span>
 <span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">expression</span>(S[Y](tau<span class="sc">^</span> <span class="er">~</span> <span class="fu">symbol</span>(<span class="st">"</span><span class="sc">\052</span><span class="st">"</span>)))</span>
@@ -881,7 +881,7 @@ Note
 <div class="callout-body-container callout-body">
 <p>Here we investigate the impact of administritive censoring on SBS properness. <strong>Administritive censoring is applied at the 80% percentile of true event times</strong>. SBS is calculated at the 10th, 50th and 90th percentile of <em>observed</em> times (after application of the administrative censoring).</p>
 <p>Use <a href="https://github.com/survival-org/scoring-rules-2024/blob/main/properness_test_admin_cens.R">properness_test_admin_cens.R</a> to run the experiment.</p>
-<p>Execute: <code>Rscript properness_test_admin_cens.R 10000 1000 10000 FALSE 42</code> to run for <span class="math inline">n = 10000</span>.</p>
+<p>Execute: <code>Rscript properness_test_admin_cens.R 10000 1000 10000 FALSE 42</code> to run for <span class="math inline">n = 10\,000</span>.</p>
 <p>Simulation results are available <a href="https://github.com/survival-org/scoring-rules-2024/blob/main/results/res_sims10000_distrs1000_n10000_0_admin_cens.rds">here</a>.</p>
 </div>
 </div>
@@ -1088,7 +1088,7 @@ Note
 </section>
 <section id="sen" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="sen">Sensitivity to Model Misspecification</h2>
-<p>To evaluate how effectively each scoring rule discriminates between increasingly misspecified models, we designed a simulation study based on a non-proportional hazards data-generating process (DGP). The DGP is a log-normal accelerated failure time (AFT) model with covariate-dependent location and group-specific scale, inducing crossing survival curves. For more information about the DGP, generated tasks, models and benchmark details, please see the manuscript.</p>
+<p>To evaluate how effectively each scoring rule discriminates between increasingly misspecified models, we designed a simulation study based on a non-proportional hazards data-generating process (DGP). The DGP is a log-normal accelerated failure time (AFT) model with covariate-dependent location and group-specific scale parameters, producing crossing survival curves. Further details on the DGP, generated tasks, models, and benchmark design are provided in the manuscript.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1110,7 +1110,7 @@ Note
 </div>
 <section id="dgp-and-censoring-scenarios" class="level3">
 <h3 class="anchored" data-anchor-id="dgp-and-censoring-scenarios">DGP and censoring scenarios</h3>
-<p>The following code produces Kaplan–Meier curves for both tasks with additional summary statistics, stratified by the binary treatment variable. See Figure 4 in the paper.</p>
+<p>The code below generates Kaplan–Meier curves for both tasks with additional summary statistics, stratified by the binary treatment variable. See Figure 4 in the paper.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1288,13 +1288,17 @@ Note
 </section>
 <section id="large-sample-size-sensitivity" class="level3">
 <h3 class="anchored" data-anchor-id="large-sample-size-sensitivity">Large sample size sensitivity</h3>
-<p>We now evaluate how effectively each scoring rule discriminates between correctly specified and increasingly misspecified models under a large test set. For each task, we generate 100 Monte Carlo resamplings (test sets) of size <span class="math inline">n = 1000</span>. For each replicate, we compute the excess loss, i.e.&nbsp;the difference in empirical loss between a candidate model and the true data-generating process, i.e.&nbsp;<span class="math inline">\Delta L = L(\hat S) - L(S_Y)</span>, and plot it against the mean integrated absolute error (MIAE) between the predicted and true survival functions (which is a measure of misspecification).</p>
-<p>The panels below panels corresponding to three scoring rules (left to right):</p>
+<p>We evaluate how effectively each scoring rule discriminates between correctly specified and increasingly misspecified models under a large test set. For each task, we generate 100 Monte Carlo test sets of size <span class="math inline">n = 1000</span>. For each replicate, we compute the excess loss,</p>
+<p><span class="math display">
+\Delta L = L(\hat S) - L(S_Y),
+</span></p>
+<p>i.e.&nbsp;the difference in empirical mean loss between a candidate model and the true data-generating process. We then plot it against the mean integrated absolute error (MIAE) between the predicted and true survival functions, which serves as a measure of misspecification.</p>
+<p>The panels below show the relationship between excess loss and MIAE for four commonly used evaluation metrics:</p>
 <ul>
 <li><strong>RCLL</strong>: right-censored log-loss (density estimated via linear interpolation of the survival function)</li>
 <li><strong>SBS</strong>: Survival Brier Score evaluated at <span class="math inline">t = 5</span></li>
 <li><strong>ISBS</strong>: Integrated Survival Brier Score, integrated up to the time corresponding to the <span class="math inline">80\%</span> proportion of censoring in each test set</li>
-<li><strong>Harrell’s C-index</strong>: a standard discrimination metric (i.e.&nbsp;<em>not</em> a scoring rule) which is not proper as we can see below for the high censoring task</li>
+<li><strong>Harrell’s C-index</strong>: a discrimination metric (not a proper scoring rule), included for comparison purposes</li>
 </ul>
 <div class="cell">
 <details class="code-fold">
@@ -1505,16 +1509,237 @@ Note
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li><strong>RCLL</strong> provides the best discrimination: point clouds are well separated by model, closely track the MIAE ordering, and show low variability. All misspecified models yield positive excess loss confirming empirical properness.</li>
-<li><strong>SBS</strong> (at <span class="math inline">t = 5</span>) shows poor discrimination: substantial overlap between models, weak alignment with MIAE, and high variability, particularly under high censoring. It is unsuitable for model comparison.</li>
-<li><strong>ISBS</strong> preserves the global MIAE ranking but tends to form a small number of coarse clusters of models with similar excess loss, within which models are largely indistinguishable. Occasional negative <span class="math inline">\Delta L</span> values indicate finite‑sample properness violations, especially under high censoring.</li>
+<li><strong>RCLL</strong> shows the strongest discrimination. Excess loss increases almost monotonically with MIAE, producing well-separated model clusters with low variability. All misspecified models have positive excess loss, consistent with empirical properness.</li>
+<li><strong>SBS</strong> (at <span class="math inline">t = 5</span>) provides poor discrimination. Models exhibit substantial overlap, weak correspondence with MIAE, and high variability, particularly under heavy censoring, making SBS unsuitable for reliably ranking models.</li>
+<li><strong>ISBS</strong> largely preserves the global ordering induced by MIAE but compresses models into a few broad clusters with similar excess loss, limiting discrimination among similarly performing models. Occasional negative <span class="math inline">\Delta L</span> values arise from finite-sample variability, especially under high censoring.</li>
+<li><strong>Harrell’s C-index</strong> is not aligned with model misspecification: under high censoring it can assign better scores to misspecified models than to the true data-generating process, illustrating its lack of properness.</li>
 </ul>
 </div>
 </div>
 </section>
 <section id="effect-of-test-set-size" class="level3">
 <h3 class="anchored" data-anchor-id="effect-of-test-set-size">Effect of Test Set Size</h3>
-<p>Performance of RCLL and ISBS as test set size decreases. Assesses how sample size affects discriminatory power and empirical properness. Relates to Figure 6 (low censoring task) and Figure C1 (high censoring task) in the paper.</p>
+<p>To investigate the finite-sample behaviour of the scoring rules, we repeat the simulation benchmark while varying the test set size. As before, performance is assessed using the excess loss relative to the true data-generating process, but now across increasingly smaller test sets. This experiment illustrates how sample size affects both the discriminatory power of the scoring rules and the frequency of empirical properness violations.</p>
+<p>The figures below correspond to Figure 6 (low censoring) and Figure C1 (high censoring) in the manuscript.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot score differences vs. MIAE/MISE for one measure and multiple test set sizes</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Score diffs are (predicted - true)</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>plot_score_diff_by_ntest <span class="ot">=</span> <span class="cf">function</span>(</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  res,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">measure_id =</span> <span class="st">"rcll"</span>,<span class="co"># "rcll", "cindex", "sbs", "isbs"</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="st">"miae"</span>, <span class="co"># "mise" or "miae"</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">task_id_val =</span> <span class="st">"low"</span>, <span class="co"># "low" or "high"</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_test_vals =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">25</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">250</span>, <span class="dv">500</span>), <span class="co"># test sizes to facet</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">drop_learners =</span> <span class="fu">c</span>(<span class="st">"CoxPH"</span>),</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">rcll_truth =</span> <span class="st">"interp"</span>, <span class="co"># "true" or "interp"</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">legend_position =</span> <span class="st">"right"</span> <span class="co"># "right", "left", "top", "bottom", "none"</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>) {</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># subset to the chosen task and test sizes</span></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>  dt <span class="ot">=</span> res[task_id <span class="sc">==</span> task_id_val <span class="sc">&amp;</span> n_test <span class="sc">%in%</span> n_test_vals]</span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove unwanted learners</span></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>  dt <span class="ot">=</span> dt[<span class="sc">!</span>learner_id <span class="sc">%in%</span> drop_learners]</span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Rename learner_ids</span></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>  label_map <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LogNorm_int_shape_x2"</span>   <span class="ot">=</span> <span class="st">"Oracle"</span>,</span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LogLog_int_shape_x2"</span>    <span class="ot">=</span> <span class="st">"LLogis"</span>,</span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Weib_int_shape_x2"</span>      <span class="ot">=</span> <span class="st">"Weibull"</span>,</span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LogNorm_noint_shape_x2"</span> <span class="ot">=</span> <span class="st">"LogNorm_scale"</span>,</span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LogNorm_int_noshape"</span>    <span class="ot">=</span> <span class="st">"LogNorm_int"</span>,</span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LogNorm_noint_noshape"</span>  <span class="ot">=</span> <span class="st">"LogNorm"</span>,</span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CoxPH_int"</span>              <span class="ot">=</span> <span class="st">"Cox_int"</span>,</span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"RSF"</span>                    <span class="ot">=</span> <span class="st">"RSF"</span>,</span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"KM"</span>                     <span class="ot">=</span> <span class="st">"KM"</span></span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>  dt[, learner_id <span class="sc">:</span><span class="er">=</span> <span class="fu">ifelse</span>(</span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a>    learner_id <span class="sc">%in%</span> <span class="fu">names</span>(label_map),</span>
+<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a>    label_map[learner_id],</span>
+<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a>    learner_id</span>
+<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a>  )]</span>
+<span id="cb28-35"><a href="#cb28-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-36"><a href="#cb28-36" aria-hidden="true" tabindex="-1"></a>  <span class="co"># True references</span></span>
+<span id="cb28-37"><a href="#cb28-37" aria-hidden="true" tabindex="-1"></a>  true_dt <span class="ot">=</span> dt[learner_id <span class="sc">==</span> <span class="st">"true"</span>,</span>
+<span id="cb28-38"><a href="#cb28-38" aria-hidden="true" tabindex="-1"></a>    .(rsmp_id,</span>
+<span id="cb28-39"><a href="#cb28-39" aria-hidden="true" tabindex="-1"></a>      n_test,</span>
+<span id="cb28-40"><a href="#cb28-40" aria-hidden="true" tabindex="-1"></a>      <span class="at">rcll_true_full =</span> true_rcll,</span>
+<span id="cb28-41"><a href="#cb28-41" aria-hidden="true" tabindex="-1"></a>      <span class="at">rcll_true_interp =</span> rcll,</span>
+<span id="cb28-42"><a href="#cb28-42" aria-hidden="true" tabindex="-1"></a>      <span class="at">true_cindex =</span> cindex,</span>
+<span id="cb28-43"><a href="#cb28-43" aria-hidden="true" tabindex="-1"></a>      <span class="at">true_sbs =</span> sbs,</span>
+<span id="cb28-44"><a href="#cb28-44" aria-hidden="true" tabindex="-1"></a>      <span class="at">true_isbs =</span> isbs)</span>
+<span id="cb28-45"><a href="#cb28-45" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb28-46"><a href="#cb28-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-47"><a href="#cb28-47" aria-hidden="true" tabindex="-1"></a>  dt <span class="ot">=</span> <span class="fu">merge</span>(dt, true_dt, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"rsmp_id"</span>, <span class="st">"n_test"</span>))</span>
+<span id="cb28-48"><a href="#cb28-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-49"><a href="#cb28-49" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Differences</span></span>
+<span id="cb28-50"><a href="#cb28-50" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (measure_id <span class="sc">==</span> <span class="st">"rcll"</span>) {</span>
+<span id="cb28-51"><a href="#cb28-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (rcll_truth <span class="sc">==</span> <span class="st">"interp"</span>) {</span>
+<span id="cb28-52"><a href="#cb28-52" aria-hidden="true" tabindex="-1"></a>      dt[, diff <span class="sc">:</span><span class="er">=</span> rcll <span class="sc">-</span> rcll_true_interp]</span>
+<span id="cb28-53"><a href="#cb28-53" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb28-54"><a href="#cb28-54" aria-hidden="true" tabindex="-1"></a>      dt[, diff <span class="sc">:</span><span class="er">=</span> rcll <span class="sc">-</span> rcll_true_full]</span>
+<span id="cb28-55"><a href="#cb28-55" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb28-56"><a href="#cb28-56" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (measure_id <span class="sc">==</span> <span class="st">"cindex"</span>) {</span>
+<span id="cb28-57"><a href="#cb28-57" aria-hidden="true" tabindex="-1"></a>    dt[, diff <span class="sc">:</span><span class="er">=</span> true_cindex <span class="sc">-</span> cindex]</span>
+<span id="cb28-58"><a href="#cb28-58" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (measure_id <span class="sc">==</span> <span class="st">"sbs"</span>) {</span>
+<span id="cb28-59"><a href="#cb28-59" aria-hidden="true" tabindex="-1"></a>    dt[, diff <span class="sc">:</span><span class="er">=</span> sbs <span class="sc">-</span> true_sbs]</span>
+<span id="cb28-60"><a href="#cb28-60" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (measure_id <span class="sc">==</span> <span class="st">"isbs"</span>) {</span>
+<span id="cb28-61"><a href="#cb28-61" aria-hidden="true" tabindex="-1"></a>    dt[, diff <span class="sc">:</span><span class="er">=</span> isbs <span class="sc">-</span> true_isbs]</span>
+<span id="cb28-62"><a href="#cb28-62" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb28-63"><a href="#cb28-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-64"><a href="#cb28-64" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove true model</span></span>
+<span id="cb28-65"><a href="#cb28-65" aria-hidden="true" tabindex="-1"></a>  dt <span class="ot">=</span> dt[learner_id <span class="sc">!=</span> <span class="st">"true"</span>]</span>
+<span id="cb28-66"><a href="#cb28-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-67"><a href="#cb28-67" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Ordering</span></span>
+<span id="cb28-68"><a href="#cb28-68" aria-hidden="true" tabindex="-1"></a>  dt[, n_test <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(n_test, <span class="at">levels =</span> <span class="fu">sort</span>(n_test_vals))]</span>
+<span id="cb28-69"><a href="#cb28-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-70"><a href="#cb28-70" aria-hidden="true" tabindex="-1"></a>  learner_order <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb28-71"><a href="#cb28-71" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Oracle"</span>,</span>
+<span id="cb28-72"><a href="#cb28-72" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LLogis"</span>,</span>
+<span id="cb28-73"><a href="#cb28-73" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Weibull"</span>,</span>
+<span id="cb28-74"><a href="#cb28-74" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LogNorm_scale"</span>,</span>
+<span id="cb28-75"><a href="#cb28-75" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LogNorm_int"</span>,</span>
+<span id="cb28-76"><a href="#cb28-76" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LogNorm"</span>,</span>
+<span id="cb28-77"><a href="#cb28-77" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Cox_int"</span>,</span>
+<span id="cb28-78"><a href="#cb28-78" aria-hidden="true" tabindex="-1"></a>    <span class="st">"RSF"</span>,</span>
+<span id="cb28-79"><a href="#cb28-79" aria-hidden="true" tabindex="-1"></a>    <span class="st">"KM"</span></span>
+<span id="cb28-80"><a href="#cb28-80" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb28-81"><a href="#cb28-81" aria-hidden="true" tabindex="-1"></a>  present_learners <span class="ot">=</span> <span class="fu">unique</span>(dt<span class="sc">$</span>learner_id)</span>
+<span id="cb28-82"><a href="#cb28-82" aria-hidden="true" tabindex="-1"></a>  learner_order <span class="ot">=</span> learner_order[learner_order <span class="sc">%in%</span> present_learners]</span>
+<span id="cb28-83"><a href="#cb28-83" aria-hidden="true" tabindex="-1"></a>  dt[, learner_id <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(learner_id, <span class="at">levels =</span> learner_order)]</span>
+<span id="cb28-84"><a href="#cb28-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-85"><a href="#cb28-85" aria-hidden="true" tabindex="-1"></a>  cols <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb28-86"><a href="#cb28-86" aria-hidden="true" tabindex="-1"></a>    <span class="at">Oracle        =</span> <span class="st">"#dfce0cff"</span>,</span>
+<span id="cb28-87"><a href="#cb28-87" aria-hidden="true" tabindex="-1"></a>    <span class="at">LLogis        =</span> <span class="st">"#FFA500"</span>,</span>
+<span id="cb28-88"><a href="#cb28-88" aria-hidden="true" tabindex="-1"></a>    <span class="at">Weibull       =</span> <span class="st">"#756BB1"</span>,</span>
+<span id="cb28-89"><a href="#cb28-89" aria-hidden="true" tabindex="-1"></a>    <span class="at">LogNorm_scale =</span> <span class="st">"#2171B5"</span>,</span>
+<span id="cb28-90"><a href="#cb28-90" aria-hidden="true" tabindex="-1"></a>    <span class="at">LogNorm_int   =</span> <span class="st">"#6BAED6"</span>,</span>
+<span id="cb28-91"><a href="#cb28-91" aria-hidden="true" tabindex="-1"></a>    <span class="at">LogNorm       =</span> <span class="st">"#C6DBEF"</span>,</span>
+<span id="cb28-92"><a href="#cb28-92" aria-hidden="true" tabindex="-1"></a>    <span class="at">Cox_int       =</span> <span class="st">"#238B45"</span>,</span>
+<span id="cb28-93"><a href="#cb28-93" aria-hidden="true" tabindex="-1"></a>    <span class="at">RSF           =</span> <span class="st">"#D62728"</span>,</span>
+<span id="cb28-94"><a href="#cb28-94" aria-hidden="true" tabindex="-1"></a>    <span class="at">KM            =</span> <span class="st">"#7F7F7F"</span></span>
+<span id="cb28-95"><a href="#cb28-95" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb28-96"><a href="#cb28-96" aria-hidden="true" tabindex="-1"></a>  cols <span class="ot">=</span> cols[<span class="fu">names</span>(cols) <span class="sc">%in%</span> present_learners]</span>
+<span id="cb28-97"><a href="#cb28-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-98"><a href="#cb28-98" aria-hidden="true" tabindex="-1"></a>  measure_labels <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb28-99"><a href="#cb28-99" aria-hidden="true" tabindex="-1"></a>    <span class="at">rcll   =</span> <span class="cf">if</span> (rcll_truth <span class="sc">==</span> <span class="st">"interp"</span>) <span class="st">"RCLL"</span> <span class="cf">else</span> <span class="st">"RCLL (difference to true likelihood)"</span>,</span>
+<span id="cb28-100"><a href="#cb28-100" aria-hidden="true" tabindex="-1"></a>    <span class="at">sbs    =</span> <span class="st">"SBS (t = 5)"</span>,</span>
+<span id="cb28-101"><a href="#cb28-101" aria-hidden="true" tabindex="-1"></a>    <span class="at">isbs   =</span> <span class="st">"ISBS (τ* = q90)"</span>,</span>
+<span id="cb28-102"><a href="#cb28-102" aria-hidden="true" tabindex="-1"></a>    <span class="at">cindex =</span> <span class="st">"1 − C‑index (error)"</span></span>
+<span id="cb28-103"><a href="#cb28-103" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb28-104"><a href="#cb28-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-105"><a href="#cb28-105" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(dt, <span class="fu">aes</span>(<span class="at">x =</span> .data[[y]], <span class="at">y =</span> diff, <span class="at">color =</span> learner_id)) <span class="sc">+</span></span>
+<span id="cb28-106"><a href="#cb28-106" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">linewidth =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb28-107"><a href="#cb28-107" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb28-108"><a href="#cb28-108" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_manual</span>(<span class="at">values =</span> cols) <span class="sc">+</span></span>
+<span id="cb28-109"><a href="#cb28-109" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_grid</span>(</span>
+<span id="cb28-110"><a href="#cb28-110" aria-hidden="true" tabindex="-1"></a>      . <span class="sc">~</span> n_test,</span>
+<span id="cb28-111"><a href="#cb28-111" aria-hidden="true" tabindex="-1"></a>      <span class="at">labeller =</span> <span class="fu">labeller</span>(</span>
+<span id="cb28-112"><a href="#cb28-112" aria-hidden="true" tabindex="-1"></a>        <span class="at">n_test =</span> <span class="cf">function</span>(x) <span class="fu">paste0</span>(<span class="st">"n['test']=="</span>, x),</span>
+<span id="cb28-113"><a href="#cb28-113" aria-hidden="true" tabindex="-1"></a>        <span class="at">.default =</span> label_parsed</span>
+<span id="cb28-114"><a href="#cb28-114" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb28-115"><a href="#cb28-115" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb28-116"><a href="#cb28-116" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb28-117"><a href="#cb28-117" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="fu">sprintf</span>(</span>
+<span id="cb28-118"><a href="#cb28-118" aria-hidden="true" tabindex="-1"></a>        <span class="st">"%s censoring task — %s"</span>,</span>
+<span id="cb28-119"><a href="#cb28-119" aria-hidden="true" tabindex="-1"></a>        <span class="fu">paste0</span>(<span class="fu">toupper</span>(<span class="fu">substring</span>(task_id_val, <span class="dv">1</span>, <span class="dv">1</span>)), <span class="fu">substring</span>(task_id_val, <span class="dv">2</span>)),</span>
+<span id="cb28-120"><a href="#cb28-120" aria-hidden="true" tabindex="-1"></a>        measure_labels[[measure_id]]</span>
+<span id="cb28-121"><a href="#cb28-121" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb28-122"><a href="#cb28-122" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="fu">ifelse</span>(y <span class="sc">==</span> <span class="st">"mise"</span>, <span class="st">"MISE (distance to true S)"</span>, <span class="st">"MIAE (distance to true S)"</span>),</span>
+<span id="cb28-123"><a href="#cb28-123" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="fu">expression</span>(L[pred] <span class="sc">-</span> <span class="er">~</span>L[true]),</span>
+<span id="cb28-124"><a href="#cb28-124" aria-hidden="true" tabindex="-1"></a>      <span class="at">color =</span> <span class="st">"Model"</span></span>
+<span id="cb28-125"><a href="#cb28-125" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb28-126"><a href="#cb28-126" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">14</span>, <span class="at">base_family =</span> <span class="st">"Arial"</span>) <span class="sc">+</span></span>
+<span id="cb28-127"><a href="#cb28-127" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb28-128"><a href="#cb28-128" aria-hidden="true" tabindex="-1"></a>      <span class="at">strip.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"grey95"</span>),</span>
+<span id="cb28-129"><a href="#cb28-129" aria-hidden="true" tabindex="-1"></a>      <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb28-130"><a href="#cb28-130" aria-hidden="true" tabindex="-1"></a>      <span class="at">legend.position =</span> <span class="cf">if</span> (legend_position <span class="sc">==</span> <span class="st">"none"</span>) <span class="st">"none"</span> <span class="cf">else</span> legend_position,</span>
+<span id="cb28-131"><a href="#cb28-131" aria-hidden="true" tabindex="-1"></a>      <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb28-132"><a href="#cb28-132" aria-hidden="true" tabindex="-1"></a>      <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>)</span>
+<span id="cb28-133"><a href="#cb28-133" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb28-134"><a href="#cb28-134" aria-hidden="true" tabindex="-1"></a>    <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">override.aes =</span> <span class="fu">list</span>(<span class="at">size =</span> <span class="dv">5</span>)))</span>
+<span id="cb28-135"><a href="#cb28-135" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">Low censoring DGP</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">High censoring DGP</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_score_diff_by_ntest</span>(res, <span class="at">measure_id =</span> <span class="st">"rcll"</span>, <span class="at">task_id_val =</span> <span class="st">"low"</span>, <span class="at">legend_position =</span> <span class="st">"bottom"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_score_diff_by_ntest</span>(res, <span class="at">measure_id =</span> <span class="st">"isbs"</span>, <span class="at">task_id_val =</span> <span class="st">"low"</span>, <span class="at">legend_position =</span> <span class="st">"bottom"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_score_diff_by_ntest</span>(res, <span class="at">measure_id =</span> <span class="st">"rcll"</span>, <span class="at">task_id_val =</span> <span class="st">"high"</span>, <span class="at">legend_position =</span> <span class="st">"bottom"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_score_diff_by_ntest</span>(res, <span class="at">measure_id =</span> <span class="st">"isbs"</span>, <span class="at">task_id_val =</span> <span class="st">"high"</span>, <span class="at">legend_position =</span> <span class="st">"bottom"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Summary
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p><strong>Discriminatory power decreases as the test set becomes smaller.</strong> For both RCLL and ISBS, excess loss becomes increasingly variable, leading to greater overlap between models and weaker correspondence with model misspecification.</p></li>
+<li><p><strong>RCLL generally retains better discrimination at small sample sizes.</strong> Although model separation deteriorates as <span class="math inline">n_{\mathrm{test}}</span> decreases, RCLL can still distinguish strongly misspecified models more effectively than ISBS.</p></li>
+<li><p><strong>Empirical properness is increasingly affected by finite-sample variability.</strong> Negative excess losses become more frequent as the test set size decreases, particularly for ISBS. For test sets of at least 100 observations, such violations are uncommon for both scoring rules.</p></li>
+<li><p><strong>Heavy censoring further amplifies finite-sample effects.</strong> Under high censoring, variability increases and model discrimination deteriorates more rapidly, especially when evaluating with the ISBS.</p></li>
+</ul>
+</div>
+</div>
 </section>
 <section id="impact-of-prediction-grid-resolution-on-rcll" class="level3">
 <h3 class="anchored" data-anchor-id="impact-of-prediction-grid-resolution-on-rcll">Impact of Prediction Grid Resolution on RCLL</h3>
@@ -1543,65 +1768,68 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3proba)</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3misc)</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co"># silence mlr3 logging messages</span></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>lgr<span class="sc">::</span><span class="fu">get_logger</span>(<span class="st">"mlr3"</span>)<span class="sc">$</span><span class="fu">set_threshold</span>(<span class="dv">0</span>)</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">"results/real_data_bm.rds"</span>)</span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>task_ids <span class="ot">=</span> <span class="fu">unique</span>(res<span class="sc">$</span>task_id)</span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>tasks <span class="ot">=</span> mlr3<span class="sc">::</span><span class="fu">tsks</span>(task_ids)</span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>metrics <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"C-index"</span>, <span class="st">"D-calib"</span>, <span class="st">"RCLL*"</span>, <span class="st">"RCLL"</span>, <span class="st">"ISBS"</span>)</span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>res_long <span class="ot">=</span> <span class="fu">melt</span>(</span>
-<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>  res,</span>
-<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"task_id"</span>, <span class="st">"learner_id"</span>, <span class="st">"iteration"</span>),</span>
-<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">measure.vars =</span> metrics,</span>
-<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">variable.name =</span> <span class="st">"metric"</span>,</span>
-<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">value.name =</span> <span class="st">"value"</span></span>
-<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a><span class="co"># remove RCLL* from the boxplots</span></span>
-<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>res_long <span class="ot">=</span> res_long[metric <span class="sc">!=</span> <span class="st">"RCLL*"</span>]</span>
-<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a><span class="co"># truncate D-calibration to 50 to avoid extreme outliers in the boxplots</span></span>
-<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>res_long[</span>
-<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>  metric <span class="sc">==</span> <span class="st">"D-calib"</span>,</span>
-<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>  value <span class="sc">:</span><span class="er">=</span> <span class="fu">pmin</span>(value, <span class="dv">50</span>)</span>
-<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Reorder metric factor to the desired sequence</span></span>
-<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>res_long[, metric <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(metric, <span class="at">levels =</span> metrics)]</span>
-<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a>task_info <span class="ot">=</span> <span class="fu">lapply</span>(tasks, <span class="cf">function</span>(task) {</span>
-<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a>  id <span class="ot">=</span> task<span class="sc">$</span>id</span>
-<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">=</span> task<span class="sc">$</span>nrow</span>
-<span id="cb28-35"><a href="#cb28-35" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">=</span> task<span class="sc">$</span>n_features</span>
-<span id="cb28-36"><a href="#cb28-36" aria-hidden="true" tabindex="-1"></a>  feature_dt <span class="ot">=</span> task<span class="sc">$</span>col_info[id <span class="sc">%nin%</span> <span class="fu">c</span>(<span class="st">"..row_id"</span>, task<span class="sc">$</span>target_names)]</span>
-<span id="cb28-37"><a href="#cb28-37" aria-hidden="true" tabindex="-1"></a>  n_factor <span class="ot">=</span> <span class="fu">sum</span>(feature_dt<span class="sc">$</span>type <span class="sc">==</span> <span class="st">"factor"</span>)</span>
-<span id="cb28-38"><a href="#cb28-38" aria-hidden="true" tabindex="-1"></a>  n_numeric <span class="ot">=</span> <span class="fu">sum</span>(feature_dt<span class="sc">$</span>type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"numeric"</span>, <span class="st">"integer"</span>))</span>
-<span id="cb28-39"><a href="#cb28-39" aria-hidden="true" tabindex="-1"></a>  cens_rate <span class="ot">=</span> task<span class="sc">$</span><span class="fu">cens_prop</span>()</span>
-<span id="cb28-40"><a href="#cb28-40" aria-hidden="true" tabindex="-1"></a>  admin_cens_rate <span class="ot">=</span> task<span class="sc">$</span><span class="fu">admin_cens_prop</span>()</span>
-<span id="cb28-41"><a href="#cb28-41" aria-hidden="true" tabindex="-1"></a>  prop_haz <span class="ot">=</span> <span class="fu">ifelse</span>(task<span class="sc">$</span><span class="fu">prop_haz</span>() <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>)</span>
-<span id="cb28-42"><a href="#cb28-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-43"><a href="#cb28-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb28-44"><a href="#cb28-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> id,</span>
-<span id="cb28-45"><a href="#cb28-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> n,</span>
-<span id="cb28-46"><a href="#cb28-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> p,</span>
-<span id="cb28-47"><a href="#cb28-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_factor =</span> n_factor,</span>
-<span id="cb28-48"><a href="#cb28-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_numeric =</span> n_numeric,</span>
-<span id="cb28-49"><a href="#cb28-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">censoring_rate =</span> cens_rate,</span>
-<span id="cb28-50"><a href="#cb28-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">admin_censoring_rate =</span> admin_cens_rate,</span>
-<span id="cb28-51"><a href="#cb28-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">prop_haz =</span> prop_haz</span>
-<span id="cb28-52"><a href="#cb28-52" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb28-53"><a href="#cb28-53" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">|&gt;</span> <span class="fu">rbindlist</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3proba)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3misc)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co"># silence mlr3 logging messages</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>lgr<span class="sc">::</span><span class="fu">get_logger</span>(<span class="st">"mlr3"</span>)<span class="sc">$</span><span class="fu">set_threshold</span>(<span class="dv">0</span>)</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">"results/real_data_bm.rds"</span>)</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>task_ids <span class="ot">=</span> <span class="fu">unique</span>(res<span class="sc">$</span>task_id)</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>tasks <span class="ot">=</span> mlr3<span class="sc">::</span><span class="fu">tsks</span>(task_ids)</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>metrics <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"C-index"</span>, <span class="st">"D-calib"</span>, <span class="st">"RCLL*"</span>, <span class="st">"RCLL"</span>, <span class="st">"ISBS"</span>)</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>res_long <span class="ot">=</span> <span class="fu">melt</span>(</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>  res,</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"task_id"</span>, <span class="st">"learner_id"</span>, <span class="st">"iteration"</span>),</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">measure.vars =</span> metrics,</span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">variable.name =</span> <span class="st">"metric"</span>,</span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">value.name =</span> <span class="st">"value"</span></span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a><span class="co"># remove RCLL* from the boxplots</span></span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a>res_long <span class="ot">=</span> res_long[metric <span class="sc">!=</span> <span class="st">"RCLL*"</span>]</span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a><span class="co"># truncate D-calibration to 50 to avoid extreme outliers in the boxplots</span></span>
+<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a>res_long[</span>
+<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a>  metric <span class="sc">==</span> <span class="st">"D-calib"</span>,</span>
+<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a>  value <span class="sc">:</span><span class="er">=</span> <span class="fu">pmin</span>(value, <span class="dv">50</span>)</span>
+<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb33-28"><a href="#cb33-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-29"><a href="#cb33-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Reorder metric factor to the desired sequence</span></span>
+<span id="cb33-30"><a href="#cb33-30" aria-hidden="true" tabindex="-1"></a>res_long[, metric <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(metric, <span class="at">levels =</span> metrics)]</span>
+<span id="cb33-31"><a href="#cb33-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-32"><a href="#cb33-32" aria-hidden="true" tabindex="-1"></a>task_info <span class="ot">=</span> <span class="fu">lapply</span>(tasks, <span class="cf">function</span>(task) {</span>
+<span id="cb33-33"><a href="#cb33-33" aria-hidden="true" tabindex="-1"></a>  id <span class="ot">=</span> task<span class="sc">$</span>id</span>
+<span id="cb33-34"><a href="#cb33-34" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">=</span> task<span class="sc">$</span>nrow</span>
+<span id="cb33-35"><a href="#cb33-35" aria-hidden="true" tabindex="-1"></a>  n_events <span class="ot">=</span> <span class="fu">length</span>(task<span class="sc">$</span><span class="fu">unique_event_times</span>())</span>
+<span id="cb33-36"><a href="#cb33-36" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">=</span> task<span class="sc">$</span>n_features</span>
+<span id="cb33-37"><a href="#cb33-37" aria-hidden="true" tabindex="-1"></a>  feature_dt <span class="ot">=</span> task<span class="sc">$</span>col_info[id <span class="sc">%nin%</span> <span class="fu">c</span>(<span class="st">"..row_id"</span>, task<span class="sc">$</span>target_names)]</span>
+<span id="cb33-38"><a href="#cb33-38" aria-hidden="true" tabindex="-1"></a>  n_factor <span class="ot">=</span> <span class="fu">sum</span>(feature_dt<span class="sc">$</span>type <span class="sc">==</span> <span class="st">"factor"</span>)</span>
+<span id="cb33-39"><a href="#cb33-39" aria-hidden="true" tabindex="-1"></a>  n_numeric <span class="ot">=</span> <span class="fu">sum</span>(feature_dt<span class="sc">$</span>type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"numeric"</span>, <span class="st">"integer"</span>))</span>
+<span id="cb33-40"><a href="#cb33-40" aria-hidden="true" tabindex="-1"></a>  cens_rate <span class="ot">=</span> task<span class="sc">$</span><span class="fu">cens_prop</span>()</span>
+<span id="cb33-41"><a href="#cb33-41" aria-hidden="true" tabindex="-1"></a>  admin_cens_rate <span class="ot">=</span> task<span class="sc">$</span><span class="fu">admin_cens_prop</span>()</span>
+<span id="cb33-42"><a href="#cb33-42" aria-hidden="true" tabindex="-1"></a>  prop_haz <span class="ot">=</span> <span class="fu">ifelse</span>(task<span class="sc">$</span><span class="fu">prop_haz</span>() <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>)</span>
+<span id="cb33-43"><a href="#cb33-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-44"><a href="#cb33-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb33-45"><a href="#cb33-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> id,</span>
+<span id="cb33-46"><a href="#cb33-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> n,</span>
+<span id="cb33-47"><a href="#cb33-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_events =</span> n_events,</span>
+<span id="cb33-48"><a href="#cb33-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> p,</span>
+<span id="cb33-49"><a href="#cb33-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_factor =</span> n_factor,</span>
+<span id="cb33-50"><a href="#cb33-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_numeric =</span> n_numeric,</span>
+<span id="cb33-51"><a href="#cb33-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">censoring_rate =</span> cens_rate,</span>
+<span id="cb33-52"><a href="#cb33-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">admin_censoring_rate =</span> admin_cens_rate,</span>
+<span id="cb33-53"><a href="#cb33-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">prop_haz =</span> prop_haz</span>
+<span id="cb33-54"><a href="#cb33-54" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb33-55"><a href="#cb33-55" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">|&gt;</span> <span class="fu">rbindlist</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>In the following table:</p>
 <ul>
 <li><strong>id</strong> is the dataset identifier</li>
 <li><strong>n</strong> is the number of observations</li>
+<li><strong>n_events</strong> is the number of unique event times</li>
 <li><strong>p</strong> is the number of features</li>
 <li><strong>n_factor</strong> is the number of factor features</li>
 <li><strong>n_numeric</strong> is the number of numeric features</li>
@@ -1612,25 +1840,25 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>task_info <span class="sc">|&gt;</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(censoring_rate) <span class="sc">|&gt;</span></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">rownames =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter =</span> <span class="st">"top"</span>,</span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">options =</span> <span class="fu">list</span>(<span class="at">dom =</span> <span class="st">"t"</span>, <span class="at">searching =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="dv">6</span>, <span class="dv">7</span>), <span class="at">digits =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span></span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">formatStyle</span>(</span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="st">"censoring_rate"</span>,</span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">backgroundColor =</span> DT<span class="sc">::</span><span class="fu">styleInterval</span>(</span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>),</span>
-<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">"#e5f5e0"</span>, <span class="st">"#a1d99b"</span>, <span class="st">"#e7785f"</span>, <span class="st">"#f8555b"</span>)</span>
-<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>task_info <span class="sc">|&gt;</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(censoring_rate) <span class="sc">|&gt;</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">rownames =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter =</span> <span class="st">"top"</span>,</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">options =</span> <span class="fu">list</span>(<span class="at">dom =</span> <span class="st">"t"</span>, <span class="at">searching =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">8</span>), <span class="at">digits =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">formatStyle</span>(</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="st">"censoring_rate"</span>,</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">backgroundColor =</span> DT<span class="sc">::</span><span class="fu">styleInterval</span>(</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>),</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">"#e5f5e0"</span>, <span class="st">"#a1d99b"</span>, <span class="st">"#e7785f"</span>, <span class="st">"#f8555b"</span>)</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div class="datatables html-widget html-fill-item" id="htmlwidget-dc9b6b2f202c941e6590" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-dc9b6b2f202c941e6590">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"137\" data-max=\"1000\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"3\" data-max=\"9\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"3\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"2\" data-max=\"8\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.0625\" data-max=\"0.86\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"0.724852071005918\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["mgus","veteran","lung","whas","gbsg","grace","gbcs","rats"],[176,137,168,481,686,1000,686,300],[7,6,7,9,8,6,8,3],[1,3,1,2,3,0,0,1],[6,3,6,7,5,6,8,2],[0.0625,0.06569343065693431,0.2797619047619048,0.4823284823284824,0.5641399416909622,0.676,0.750728862973761,0.86],[0.09090909090909091,0,0.0425531914893617,0.02155172413793104,0.01808785529715762,0.7248520710059172,0.01553398058252427,0.4147286821705427],[true,false,true,false,false,false,false,true]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>id<\/th>\n      <th>n<\/th>\n      <th>p<\/th>\n      <th>n_factor<\/th>\n      <th>n_numeric<\/th>\n      <th>censoring_rate<\/th>\n      <th>admin_censoring_rate<\/th>\n      <th>prop_haz<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","searching":true,"columnDefs":[{"targets":5,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[1,2,3,4,5,6]},{"name":"id","targets":0},{"name":"n","targets":1},{"name":"p","targets":2},{"name":"n_factor","targets":3},{"name":"n_numeric","targets":4},{"name":"censoring_rate","targets":5},{"name":"admin_censoring_rate","targets":6},{"name":"prop_haz","targets":7}],"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[5]; $(this.api().cell(row, 5).node()).css({'background-color':isNaN(parseFloat(value)) ? '' : value <= 0.25 ? \"#e5f5e0\" : value <= 0.5 ? \"#a1d99b\" : value <= 0.75 ? \"#e7785f\" : \"#f8555b\"});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.rowCallback"],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-dc9b6b2f202c941e6590">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"137\" data-max=\"1000\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"33\" data-max=\"270\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"3\" data-max=\"9\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"3\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"2\" data-max=\"8\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.0625\" data-max=\"0.86\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"0.724852071005918\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["mgus","veteran","lung","whas","gbsg","grace","gbcs","rats"],[176,137,168,481,686,1000,686,300],[163,97,111,180,270,110,164,33],[7,6,7,9,8,6,8,3],[1,3,1,2,3,0,0,1],[6,3,6,7,5,6,8,2],[0.0625,0.06569343065693431,0.2797619047619048,0.4823284823284824,0.5641399416909622,0.676,0.750728862973761,0.86],[0.09090909090909091,0,0.0425531914893617,0.02155172413793104,0.01808785529715762,0.7248520710059172,0.01553398058252427,0.4147286821705427],[true,false,true,false,false,false,false,true]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>id<\/th>\n      <th>n<\/th>\n      <th>n_events<\/th>\n      <th>p<\/th>\n      <th>n_factor<\/th>\n      <th>n_numeric<\/th>\n      <th>censoring_rate<\/th>\n      <th>admin_censoring_rate<\/th>\n      <th>prop_haz<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","searching":true,"columnDefs":[{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":7,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[1,2,3,4,5,6,7]},{"name":"id","targets":0},{"name":"n","targets":1},{"name":"n_events","targets":2},{"name":"p","targets":3},{"name":"n_factor","targets":4},{"name":"n_numeric","targets":5},{"name":"censoring_rate","targets":6},{"name":"admin_censoring_rate","targets":7},{"name":"prop_haz","targets":8}],"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[6]; $(this.api().cell(row, 6).node()).css({'background-color':isNaN(parseFloat(value)) ? '' : value <= 0.25 ? \"#e5f5e0\" : value <= 0.5 ? \"#a1d99b\" : value <= 0.75 ? \"#e7785f\" : \"#f8555b\"});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.rowCallback"],"jsHooks":[]}</script>
 </div>
 </div>
 </section>
@@ -1652,86 +1880,86 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>learner_ids <span class="ot">=</span> <span class="fu">sort</span>(<span class="fu">unique</span>(res_long<span class="sc">$</span>learner_id))</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">=</span> scales<span class="sc">::</span><span class="fu">hue_pal</span>()(<span class="fu">length</span>(learner_ids))</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cols) <span class="ot">=</span> learner_ids</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>learner_ids <span class="ot">=</span> <span class="fu">sort</span>(<span class="fu">unique</span>(res_long<span class="sc">$</span>learner_id))</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">=</span> scales<span class="sc">::</span><span class="fu">hue_pal</span>()(<span class="fu">length</span>(learner_ids))</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cols) <span class="ot">=</span> learner_ids</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>plot_task <span class="ot">=</span> <span class="cf">function</span>(task) {</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">=</span> res_long[task_id <span class="sc">==</span> task]</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Order learners by median RCLL</span></span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  rcll_medians <span class="ot">=</span> dat[metric <span class="sc">==</span> <span class="st">"RCLL"</span>, .(<span class="at">med =</span> <span class="fu">median</span>(value)), by <span class="ot">=</span> learner_id]</span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  learner_order <span class="ot">=</span> rcll_medians[<span class="fu">order</span>(med), learner_id]</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  dat[, learner_id <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(learner_id, <span class="at">levels =</span> learner_order)]</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">=</span> dat <span class="sc">|&gt;</span></span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> value,</span>
-<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> learner_id,</span>
-<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">colour =</span> learner_id,</span>
-<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">fill =</span> learner_id</span>
-<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>    )) <span class="sc">+</span></span>
-<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_boxplot</span>(<span class="at">alpha =</span> <span class="fl">0.25</span>, <span class="at">outlier.shape =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
-<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="dv">0</span>, <span class="at">height =</span> <span class="fl">0.15</span>, <span class="at">alpha =</span> <span class="fl">0.25</span>, <span class="at">size =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>metric, <span class="at">scales =</span> <span class="st">"free_x"</span>, <span class="at">ncol =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ---- Add the manual scales ----</span></span>
-<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> cols) <span class="sc">+</span></span>
-<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> cols) <span class="sc">+</span></span>
-<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="cn">NULL</span>,</span>
-<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="cn">NULL</span>,</span>
-<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> task</span>
-<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">14</span>, <span class="at">base_family =</span> <span class="st">"Arial"</span>) <span class="sc">+</span></span>
-<span id="cb31-28"><a href="#cb31-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
-<span id="cb31-29"><a href="#cb31-29" aria-hidden="true" tabindex="-1"></a>      <span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
-<span id="cb31-30"><a href="#cb31-30" aria-hidden="true" tabindex="-1"></a>      <span class="co"># strip.background = element_blank(),</span></span>
-<span id="cb31-31"><a href="#cb31-31" aria-hidden="true" tabindex="-1"></a>      <span class="at">strip.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"grey95"</span>),</span>
-<span id="cb31-32"><a href="#cb31-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
-<span id="cb31-33"><a href="#cb31-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.grid.major.y =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb31-34"><a href="#cb31-34" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>)</span>
-<span id="cb31-35"><a href="#cb31-35" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb31-36"><a href="#cb31-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-37"><a href="#cb31-37" aria-hidden="true" tabindex="-1"></a>  p</span>
-<span id="cb31-38"><a href="#cb31-38" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb31-39"><a href="#cb31-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-40"><a href="#cb31-40" aria-hidden="true" tabindex="-1"></a><span class="co"># order datasets by censoring rate</span></span>
-<span id="cb31-41"><a href="#cb31-41" aria-hidden="true" tabindex="-1"></a>task_ids <span class="ot">=</span> task_info[<span class="fu">order</span>(censoring_rate)]<span class="sc">$</span>id</span>
-<span id="cb31-42"><a href="#cb31-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-43"><a href="#cb31-43" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"::: {.panel-tabset}</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>plot_task <span class="ot">=</span> <span class="cf">function</span>(task) {</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">=</span> res_long[task_id <span class="sc">==</span> task]</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Order learners by median RCLL</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  rcll_medians <span class="ot">=</span> dat[metric <span class="sc">==</span> <span class="st">"RCLL"</span>, .(<span class="at">med =</span> <span class="fu">median</span>(value)), by <span class="ot">=</span> learner_id]</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  learner_order <span class="ot">=</span> rcll_medians[<span class="fu">order</span>(med), learner_id]</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>  dat[, learner_id <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(learner_id, <span class="at">levels =</span> learner_order)]</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">=</span> dat <span class="sc">|&gt;</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> value,</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> learner_id,</span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">colour =</span> learner_id,</span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">fill =</span> learner_id</span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>    )) <span class="sc">+</span></span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_boxplot</span>(<span class="at">alpha =</span> <span class="fl">0.25</span>, <span class="at">outlier.shape =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="dv">0</span>, <span class="at">height =</span> <span class="fl">0.15</span>, <span class="at">alpha =</span> <span class="fl">0.25</span>, <span class="at">size =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>metric, <span class="at">scales =</span> <span class="st">"free_x"</span>, <span class="at">ncol =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ---- Add the manual scales ----</span></span>
+<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> cols) <span class="sc">+</span></span>
+<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> cols) <span class="sc">+</span></span>
+<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb36-23"><a href="#cb36-23" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="cn">NULL</span>,</span>
+<span id="cb36-24"><a href="#cb36-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="cn">NULL</span>,</span>
+<span id="cb36-25"><a href="#cb36-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> task</span>
+<span id="cb36-26"><a href="#cb36-26" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb36-27"><a href="#cb36-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">14</span>, <span class="at">base_family =</span> <span class="st">"Arial"</span>) <span class="sc">+</span></span>
+<span id="cb36-28"><a href="#cb36-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb36-29"><a href="#cb36-29" aria-hidden="true" tabindex="-1"></a>      <span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
+<span id="cb36-30"><a href="#cb36-30" aria-hidden="true" tabindex="-1"></a>      <span class="co"># strip.background = element_blank(),</span></span>
+<span id="cb36-31"><a href="#cb36-31" aria-hidden="true" tabindex="-1"></a>      <span class="at">strip.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"grey95"</span>),</span>
+<span id="cb36-32"><a href="#cb36-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb36-33"><a href="#cb36-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.grid.major.y =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb36-34"><a href="#cb36-34" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>)</span>
+<span id="cb36-35"><a href="#cb36-35" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb36-36"><a href="#cb36-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-37"><a href="#cb36-37" aria-hidden="true" tabindex="-1"></a>  p</span>
+<span id="cb36-38"><a href="#cb36-38" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb36-39"><a href="#cb36-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-40"><a href="#cb36-40" aria-hidden="true" tabindex="-1"></a><span class="co"># order datasets by censoring rate</span></span>
+<span id="cb36-41"><a href="#cb36-41" aria-hidden="true" tabindex="-1"></a>task_ids <span class="ot">=</span> task_info[<span class="fu">order</span>(censoring_rate)]<span class="sc">$</span>id</span>
+<span id="cb36-42"><a href="#cb36-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-43"><a href="#cb36-43" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"::: {.panel-tabset}</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">mgus (n=176, p=7, PH)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">veteran (n=137, p=6, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-3" role="tab" aria-controls="tabset-4-3" aria-selected="false" href="">lung (n=168, p=7, PH)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-4" role="tab" aria-controls="tabset-4-4" aria-selected="false" href="">whas (n=481, p=9, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-5" role="tab" aria-controls="tabset-4-5" aria-selected="false" href="">gbsg (n=686, p=8, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-6-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-6" role="tab" aria-controls="tabset-4-6" aria-selected="false" href="">grace (n=1000, p=6, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-7-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-7" role="tab" aria-controls="tabset-4-7" aria-selected="false" href="">gbcs (n=686, p=8, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-8-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-8" role="tab" aria-controls="tabset-4-8" aria-selected="false" href="">rats (n=300, p=3, PH)</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href="">mgus (n=176, p=7, PH)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false" href="">veteran (n=137, p=6, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-3" role="tab" aria-controls="tabset-5-3" aria-selected="false" href="">lung (n=168, p=7, PH)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-4" role="tab" aria-controls="tabset-5-4" aria-selected="false" href="">whas (n=481, p=9, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-5" role="tab" aria-controls="tabset-5-5" aria-selected="false" href="">gbsg (n=686, p=8, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-6-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-6" role="tab" aria-controls="tabset-5-6" aria-selected="false" href="">grace (n=1000, p=6, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-7-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-7" role="tab" aria-controls="tabset-5-7" aria-selected="false" href="">gbcs (n=686, p=8, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-8-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-8" role="tab" aria-controls="tabset-5-8" aria-selected="false" href="">rats (n=300, p=3, PH)</a></li></ul>
 <div class="tab-content">
-<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
-<p><img src="index_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid" width="960"></p>
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<p><img src="index_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid" width="960"></p>
 </div>
-<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
-<p><img src="index_files/figure-html/unnamed-chunk-31-2.png" class="img-fluid" width="960"></p>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<p><img src="index_files/figure-html/unnamed-chunk-37-2.png" class="img-fluid" width="960"></p>
 </div>
-<div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
-<p><img src="index_files/figure-html/unnamed-chunk-31-3.png" class="img-fluid" width="960"></p>
+<div id="tabset-5-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-3-tab">
+<p><img src="index_files/figure-html/unnamed-chunk-37-3.png" class="img-fluid" width="960"></p>
 </div>
-<div id="tabset-4-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-4-tab">
-<p><img src="index_files/figure-html/unnamed-chunk-31-4.png" class="img-fluid" width="960"></p>
+<div id="tabset-5-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-4-tab">
+<p><img src="index_files/figure-html/unnamed-chunk-37-4.png" class="img-fluid" width="960"></p>
 </div>
-<div id="tabset-4-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-5-tab">
-<p><img src="index_files/figure-html/unnamed-chunk-31-5.png" class="img-fluid" width="960"></p>
+<div id="tabset-5-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-5-tab">
+<p><img src="index_files/figure-html/unnamed-chunk-37-5.png" class="img-fluid" width="960"></p>
 </div>
-<div id="tabset-4-6" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-6-tab">
-<p><img src="index_files/figure-html/unnamed-chunk-31-6.png" class="img-fluid" width="960"></p>
+<div id="tabset-5-6" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-6-tab">
+<p><img src="index_files/figure-html/unnamed-chunk-37-6.png" class="img-fluid" width="960"></p>
 </div>
-<div id="tabset-4-7" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-7-tab">
-<p><img src="index_files/figure-html/unnamed-chunk-31-7.png" class="img-fluid" width="960"></p>
+<div id="tabset-5-7" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-7-tab">
+<p><img src="index_files/figure-html/unnamed-chunk-37-7.png" class="img-fluid" width="960"></p>
 </div>
-<div id="tabset-4-8" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-8-tab">
-<p><img src="index_files/figure-html/unnamed-chunk-31-8.png" class="img-fluid" width="960"></p>
+<div id="tabset-5-8" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-8-tab">
+<p><img src="index_files/figure-html/unnamed-chunk-37-8.png" class="img-fluid" width="960"></p>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">":::</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">":::</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
@@ -1740,18 +1968,18 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>res_mean <span class="ot">=</span> res[,</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(.SD, mean, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), by <span class="ot">=</span> .(task_id, learner_id), .SDcols <span class="ot">=</span> metrics</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>res_mean <span class="sc">|&gt;</span></span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">rownames =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter =</span> <span class="st">"top"</span>,</span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">options =</span> <span class="fu">list</span>(<span class="at">searching =</span> <span class="cn">TRUE</span>, <span class="at">pageLength =</span> <span class="dv">10</span>)</span>
-<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">"RCLL"</span>, <span class="st">"RCLL*"</span>, <span class="st">"C-index"</span>, <span class="st">"ISBS"</span>), <span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
-<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="st">"D-calib"</span>, <span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>res_mean <span class="ot">=</span> res[,</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(.SD, mean, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), by <span class="ot">=</span> .(task_id, learner_id), .SDcols <span class="ot">=</span> metrics</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>res_mean <span class="sc">|&gt;</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">rownames =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter =</span> <span class="st">"top"</span>,</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">options =</span> <span class="fu">list</span>(<span class="at">searching =</span> <span class="cn">TRUE</span>, <span class="at">pageLength =</span> <span class="dv">10</span>)</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">"RCLL"</span>, <span class="st">"RCLL*"</span>, <span class="st">"C-index"</span>, <span class="st">"ISBS"</span>), <span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="st">"D-calib"</span>, <span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div class="datatables html-widget html-fill-item" id="htmlwidget-48e6565275f1592f6a3f" style="width:100%;height:auto;"></div>
@@ -1766,42 +1994,42 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggcorrplot)</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co"># convert C-index to 1 - C</span></span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> res[, <span class="st">`</span><span class="at">C-index-error</span><span class="st">`</span> <span class="sc">:</span><span class="er">=</span> <span class="dv">1</span> <span class="sc">-</span> <span class="st">`</span><span class="at">C-index</span><span class="st">`</span>]</span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>metrics <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"C-index-error"</span>, <span class="st">"D-calib"</span>, <span class="st">"RCLL*"</span>, <span class="st">"RCLL"</span>, <span class="st">"ISBS"</span>)</span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute ranks per task for each metric</span></span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>rank_cols <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"rank_"</span>, metrics)</span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>res_ranks <span class="ot">=</span> <span class="fu">copy</span>(res)</span>
-<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate ranks for each metric, grouped by task_id and iteration</span></span>
-<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(metrics)) {</span>
-<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">=</span> metrics[i]</span>
-<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>  res_ranks[,</span>
-<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(<span class="st">"rank_"</span>, m) <span class="sc">:</span><span class="er">=</span> <span class="fu">frank</span>(<span class="fu">get</span>(m), <span class="at">ties.method =</span> <span class="st">"min"</span>),</span>
-<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>    by <span class="ot">=</span> .(task_id, iteration)</span>
-<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>  ]</span>
-<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>cor_all <span class="ot">=</span> <span class="fu">cor</span>(res_ranks[, ..rank_cols], <span class="at">method =</span> <span class="st">"pearson"</span>)</span>
-<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcorrplot</span>(</span>
-<span id="cb34-24"><a href="#cb34-24" aria-hidden="true" tabindex="-1"></a>  cor_all,</span>
-<span id="cb34-25"><a href="#cb34-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"square"</span>,</span>
-<span id="cb34-26"><a href="#cb34-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"lower"</span>,</span>
-<span id="cb34-27"><a href="#cb34-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">hc.order =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb34-28"><a href="#cb34-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">lab =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb34-29"><a href="#cb34-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">lab_size =</span> <span class="dv">4</span>,</span>
-<span id="cb34-30"><a href="#cb34-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">outline.color =</span> <span class="st">"white"</span></span>
-<span id="cb34-31"><a href="#cb34-31" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggcorrplot)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="co"># convert C-index to 1 - C</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> res[, <span class="st">`</span><span class="at">C-index-error</span><span class="st">`</span> <span class="sc">:</span><span class="er">=</span> <span class="dv">1</span> <span class="sc">-</span> <span class="st">`</span><span class="at">C-index</span><span class="st">`</span>]</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>metrics <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"C-index-error"</span>, <span class="st">"D-calib"</span>, <span class="st">"RCLL*"</span>, <span class="st">"RCLL"</span>, <span class="st">"ISBS"</span>)</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute ranks per task for each metric</span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>rank_cols <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"rank_"</span>, metrics)</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>res_ranks <span class="ot">=</span> <span class="fu">copy</span>(res)</span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate ranks for each metric, grouped by task_id and iteration</span></span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(metrics)) {</span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">=</span> metrics[i]</span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>  res_ranks[,</span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(<span class="st">"rank_"</span>, m) <span class="sc">:</span><span class="er">=</span> <span class="fu">frank</span>(<span class="fu">get</span>(m), <span class="at">ties.method =</span> <span class="st">"min"</span>),</span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a>    by <span class="ot">=</span> .(task_id, iteration)</span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>cor_all <span class="ot">=</span> <span class="fu">cor</span>(res_ranks[, ..rank_cols], <span class="at">method =</span> <span class="st">"pearson"</span>)</span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcorrplot</span>(</span>
+<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a>  cor_all,</span>
+<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"square"</span>,</span>
+<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"lower"</span>,</span>
+<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">hc.order =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb39-28"><a href="#cb39-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">lab =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb39-29"><a href="#cb39-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">lab_size =</span> <span class="dv">4</span>,</span>
+<span id="cb39-30"><a href="#cb39-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">outline.color =</span> <span class="st">"white"</span></span>
+<span id="cb39-31"><a href="#cb39-31" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -1833,7 +2061,7 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>utils<span class="sc">::</span><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>utils<span class="sc">::</span><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>R version 4.4.2 (2024-10-31)
@@ -1856,37 +2084,55 @@ time zone: Europe/Oslo
 tzcode source: system (glibc)
 
 attached base packages:
-[1] stats     graphics  grDevices utils     datasets  methods   base     
+[1] grid      stats     graphics  grDevices utils     datasets  methods  
+[8] base     
 
 other attached packages:
- [1] ggcorrplot_0.1.4.1 DT_0.33            data.table_1.18.4  tidyr_1.3.1       
- [5] purrr_1.0.2        akima_0.6-3.6      patchwork_1.3.2    ggplot2_4.0.2     
- [9] tibble_3.3.0       dplyr_1.1.4       
+ [1] ggcorrplot_0.1.4.1           mlr3misc_0.22.0             
+ [3] future_1.70.0                mlr3tuning_1.5.0            
+ [5] paradox_1.0.1                mlr3extralearners_1.5.2.9000
+ [7] R6_2.6.1                     circlize_0.4.16             
+ [9] ComplexHeatmap_2.21.1        ggpubr_0.6.2                
+[11] mlr3proba_0.8.9              mlr3_1.7.1                  
+[13] lubridate_1.9.3              forcats_1.0.0               
+[15] stringr_1.6.0                readr_2.1.5                 
+[17] tidyverse_2.0.0              DT_0.33                     
+[19] data.table_1.18.4            tidyr_1.3.1                 
+[21] purrr_1.0.2                  akima_0.6-3.6               
+[23] patchwork_1.3.2              ggplot2_4.0.2               
+[25] tibble_3.3.0                 dplyr_1.1.4                 
 
 loaded via a namespace (and not attached):
- [1] gtable_0.3.6         xfun_0.57            bslib_0.10.0        
- [4] htmlwidgets_1.6.4    lattice_0.22-6       vctrs_0.7.1         
- [7] tools_4.4.2          crosstalk_1.2.1      generics_0.1.3      
-[10] parallel_4.4.2       pkgconfig_2.0.3      Matrix_1.7-1        
-[13] checkmate_2.3.4      RColorBrewer_1.1-3   S7_0.2.1            
-[16] mlr3pipelines_0.10.0 uuid_1.2-2           lifecycle_1.0.5     
-[19] stringr_1.6.0        compiler_4.4.2       farver_2.1.2        
-[22] set6_0.2.6           codetools_0.2-20     htmltools_0.5.9     
-[25] sass_0.4.10          yaml_2.3.12          pillar_1.11.0       
-[28] crayon_1.5.3         jquerylib_0.1.4      cachem_1.1.0        
-[31] parallelly_1.47.0    tidyselect_1.2.1     digest_0.6.39       
-[34] stringi_1.8.7        future_1.70.0        reshape2_1.4.4      
-[37] listenv_0.10.1       labeling_0.4.3       splines_4.4.2       
-[40] fastmap_1.2.0        grid_4.4.2           cli_3.6.6           
-[43] magrittr_2.0.4       paradox_1.0.1        survival_3.7-0      
-[46] withr_3.0.3          scales_1.4.0         backports_1.5.1     
-[49] sp_2.1-4             ooplah_0.2.0         rmarkdown_2.31      
-[52] globals_0.19.1       distr6_1.8.4         evaluate_1.0.5      
-[55] knitr_1.51           dictionar6_0.1.3     mlr3misc_0.22.0     
-[58] rlang_1.2.0          Rcpp_1.1.1           glue_1.8.0          
-[61] param6_0.2.4         palmerpenguins_0.1.1 mlr3proba_0.8.9     
-[64] jsonlite_2.0.0       plyr_1.8.9           lgr_0.5.2           
-[67] R6_2.6.1             mlr3_1.7.1          </code></pre>
+ [1] rlang_1.2.0          magrittr_2.0.4       clue_0.3-66         
+ [4] GetoptLong_1.0.5     matrixStats_1.4.1    compiler_4.4.2      
+ [7] reshape2_1.4.4       png_0.1-8            vctrs_0.7.1         
+[10] pkgconfig_2.0.3      shape_1.4.6.1        crayon_1.5.3        
+[13] fastmap_1.2.0        backports_1.5.1      labeling_0.4.3      
+[16] rmarkdown_2.31       tzdb_0.4.0           xfun_0.57           
+[19] cachem_1.1.0         jsonlite_2.0.0       uuid_1.2-2          
+[22] cluster_2.1.6        broom_1.0.7          parallel_4.4.2      
+[25] bslib_0.10.0         stringi_1.8.7        RColorBrewer_1.1-3  
+[28] parallelly_1.47.0    car_3.1-3            jquerylib_0.1.4     
+[31] Rcpp_1.1.1           iterators_1.0.14     knitr_1.51          
+[34] IRanges_2.40.1       Matrix_1.7-1         splines_4.4.2       
+[37] timechange_0.3.0     tidyselect_1.2.1     abind_1.4-8         
+[40] yaml_2.3.12          doParallel_1.0.17    codetools_0.2-20    
+[43] param6_0.2.4         listenv_0.10.1       plyr_1.8.9          
+[46] lattice_0.22-6       withr_3.0.3          S7_0.2.1            
+[49] evaluate_1.0.5       survival_3.7-0       pillar_1.11.0       
+[52] carData_3.0-5        checkmate_2.3.4      foreach_1.5.2       
+[55] stats4_4.4.2         generics_0.1.3       bbotk_1.10.0        
+[58] sp_2.1-4             hms_1.1.3            S4Vectors_0.44.0    
+[61] scales_1.4.0         dictionar6_0.1.3     globals_0.19.1      
+[64] distr6_1.8.4         glue_1.8.0           tools_4.4.2         
+[67] mlr3pipelines_0.10.0 ggsignif_0.6.4       set6_0.2.6          
+[70] crosstalk_1.2.1      colorspace_2.1-2     palmerpenguins_0.1.1
+[73] Formula_1.2-5        cli_3.6.6            ooplah_0.2.0        
+[76] gtable_0.3.6         rstatix_0.7.2        sass_0.4.10         
+[79] digest_0.6.39        BiocGenerics_0.52.0  mlr3cmprsk_0.0.5    
+[82] lgr_0.5.2            rjson_0.2.23         htmlwidgets_1.6.4   
+[85] farver_2.1.2         htmltools_0.5.9      lifecycle_1.0.5     
+[88] GlobalOptions_0.1.2 </code></pre>
 </div>
 </div>
 

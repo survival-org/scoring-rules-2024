@@ -1254,9 +1254,14 @@ ggsave(filename = "sensitivity_large_n.pdf", dpi = 600, height = 8, width = 11, 
 :::{.callout-tip}
 ## Summary
 
-- **RCLL** provides the best discrimination: point clouds are well separated by model, closely track the MIAE ordering, and show low variability. All misspecified models yield positive excess loss confirming empirical properness.
-- **SBS** (at $t = 5$) shows poor discrimination: substantial overlap between models, weak alignment with MIAE, and high variability, particularly under high censoring. It is unsuitable for model comparison.
-- **ISBS** preserves the global MIAE ranking but tends to form a small number of coarse clusters of models with similar excess loss, within which models are largely indistinguishable. Occasional negative $\Delta L$ values indicate finite‑sample properness violations, especially under high censoring.
+- **RCLL** shows the strongest discrimination.
+Excess loss increases almost monotonically with MIAE, producing well-separated model clusters with low variability.
+All misspecified models have positive excess loss, consistent with empirical properness.
+- **SBS** (at $t = 5$) provides poor discrimination.
+Models exhibit substantial overlap, weak correspondence with MIAE, and high variability, particularly under heavy censoring, making SBS unsuitable for reliably ranking models.
+- **ISBS** largely preserves the global ordering induced by MIAE but compresses models into a few broad clusters with similar excess loss, limiting discrimination among similarly performing models.
+Occasional negative $\Delta L$ values arise from finite-sample variability, especially under high censoring.
+- **Harrell's C-index** is not aligned with model misspecification: under high censoring it can assign better scores to misspecified models than to the true data-generating process, illustrating its lack of properness.
 :::
 
 ### Effect of Test Set Size

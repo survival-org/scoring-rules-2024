@@ -1223,6 +1223,7 @@ plot_score_diff = function(
 ```{r}
 #| fig-width: 9
 #| fig-height: 6
+#| cache: true
 plot_score_diff(res, task_id_val = "low", meas = c("rcll", "sbs", "isbs", "cindex"),
                 n_test_val = 1000, legend_position = "bottom")
 ```
@@ -1231,6 +1232,7 @@ plot_score_diff(res, task_id_val = "low", meas = c("rcll", "sbs", "isbs", "cinde
 ```{r}
 #| fig-width: 9
 #| fig-height: 6
+#| cache: true
 plot_score_diff(res, task_id_val = "high", meas = c("rcll", "sbs", "isbs", "cindex"),
                 n_test_val = 1000, legend_position = "bottom")
 ```
@@ -1414,28 +1416,26 @@ plot_score_diff_by_ntest = function(
 
 ### Low censoring DGP
 ```{r}
-#| fig-width: 9
-#| fig-height: 6
-plot_score_diff_by_ntest(res, measure_id = "rcll", task_id_val = "low", legend_position = "bottom")
-```
-
-```{r}
-#| fig-width: 9
-#| fig-height: 6
-plot_score_diff_by_ntest(res, measure_id = "isbs", task_id_val = "low", legend_position = "bottom")
+#| fig-width: 13
+#| fig-height: 8
+#| cache: true
+p1 = plot_score_diff_by_ntest(res, measure_id = "rcll", task_id_val = "low", legend_position = "none")
+p2 = plot_score_diff_by_ntest(res, measure_id = "isbs", task_id_val = "low", legend_position = "bottom") +
+  guides(color = guide_legend(override.aes = list(size = 5, alpha = 1), nrow = 1, byrow = TRUE)) +
+  theme(legend.direction = "horizontal")
+(p1 / p2)
 ```
 
 ### High censoring DGP
 ```{r}
-#| fig-width: 9
-#| fig-height: 6
-plot_score_diff_by_ntest(res, measure_id = "rcll", task_id_val = "high", legend_position = "bottom")
-```
-
-```{r}
-#| fig-width: 9
-#| fig-height: 6
-plot_score_diff_by_ntest(res, measure_id = "isbs", task_id_val = "high", legend_position = "bottom")
+#| fig-width: 13
+#| fig-height: 8
+#| cache: true
+p1 = plot_score_diff_by_ntest(res, measure_id = "rcll", task_id_val = "high", legend_position = "none")
+p2 = plot_score_diff_by_ntest(res, measure_id = "isbs", task_id_val = "high", legend_position = "bottom") +
+  guides(color = guide_legend(override.aes = list(size = 5, alpha = 1), nrow = 1, byrow = TRUE)) +
+  theme(legend.direction = "horizontal")
+(p1 / p2)
 ```
 
 ```{r}
@@ -1480,8 +1480,378 @@ Under high censoring, variability increases and model discrimination deteriorate
 
 ### Impact of Prediction Grid Resolution on RCLL
 
-Sensitivity of the RCLL to the density of the prediction time grid (subsampling from 2% to 100% of unique event times).
-Shows how coarse grids affect bias, variability, and model ranking (related to Figure 7 and Table C2 in the paper).
+Unlike the Brier score, the RCLL requires both the survival function and event density.
+For machine learning models that predict survival probabilities only at a discrete set of time points, the density must therefore be approximated by interpolating the survival curve.
+To assess the impact of this approximation, we progressively reduce the prediction time grid by uniformly subsampling the unique event times, from 100% down to 2% of the original grid.
+
+The figures below show how the resulting approximation affects the excess RCLL for different test set sizes.
+The results for $n = 250$ correspond to Figure 7 and Table C2 in the manuscript.
+
+```{r}
+# plots score differences (relative to TRUE likelihood) vs. MIAE/MISE for RCLL
+# on multiple prediction grid resolutions (proportions of unique event times)
+plot_rcll_diff_by_grid = function(
+  res,
+  y = "miae", # "mise" or "miae"
+  task_id_val = "low", # "low" or "high"
+  n_test_val = 500, # test set size to display
+  prop_vals = c(0.02, 0.05, 0.1, 0.2, 0.5, 0.8, 1), # unique event time proportions to display
+  drop_learners = c("CoxPH"),
+  legend_position = "right" # "right", "left", "top", "bottom", "none"
+) {
+  # subset to the chosen task and test size
+  dt = res[task_id == task_id_val & prop %in% prop_vals & n_test == n_test_val]
+  # Remove unwanted learners
+  dt = dt[!learner_id %in% drop_learners]
+  # Rename learner_ids
+  label_map = c(
+    "LogNorm_int_shape_x2"   = "Oracle",
+    "LogLog_int_shape_x2"    = "LLogis",
+    "Weib_int_shape_x2"      = "Weibull",
+    "LogNorm_noint_shape_x2" = "LogNorm_scale",
+    "LogNorm_int_noshape"    = "LogNorm_int",
+    "LogNorm_noint_noshape"  = "LogNorm",
+    "CoxPH_int"              = "Cox_int",
+    "RSF"                    = "RSF",
+    "KM"                     = "KM"
+  )
+
+  dt[, learner_id := ifelse(
+    learner_id %in% names(label_map),
+    label_map[learner_id],
+    learner_id
+  )]
+
+  # Extract true references (per replicate + prop)
+  true_dt = dt[learner_id == "true",
+    .(rsmp_id,
+      prop,
+      rcll_true_full = true_rcll, # true S + true f
+      rcll_true_interp = rcll # true S + interpolated f
+    )
+  ]
+
+  dt = merge(dt, true_dt, by = c("rsmp_id", "prop"))
+
+  # Compute differences relative to TRUE likelihood
+  dt[, diff := rcll - rcll_true_full]
+
+  # Rename true model with interpolated density
+  dt[learner_id == "true", learner_id := "Truth (true S, interp f)"]
+
+  # Factor ordering
+  # Create facet label: B = n_times (percentage)
+  dt[, facet_label := sprintf("B == %d~'('*%d*'%%'*')'", n_times, round(prop * 100))]
+  dt[, facet_label := factor(facet_label, levels = dt[order(prop), unique(facet_label)])]
+
+  learner_order = c(
+    "Truth (true S, interp f)",
+    "Oracle",
+    "LLogis",
+    "Weibull",
+    "LogNorm_scale",
+    "LogNorm_int",
+    "LogNorm",
+    "Cox_int",
+    "RSF",
+    "KM"
+  )
+  present_learners = unique(dt$learner_id)
+  learner_order = learner_order[learner_order %in% present_learners]
+  dt[, learner_id := factor(learner_id, levels = learner_order)]
+
+  # Colors
+  cols = c(
+    `Truth (true S, interp f)` = "#000000",
+    Oracle        = "#dfce0cff",
+    LLogis        = "#FFA500",
+    Weibull       = "#756BB1",
+    LogNorm_scale = "#2171B5",
+    LogNorm_int   = "#6BAED6",
+    LogNorm       = "#C6DBEF",
+    Cox_int       = "#238B45",
+    RSF           = "#D62728",
+    KM            = "#7F7F7F"
+  )
+  cols = cols[names(cols) %in% present_learners]
+
+  # Plot
+  ggplot(dt, aes(x = .data[[y]], y = diff, color = learner_id)) +
+    geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.5) +
+    geom_point(alpha = 0.6, size = 1.5) +
+    scale_color_manual(values = cols) +
+    facet_grid(
+      . ~ facet_label,
+      labeller = label_parsed
+    ) +
+    labs(
+      title = sprintf(
+        "%s censoring task (Test set size = %d)",
+        paste0(toupper(substring(task_id_val, 1, 1)), substring(task_id_val, 2)),
+        n_test_val
+      ),
+      x = ifelse(y == "mise", "MISE (distance to true S)", "MIAE (distance to true S)"),
+      y = expression(L[pred] - L[true]),
+      color = "Model"
+    ) +
+    theme_bw(base_size = 14, base_family = "Arial") +
+    theme(
+      strip.background = element_rect(fill = "grey95"),
+      strip.text = element_text(size = 16, face = "bold"),
+      legend.position = if (legend_position == "none") "none" else legend_position,
+      legend.title = element_text(size = 14),
+      legend.text = element_text(size = 12)
+    ) +
+    guides(color = guide_legend(override.aes = list(size = 5, alpha = 1)))
+}
+```
+
+```{r}
+# load the results of the RCLL grid resolution investigation
+res = readRDS("results/rcll_sim.rds")
+
+# duplicate the truth model
+truth_exact = res[
+  learner_id == "true",
+  .(
+    learner_id = "Truth (exact)",
+    rcll = true_rcll,
+    task_id,
+    rsmp_id,
+    prop,
+    n_times,
+    n_test
+  )
+]
+
+truth_interp = res[
+  learner_id == "true",
+  .(
+    learner_id = "Truth (interp.)",
+    rcll,
+    task_id,
+    rsmp_id,
+    prop,
+    n_times,
+    n_test
+  )
+]
+
+others = res[
+  !learner_id %in% c("true", "CoxPH"),
+  .(
+    learner_id,
+    rcll,
+    task_id,
+    rsmp_id,
+    prop,
+    n_times,
+    n_test
+  )
+]
+
+res_tbl = rbindlist(list(truth_interp, truth_exact, others))
+
+# rename learners (and order according to misspecification)
+label_map = c(
+  "Truth (exact)"    = "Truth (true S, true f)",
+  "Truth (interp.)"  = "Truth (true S, interp f)",
+  "LogNorm_int_shape_x2"   = "Oracle",
+  "LogLog_int_shape_x2"    = "LLogis",
+  "Weib_int_shape_x2"      = "Weibull",
+  "LogNorm_noint_shape_x2" = "LogNorm_scale",
+  "LogNorm_int_noshape"    = "LogNorm_int",
+  "LogNorm_noint_noshape"  = "LogNorm",
+  "CoxPH_int"              = "Cox_int",
+  "RSF"                    = "RSF",
+  "KM"                     = "KM"
+)
+
+res_tbl[, learner_id := factor(
+  label_map[learner_id],
+  levels = c(
+    "Truth (true S, true f)",
+    "Truth (true S, interp f)",
+    "Oracle",
+    "LLogis",
+    "Weibull",
+    "LogNorm_scale",
+    "LogNorm_int",
+    "LogNorm",
+    "Cox_int",
+    "RSF",
+    "KM"
+  )
+)]
+
+# easy way to print summarized absolute RCLL values
+plot_rcll_table = function(
+  res_tbl,
+  task = c("low", "high"),
+  n_test = 250,
+  caption = NULL,
+  digits = 3
+) {
+  tbl = res_tbl[
+    task_id == task & n_test == n_test,
+    .(
+      mean = mean(rcll),
+      sd = sd(rcll)
+    ),
+    by = .(learner_id, n_times)
+  ]
+
+  fmt = paste0("%.", digits, "f \u00B1 %.", digits, "f")
+  tbl[, value := sprintf(fmt, mean, sd)]
+
+  # to long format
+  tbl = dcast(
+    tbl,
+    learner_id ~ n_times,
+    value.var = "value"
+  )
+
+  DT::datatable(
+    tbl,
+    rownames = FALSE,
+    options = list(
+      pageLength = nrow(tbl),
+      dom = "t"
+    ),
+    caption = htmltools::tags$caption(
+      style = "caption-side: top; text-align: center; font-size:150%",
+      sprintf("RCLL (mean \u00B1 SD) for %s censoring task, n = %d.", task, n_test)
+    )
+  )
+}
+```
+
+:::{.panel-tabset}
+
+### n = 50
+```{r}
+#| fig-width: 13
+#| fig-height: 8
+#| cache: true
+p1 = plot_rcll_diff_by_grid(res, task_id_val = "low", n_test_val = 50, legend_position = "none")
+p2 = plot_rcll_diff_by_grid(res, task_id_val = "high", n_test_val = 50, legend_position = "bottom") +
+  guides(color = guide_legend(override.aes = list(size = 5), nrow = 1, byrow = TRUE)) +
+  theme(legend.direction = "horizontal")
+(p1 / p2)
+```
+
+```{r}
+plot_rcll_table(res_tbl, task = "low", n_test = 50)
+```
+
+```{r}
+plot_rcll_table(res_tbl, task = "high", n_test = 50)
+```
+
+### n = 100
+```{r}
+#| fig-width: 13
+#| fig-height: 8
+#| cache: true
+p1 = plot_rcll_diff_by_grid(res, task_id_val = "low", n_test_val = 100, legend_position = "none")
+p2 = plot_rcll_diff_by_grid(res, task_id_val = "high", n_test_val = 100, legend_position = "bottom") +
+  guides(color = guide_legend(override.aes = list(size = 5), nrow = 1, byrow = TRUE)) +
+  theme(legend.direction = "horizontal")
+(p1 / p2)
+```
+
+```{r}
+plot_rcll_table(res_tbl, task = "low", n_test = 100)
+```
+
+```{r}
+plot_rcll_table(res_tbl, task = "high", n_test = 100)
+```
+
+### n = 250
+```{r}
+#| fig-width: 13
+#| fig-height: 8
+#| cache: true
+p1 = plot_rcll_diff_by_grid(res, task_id_val = "low", n_test_val = 250, legend_position = "none")
+p2 = plot_rcll_diff_by_grid(res, task_id_val = "high", n_test_val = 250, legend_position = "bottom") +
+  guides(color = guide_legend(override.aes = list(size = 5), nrow = 1, byrow = TRUE)) +
+  theme(legend.direction = "horizontal")
+(p1 / p2)
+```
+
+```{r}
+plot_rcll_table(res_tbl, task = "low", n_test = 250)
+```
+
+```{r}
+plot_rcll_table(res_tbl, task = "high", n_test = 250)
+```
+
+### n = 500
+```{r}
+#| fig-width: 13
+#| fig-height: 8
+#| cache: true
+p1 = plot_rcll_diff_by_grid(res, task_id_val = "low", n_test_val = 500, legend_position = "none")
+p2 = plot_rcll_diff_by_grid(res, task_id_val = "high", n_test_val = 500, legend_position = "bottom") +
+  guides(color = guide_legend(override.aes = list(size = 5), nrow = 1, byrow = TRUE)) +
+  theme(legend.direction = "horizontal")
+(p1 / p2)
+```
+
+```{r}
+plot_rcll_table(res_tbl, task = "low", n_test = 500)
+```
+
+```{r}
+plot_rcll_table(res_tbl, task = "high", n_test = 500)
+```
+
+:::
+
+```{r}
+#| include: false
+#| eval: false
+# n = 250 results (Figure 7)
+p1 = plot_rcll_diff_by_grid(res, task_id_val = "low", n_test_val = 250, legend_position = "none")
+p2 = plot_rcll_diff_by_grid(res, task_id_val = "high", n_test_val = 250, legend_position = "bottom") +
+  guides(color = guide_legend(override.aes = list(size = 5, alpha = 1), nrow = 1, byrow = TRUE)) +
+  theme(legend.direction = "horizontal")
+(p1 / p2)
+
+#ggsave(filename = "sensitivity_RCLL_grid.png", dpi = 600, height = 8, width = 13, units = "in")
+ggsave(filename = "sensitivity_RCLL_grid.pdf", dpi = 600, height = 8, width = 13, units = "in", device = cairo_pdf)
+
+# investigation => reduce learners to focus on the ones near the true model
+learner_ids = c("CoxPH", "CoxPH_int", "LogNorm_noint_noshape",
+                "LogNorm_noint_shape_x2", "LogNorm_int_noshape", "RSF", "KM")
+# n = 500 results
+p1 = plot_rcll_diff_by_grid(res, task_id_val = "low", n_test_val = 500, drop_learners = learner_ids)
+p2 = plot_rcll_diff_by_grid(res, task_id_val = "high", n_test_val = 500, drop_learners = learner_ids)
+
+(p1 / p2)
+ggsave(filename = "sensitivity_RCLL_grid_few_learners.png", dpi = 600, height = 6, width = 12, units = "in", device = cairo_pdf)
+```
+
+:::{.callout-tip}
+## Summary
+
+- **Prediction grid resolution affects the absolute RCLL values, but not model rankings or empirical properness.**
+Across all grid resolutions, the true model consistently achieves the lowest RCLL, with all misspecified models retaining positive excess loss.
+
+- **The RCLL of the true model with linear interpolation of the density is biased upward on coarse grids.**
+As the prediction grid becomes denser, the interpolated score converges to the exact log-likelihood, although convergence is slower under heavy censoring.
+
+- **Misspecified models have downward-biased RCLL on coarse grids.**
+This makes models appear artificially closer to the true model regardless of their level of misspecification.
+
+- **Dense prediction grids are therefore essential when reporting absolute RCLL values.**
+While relative model comparisons remain robust, coarse grids can substantially distort the magnitude of the RCLL through interpolation bias.
+
+- **Model rankings remain largely unchanged.**
+Although absolute RCLL values change? on coarse grids, the relative ordering of models is remarkably stable across grid resolutions.
+:::
 
 ## Benchmark (Real-World Data) {-#bench}
 

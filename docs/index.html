@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="John Zobolas">
-<meta name="dcterms.date" content="2026-07-09">
+<meta name="dcterms.date" content="2026-07-12">
 <meta name="description" content="Supporting information for paper: ‘When Are Scoring Rules Proper? Bridging Theory and Practice in Survival Model Evaluation’">
 
 <title>Supplementary Material</title>
@@ -231,7 +231,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">July 9, 2026</p>
+      <p class="date">July 12, 2026</p>
     </div>
   </div>
   
@@ -1668,25 +1668,16 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_score_diff_by_ntest</span>(res, <span class="at">measure_id =</span> <span class="st">"rcll"</span>, <span class="at">task_id_val =</span> <span class="st">"low"</span>, <span class="at">legend_position =</span> <span class="st">"bottom"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">=</span> <span class="fu">plot_score_diff_by_ntest</span>(res, <span class="at">measure_id =</span> <span class="st">"rcll"</span>, <span class="at">task_id_val =</span> <span class="st">"low"</span>, <span class="at">legend_position =</span> <span class="st">"none"</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">=</span> <span class="fu">plot_score_diff_by_ntest</span>(res, <span class="at">measure_id =</span> <span class="st">"isbs"</span>, <span class="at">task_id_val =</span> <span class="st">"low"</span>, <span class="at">legend_position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">override.aes =</span> <span class="fu">list</span>(<span class="at">size =</span> <span class="dv">5</span>, <span class="at">alpha =</span> <span class="dv">1</span>), <span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)) <span class="sc">+</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.direction =</span> <span class="st">"horizontal"</span>)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>(p1 <span class="sc">/</span> p2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="864"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_score_diff_by_ntest</span>(res, <span class="at">measure_id =</span> <span class="st">"isbs"</span>, <span class="at">task_id_val =</span> <span class="st">"low"</span>, <span class="at">legend_position =</span> <span class="st">"bottom"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="864"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="1248"></p>
 </figure>
 </div>
 </div>
@@ -1696,25 +1687,16 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_score_diff_by_ntest</span>(res, <span class="at">measure_id =</span> <span class="st">"rcll"</span>, <span class="at">task_id_val =</span> <span class="st">"high"</span>, <span class="at">legend_position =</span> <span class="st">"bottom"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">=</span> <span class="fu">plot_score_diff_by_ntest</span>(res, <span class="at">measure_id =</span> <span class="st">"rcll"</span>, <span class="at">task_id_val =</span> <span class="st">"high"</span>, <span class="at">legend_position =</span> <span class="st">"none"</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">=</span> <span class="fu">plot_score_diff_by_ntest</span>(res, <span class="at">measure_id =</span> <span class="st">"isbs"</span>, <span class="at">task_id_val =</span> <span class="st">"high"</span>, <span class="at">legend_position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">override.aes =</span> <span class="fu">list</span>(<span class="at">size =</span> <span class="dv">5</span>, <span class="at">alpha =</span> <span class="dv">1</span>), <span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)) <span class="sc">+</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.direction =</span> <span class="st">"horizontal"</span>)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>(p1 <span class="sc">/</span> p2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid figure-img" width="864"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_score_diff_by_ntest</span>(res, <span class="at">measure_id =</span> <span class="st">"isbs"</span>, <span class="at">task_id_val =</span> <span class="st">"high"</span>, <span class="at">legend_position =</span> <span class="st">"bottom"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="864"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="1248"></p>
 </figure>
 </div>
 </div>
@@ -1743,7 +1725,431 @@ Note
 </section>
 <section id="impact-of-prediction-grid-resolution-on-rcll" class="level3">
 <h3 class="anchored" data-anchor-id="impact-of-prediction-grid-resolution-on-rcll">Impact of Prediction Grid Resolution on RCLL</h3>
-<p>Sensitivity of the RCLL to the density of the prediction time grid (subsampling from 2% to 100% of unique event times). Shows how coarse grids affect bias, variability, and model ranking (related to Figure 7 and Table C2 in the paper).</p>
+<p>Unlike the Brier score, the RCLL requires both the survival function and event density. For machine learning models that predict survival probabilities only at a discrete set of time points, the density must therefore be approximated by interpolating the survival curve. To assess the impact of this approximation, we progressively reduce the prediction time grid by uniformly subsampling the unique event times, from 100% down to 2% of the original grid.</p>
+<p>The figures below show how the resulting approximation affects the excess RCLL for different test set sizes. The results for <span class="math inline">n = 250</span> correspond to Figure 7 and Table C2 in the manuscript.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plots score differences (relative to TRUE likelihood) vs. MIAE/MISE for RCLL</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co"># on multiple prediction grid resolutions (proportions of unique event times)</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>plot_rcll_diff_by_grid <span class="ot">=</span> <span class="cf">function</span>(</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  res,</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="st">"miae"</span>, <span class="co"># "mise" or "miae"</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">task_id_val =</span> <span class="st">"low"</span>, <span class="co"># "low" or "high"</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_test_val =</span> <span class="dv">500</span>, <span class="co"># test set size to display</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">prop_vals =</span> <span class="fu">c</span>(<span class="fl">0.02</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>, <span class="dv">1</span>), <span class="co"># unique event time proportions to display</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">drop_learners =</span> <span class="fu">c</span>(<span class="st">"CoxPH"</span>),</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">legend_position =</span> <span class="st">"right"</span> <span class="co"># "right", "left", "top", "bottom", "none"</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>) {</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># subset to the chosen task and test size</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>  dt <span class="ot">=</span> res[task_id <span class="sc">==</span> task_id_val <span class="sc">&amp;</span> prop <span class="sc">%in%</span> prop_vals <span class="sc">&amp;</span> n_test <span class="sc">==</span> n_test_val]</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove unwanted learners</span></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>  dt <span class="ot">=</span> dt[<span class="sc">!</span>learner_id <span class="sc">%in%</span> drop_learners]</span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Rename learner_ids</span></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>  label_map <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LogNorm_int_shape_x2"</span>   <span class="ot">=</span> <span class="st">"Oracle"</span>,</span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LogLog_int_shape_x2"</span>    <span class="ot">=</span> <span class="st">"LLogis"</span>,</span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Weib_int_shape_x2"</span>      <span class="ot">=</span> <span class="st">"Weibull"</span>,</span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LogNorm_noint_shape_x2"</span> <span class="ot">=</span> <span class="st">"LogNorm_scale"</span>,</span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LogNorm_int_noshape"</span>    <span class="ot">=</span> <span class="st">"LogNorm_int"</span>,</span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LogNorm_noint_noshape"</span>  <span class="ot">=</span> <span class="st">"LogNorm"</span>,</span>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CoxPH_int"</span>              <span class="ot">=</span> <span class="st">"Cox_int"</span>,</span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"RSF"</span>                    <span class="ot">=</span> <span class="st">"RSF"</span>,</span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"KM"</span>                     <span class="ot">=</span> <span class="st">"KM"</span></span>
+<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb31-28"><a href="#cb31-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-29"><a href="#cb31-29" aria-hidden="true" tabindex="-1"></a>  dt[, learner_id <span class="sc">:</span><span class="er">=</span> <span class="fu">ifelse</span>(</span>
+<span id="cb31-30"><a href="#cb31-30" aria-hidden="true" tabindex="-1"></a>    learner_id <span class="sc">%in%</span> <span class="fu">names</span>(label_map),</span>
+<span id="cb31-31"><a href="#cb31-31" aria-hidden="true" tabindex="-1"></a>    label_map[learner_id],</span>
+<span id="cb31-32"><a href="#cb31-32" aria-hidden="true" tabindex="-1"></a>    learner_id</span>
+<span id="cb31-33"><a href="#cb31-33" aria-hidden="true" tabindex="-1"></a>  )]</span>
+<span id="cb31-34"><a href="#cb31-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-35"><a href="#cb31-35" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Extract true references (per replicate + prop)</span></span>
+<span id="cb31-36"><a href="#cb31-36" aria-hidden="true" tabindex="-1"></a>  true_dt <span class="ot">=</span> dt[learner_id <span class="sc">==</span> <span class="st">"true"</span>,</span>
+<span id="cb31-37"><a href="#cb31-37" aria-hidden="true" tabindex="-1"></a>    .(rsmp_id,</span>
+<span id="cb31-38"><a href="#cb31-38" aria-hidden="true" tabindex="-1"></a>      prop,</span>
+<span id="cb31-39"><a href="#cb31-39" aria-hidden="true" tabindex="-1"></a>      <span class="at">rcll_true_full =</span> true_rcll, <span class="co"># true S + true f</span></span>
+<span id="cb31-40"><a href="#cb31-40" aria-hidden="true" tabindex="-1"></a>      <span class="at">rcll_true_interp =</span> rcll <span class="co"># true S + interpolated f</span></span>
+<span id="cb31-41"><a href="#cb31-41" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb31-42"><a href="#cb31-42" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb31-43"><a href="#cb31-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-44"><a href="#cb31-44" aria-hidden="true" tabindex="-1"></a>  dt <span class="ot">=</span> <span class="fu">merge</span>(dt, true_dt, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"rsmp_id"</span>, <span class="st">"prop"</span>))</span>
+<span id="cb31-45"><a href="#cb31-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-46"><a href="#cb31-46" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Compute differences relative to TRUE likelihood</span></span>
+<span id="cb31-47"><a href="#cb31-47" aria-hidden="true" tabindex="-1"></a>  dt[, diff <span class="sc">:</span><span class="er">=</span> rcll <span class="sc">-</span> rcll_true_full]</span>
+<span id="cb31-48"><a href="#cb31-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-49"><a href="#cb31-49" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Rename true model with interpolated density</span></span>
+<span id="cb31-50"><a href="#cb31-50" aria-hidden="true" tabindex="-1"></a>  dt[learner_id <span class="sc">==</span> <span class="st">"true"</span>, learner_id <span class="sc">:</span><span class="er">=</span> <span class="st">"Truth (true S, interp f)"</span>]</span>
+<span id="cb31-51"><a href="#cb31-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-52"><a href="#cb31-52" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Factor ordering</span></span>
+<span id="cb31-53"><a href="#cb31-53" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create facet label: B = n_times (percentage)</span></span>
+<span id="cb31-54"><a href="#cb31-54" aria-hidden="true" tabindex="-1"></a>  dt[, facet_label <span class="sc">:</span><span class="er">=</span> <span class="fu">sprintf</span>(<span class="st">"B == %d~'('*%d*'%%'*')'"</span>, n_times, <span class="fu">round</span>(prop <span class="sc">*</span> <span class="dv">100</span>))]</span>
+<span id="cb31-55"><a href="#cb31-55" aria-hidden="true" tabindex="-1"></a>  dt[, facet_label <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(facet_label, <span class="at">levels =</span> dt[<span class="fu">order</span>(prop), <span class="fu">unique</span>(facet_label)])]</span>
+<span id="cb31-56"><a href="#cb31-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-57"><a href="#cb31-57" aria-hidden="true" tabindex="-1"></a>  learner_order <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb31-58"><a href="#cb31-58" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Truth (true S, interp f)"</span>,</span>
+<span id="cb31-59"><a href="#cb31-59" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Oracle"</span>,</span>
+<span id="cb31-60"><a href="#cb31-60" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LLogis"</span>,</span>
+<span id="cb31-61"><a href="#cb31-61" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Weibull"</span>,</span>
+<span id="cb31-62"><a href="#cb31-62" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LogNorm_scale"</span>,</span>
+<span id="cb31-63"><a href="#cb31-63" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LogNorm_int"</span>,</span>
+<span id="cb31-64"><a href="#cb31-64" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LogNorm"</span>,</span>
+<span id="cb31-65"><a href="#cb31-65" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Cox_int"</span>,</span>
+<span id="cb31-66"><a href="#cb31-66" aria-hidden="true" tabindex="-1"></a>    <span class="st">"RSF"</span>,</span>
+<span id="cb31-67"><a href="#cb31-67" aria-hidden="true" tabindex="-1"></a>    <span class="st">"KM"</span></span>
+<span id="cb31-68"><a href="#cb31-68" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb31-69"><a href="#cb31-69" aria-hidden="true" tabindex="-1"></a>  present_learners <span class="ot">=</span> <span class="fu">unique</span>(dt<span class="sc">$</span>learner_id)</span>
+<span id="cb31-70"><a href="#cb31-70" aria-hidden="true" tabindex="-1"></a>  learner_order <span class="ot">=</span> learner_order[learner_order <span class="sc">%in%</span> present_learners]</span>
+<span id="cb31-71"><a href="#cb31-71" aria-hidden="true" tabindex="-1"></a>  dt[, learner_id <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(learner_id, <span class="at">levels =</span> learner_order)]</span>
+<span id="cb31-72"><a href="#cb31-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-73"><a href="#cb31-73" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Colors</span></span>
+<span id="cb31-74"><a href="#cb31-74" aria-hidden="true" tabindex="-1"></a>  cols <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb31-75"><a href="#cb31-75" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Truth (true S, interp f)</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"#000000"</span>,</span>
+<span id="cb31-76"><a href="#cb31-76" aria-hidden="true" tabindex="-1"></a>    <span class="at">Oracle        =</span> <span class="st">"#dfce0cff"</span>,</span>
+<span id="cb31-77"><a href="#cb31-77" aria-hidden="true" tabindex="-1"></a>    <span class="at">LLogis        =</span> <span class="st">"#FFA500"</span>,</span>
+<span id="cb31-78"><a href="#cb31-78" aria-hidden="true" tabindex="-1"></a>    <span class="at">Weibull       =</span> <span class="st">"#756BB1"</span>,</span>
+<span id="cb31-79"><a href="#cb31-79" aria-hidden="true" tabindex="-1"></a>    <span class="at">LogNorm_scale =</span> <span class="st">"#2171B5"</span>,</span>
+<span id="cb31-80"><a href="#cb31-80" aria-hidden="true" tabindex="-1"></a>    <span class="at">LogNorm_int   =</span> <span class="st">"#6BAED6"</span>,</span>
+<span id="cb31-81"><a href="#cb31-81" aria-hidden="true" tabindex="-1"></a>    <span class="at">LogNorm       =</span> <span class="st">"#C6DBEF"</span>,</span>
+<span id="cb31-82"><a href="#cb31-82" aria-hidden="true" tabindex="-1"></a>    <span class="at">Cox_int       =</span> <span class="st">"#238B45"</span>,</span>
+<span id="cb31-83"><a href="#cb31-83" aria-hidden="true" tabindex="-1"></a>    <span class="at">RSF           =</span> <span class="st">"#D62728"</span>,</span>
+<span id="cb31-84"><a href="#cb31-84" aria-hidden="true" tabindex="-1"></a>    <span class="at">KM            =</span> <span class="st">"#7F7F7F"</span></span>
+<span id="cb31-85"><a href="#cb31-85" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb31-86"><a href="#cb31-86" aria-hidden="true" tabindex="-1"></a>  cols <span class="ot">=</span> cols[<span class="fu">names</span>(cols) <span class="sc">%in%</span> present_learners]</span>
+<span id="cb31-87"><a href="#cb31-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-88"><a href="#cb31-88" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Plot</span></span>
+<span id="cb31-89"><a href="#cb31-89" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(dt, <span class="fu">aes</span>(<span class="at">x =</span> .data[[y]], <span class="at">y =</span> diff, <span class="at">color =</span> learner_id)) <span class="sc">+</span></span>
+<span id="cb31-90"><a href="#cb31-90" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">linewidth =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb31-91"><a href="#cb31-91" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb31-92"><a href="#cb31-92" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_manual</span>(<span class="at">values =</span> cols) <span class="sc">+</span></span>
+<span id="cb31-93"><a href="#cb31-93" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_grid</span>(</span>
+<span id="cb31-94"><a href="#cb31-94" aria-hidden="true" tabindex="-1"></a>      . <span class="sc">~</span> facet_label,</span>
+<span id="cb31-95"><a href="#cb31-95" aria-hidden="true" tabindex="-1"></a>      <span class="at">labeller =</span> label_parsed</span>
+<span id="cb31-96"><a href="#cb31-96" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb31-97"><a href="#cb31-97" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb31-98"><a href="#cb31-98" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="fu">sprintf</span>(</span>
+<span id="cb31-99"><a href="#cb31-99" aria-hidden="true" tabindex="-1"></a>        <span class="st">"%s censoring task (Test set size = %d)"</span>,</span>
+<span id="cb31-100"><a href="#cb31-100" aria-hidden="true" tabindex="-1"></a>        <span class="fu">paste0</span>(<span class="fu">toupper</span>(<span class="fu">substring</span>(task_id_val, <span class="dv">1</span>, <span class="dv">1</span>)), <span class="fu">substring</span>(task_id_val, <span class="dv">2</span>)),</span>
+<span id="cb31-101"><a href="#cb31-101" aria-hidden="true" tabindex="-1"></a>        n_test_val</span>
+<span id="cb31-102"><a href="#cb31-102" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb31-103"><a href="#cb31-103" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="fu">ifelse</span>(y <span class="sc">==</span> <span class="st">"mise"</span>, <span class="st">"MISE (distance to true S)"</span>, <span class="st">"MIAE (distance to true S)"</span>),</span>
+<span id="cb31-104"><a href="#cb31-104" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="fu">expression</span>(L[pred] <span class="sc">-</span> L[true]),</span>
+<span id="cb31-105"><a href="#cb31-105" aria-hidden="true" tabindex="-1"></a>      <span class="at">color =</span> <span class="st">"Model"</span></span>
+<span id="cb31-106"><a href="#cb31-106" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb31-107"><a href="#cb31-107" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">14</span>, <span class="at">base_family =</span> <span class="st">"Arial"</span>) <span class="sc">+</span></span>
+<span id="cb31-108"><a href="#cb31-108" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb31-109"><a href="#cb31-109" aria-hidden="true" tabindex="-1"></a>      <span class="at">strip.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"grey95"</span>),</span>
+<span id="cb31-110"><a href="#cb31-110" aria-hidden="true" tabindex="-1"></a>      <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb31-111"><a href="#cb31-111" aria-hidden="true" tabindex="-1"></a>      <span class="at">legend.position =</span> <span class="cf">if</span> (legend_position <span class="sc">==</span> <span class="st">"none"</span>) <span class="st">"none"</span> <span class="cf">else</span> legend_position,</span>
+<span id="cb31-112"><a href="#cb31-112" aria-hidden="true" tabindex="-1"></a>      <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb31-113"><a href="#cb31-113" aria-hidden="true" tabindex="-1"></a>      <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>)</span>
+<span id="cb31-114"><a href="#cb31-114" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb31-115"><a href="#cb31-115" aria-hidden="true" tabindex="-1"></a>    <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">override.aes =</span> <span class="fu">list</span>(<span class="at">size =</span> <span class="dv">5</span>, <span class="at">alpha =</span> <span class="dv">1</span>)))</span>
+<span id="cb31-116"><a href="#cb31-116" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load the results of the RCLL grid resolution investigation</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">"results/rcll_sim.rds"</span>)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="co"># duplicate the truth model</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>truth_exact <span class="ot">=</span> res[</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  learner_id <span class="sc">==</span> <span class="st">"true"</span>,</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  .(</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">learner_id =</span> <span class="st">"Truth (exact)"</span>,</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">rcll =</span> true_rcll,</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>    task_id,</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>    rsmp_id,</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>    prop,</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>    n_times,</span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>    n_test</span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>truth_interp <span class="ot">=</span> res[</span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>  learner_id <span class="sc">==</span> <span class="st">"true"</span>,</span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>  .(</span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">learner_id =</span> <span class="st">"Truth (interp.)"</span>,</span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>    rcll,</span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>    task_id,</span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a>    rsmp_id,</span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a>    prop,</span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a>    n_times,</span>
+<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a>    n_test</span>
+<span id="cb32-28"><a href="#cb32-28" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb32-29"><a href="#cb32-29" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb32-30"><a href="#cb32-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-31"><a href="#cb32-31" aria-hidden="true" tabindex="-1"></a>others <span class="ot">=</span> res[</span>
+<span id="cb32-32"><a href="#cb32-32" aria-hidden="true" tabindex="-1"></a>  <span class="sc">!</span>learner_id <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"true"</span>, <span class="st">"CoxPH"</span>),</span>
+<span id="cb32-33"><a href="#cb32-33" aria-hidden="true" tabindex="-1"></a>  .(</span>
+<span id="cb32-34"><a href="#cb32-34" aria-hidden="true" tabindex="-1"></a>    learner_id,</span>
+<span id="cb32-35"><a href="#cb32-35" aria-hidden="true" tabindex="-1"></a>    rcll,</span>
+<span id="cb32-36"><a href="#cb32-36" aria-hidden="true" tabindex="-1"></a>    task_id,</span>
+<span id="cb32-37"><a href="#cb32-37" aria-hidden="true" tabindex="-1"></a>    rsmp_id,</span>
+<span id="cb32-38"><a href="#cb32-38" aria-hidden="true" tabindex="-1"></a>    prop,</span>
+<span id="cb32-39"><a href="#cb32-39" aria-hidden="true" tabindex="-1"></a>    n_times,</span>
+<span id="cb32-40"><a href="#cb32-40" aria-hidden="true" tabindex="-1"></a>    n_test</span>
+<span id="cb32-41"><a href="#cb32-41" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb32-42"><a href="#cb32-42" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb32-43"><a href="#cb32-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-44"><a href="#cb32-44" aria-hidden="true" tabindex="-1"></a>res_tbl <span class="ot">=</span> <span class="fu">rbindlist</span>(<span class="fu">list</span>(truth_interp, truth_exact, others))</span>
+<span id="cb32-45"><a href="#cb32-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-46"><a href="#cb32-46" aria-hidden="true" tabindex="-1"></a><span class="co"># rename learners (and order according to misspecification)</span></span>
+<span id="cb32-47"><a href="#cb32-47" aria-hidden="true" tabindex="-1"></a>label_map <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb32-48"><a href="#cb32-48" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Truth (exact)"</span>    <span class="ot">=</span> <span class="st">"Truth (true S, true f)"</span>,</span>
+<span id="cb32-49"><a href="#cb32-49" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Truth (interp.)"</span>  <span class="ot">=</span> <span class="st">"Truth (true S, interp f)"</span>,</span>
+<span id="cb32-50"><a href="#cb32-50" aria-hidden="true" tabindex="-1"></a>  <span class="st">"LogNorm_int_shape_x2"</span>   <span class="ot">=</span> <span class="st">"Oracle"</span>,</span>
+<span id="cb32-51"><a href="#cb32-51" aria-hidden="true" tabindex="-1"></a>  <span class="st">"LogLog_int_shape_x2"</span>    <span class="ot">=</span> <span class="st">"LLogis"</span>,</span>
+<span id="cb32-52"><a href="#cb32-52" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Weib_int_shape_x2"</span>      <span class="ot">=</span> <span class="st">"Weibull"</span>,</span>
+<span id="cb32-53"><a href="#cb32-53" aria-hidden="true" tabindex="-1"></a>  <span class="st">"LogNorm_noint_shape_x2"</span> <span class="ot">=</span> <span class="st">"LogNorm_scale"</span>,</span>
+<span id="cb32-54"><a href="#cb32-54" aria-hidden="true" tabindex="-1"></a>  <span class="st">"LogNorm_int_noshape"</span>    <span class="ot">=</span> <span class="st">"LogNorm_int"</span>,</span>
+<span id="cb32-55"><a href="#cb32-55" aria-hidden="true" tabindex="-1"></a>  <span class="st">"LogNorm_noint_noshape"</span>  <span class="ot">=</span> <span class="st">"LogNorm"</span>,</span>
+<span id="cb32-56"><a href="#cb32-56" aria-hidden="true" tabindex="-1"></a>  <span class="st">"CoxPH_int"</span>              <span class="ot">=</span> <span class="st">"Cox_int"</span>,</span>
+<span id="cb32-57"><a href="#cb32-57" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RSF"</span>                    <span class="ot">=</span> <span class="st">"RSF"</span>,</span>
+<span id="cb32-58"><a href="#cb32-58" aria-hidden="true" tabindex="-1"></a>  <span class="st">"KM"</span>                     <span class="ot">=</span> <span class="st">"KM"</span></span>
+<span id="cb32-59"><a href="#cb32-59" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb32-60"><a href="#cb32-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-61"><a href="#cb32-61" aria-hidden="true" tabindex="-1"></a>res_tbl[, learner_id <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(</span>
+<span id="cb32-62"><a href="#cb32-62" aria-hidden="true" tabindex="-1"></a>  label_map[learner_id],</span>
+<span id="cb32-63"><a href="#cb32-63" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> <span class="fu">c</span>(</span>
+<span id="cb32-64"><a href="#cb32-64" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Truth (true S, true f)"</span>,</span>
+<span id="cb32-65"><a href="#cb32-65" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Truth (true S, interp f)"</span>,</span>
+<span id="cb32-66"><a href="#cb32-66" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Oracle"</span>,</span>
+<span id="cb32-67"><a href="#cb32-67" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LLogis"</span>,</span>
+<span id="cb32-68"><a href="#cb32-68" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Weibull"</span>,</span>
+<span id="cb32-69"><a href="#cb32-69" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LogNorm_scale"</span>,</span>
+<span id="cb32-70"><a href="#cb32-70" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LogNorm_int"</span>,</span>
+<span id="cb32-71"><a href="#cb32-71" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LogNorm"</span>,</span>
+<span id="cb32-72"><a href="#cb32-72" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Cox_int"</span>,</span>
+<span id="cb32-73"><a href="#cb32-73" aria-hidden="true" tabindex="-1"></a>    <span class="st">"RSF"</span>,</span>
+<span id="cb32-74"><a href="#cb32-74" aria-hidden="true" tabindex="-1"></a>    <span class="st">"KM"</span></span>
+<span id="cb32-75"><a href="#cb32-75" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb32-76"><a href="#cb32-76" aria-hidden="true" tabindex="-1"></a>)]</span>
+<span id="cb32-77"><a href="#cb32-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-78"><a href="#cb32-78" aria-hidden="true" tabindex="-1"></a><span class="co"># easy way to print summarized absolute RCLL values</span></span>
+<span id="cb32-79"><a href="#cb32-79" aria-hidden="true" tabindex="-1"></a>plot_rcll_table <span class="ot">=</span> <span class="cf">function</span>(</span>
+<span id="cb32-80"><a href="#cb32-80" aria-hidden="true" tabindex="-1"></a>  res_tbl,</span>
+<span id="cb32-81"><a href="#cb32-81" aria-hidden="true" tabindex="-1"></a>  <span class="at">task =</span> <span class="fu">c</span>(<span class="st">"low"</span>, <span class="st">"high"</span>),</span>
+<span id="cb32-82"><a href="#cb32-82" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_test =</span> <span class="dv">250</span>,</span>
+<span id="cb32-83"><a href="#cb32-83" aria-hidden="true" tabindex="-1"></a>  <span class="at">caption =</span> <span class="cn">NULL</span>,</span>
+<span id="cb32-84"><a href="#cb32-84" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span></span>
+<span id="cb32-85"><a href="#cb32-85" aria-hidden="true" tabindex="-1"></a>) {</span>
+<span id="cb32-86"><a href="#cb32-86" aria-hidden="true" tabindex="-1"></a>  tbl <span class="ot">=</span> res_tbl[</span>
+<span id="cb32-87"><a href="#cb32-87" aria-hidden="true" tabindex="-1"></a>    task_id <span class="sc">==</span> task <span class="sc">&amp;</span> n_test <span class="sc">==</span> n_test,</span>
+<span id="cb32-88"><a href="#cb32-88" aria-hidden="true" tabindex="-1"></a>    .(</span>
+<span id="cb32-89"><a href="#cb32-89" aria-hidden="true" tabindex="-1"></a>      <span class="at">mean =</span> <span class="fu">mean</span>(rcll),</span>
+<span id="cb32-90"><a href="#cb32-90" aria-hidden="true" tabindex="-1"></a>      <span class="at">sd =</span> <span class="fu">sd</span>(rcll)</span>
+<span id="cb32-91"><a href="#cb32-91" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb32-92"><a href="#cb32-92" aria-hidden="true" tabindex="-1"></a>    by <span class="ot">=</span> .(learner_id, n_times)</span>
+<span id="cb32-93"><a href="#cb32-93" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb32-94"><a href="#cb32-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-95"><a href="#cb32-95" aria-hidden="true" tabindex="-1"></a>  fmt <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"%."</span>, digits, <span class="st">"f \u00B1 %."</span>, digits, <span class="st">"f"</span>)</span>
+<span id="cb32-96"><a href="#cb32-96" aria-hidden="true" tabindex="-1"></a>  tbl[, value <span class="sc">:</span><span class="er">=</span> <span class="fu">sprintf</span>(fmt, mean, sd)]</span>
+<span id="cb32-97"><a href="#cb32-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-98"><a href="#cb32-98" aria-hidden="true" tabindex="-1"></a>  <span class="co"># to long format</span></span>
+<span id="cb32-99"><a href="#cb32-99" aria-hidden="true" tabindex="-1"></a>  tbl <span class="ot">=</span> <span class="fu">dcast</span>(</span>
+<span id="cb32-100"><a href="#cb32-100" aria-hidden="true" tabindex="-1"></a>    tbl,</span>
+<span id="cb32-101"><a href="#cb32-101" aria-hidden="true" tabindex="-1"></a>    learner_id <span class="sc">~</span> n_times,</span>
+<span id="cb32-102"><a href="#cb32-102" aria-hidden="true" tabindex="-1"></a>    <span class="at">value.var =</span> <span class="st">"value"</span></span>
+<span id="cb32-103"><a href="#cb32-103" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb32-104"><a href="#cb32-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-105"><a href="#cb32-105" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
+<span id="cb32-106"><a href="#cb32-106" aria-hidden="true" tabindex="-1"></a>    tbl,</span>
+<span id="cb32-107"><a href="#cb32-107" aria-hidden="true" tabindex="-1"></a>    <span class="at">rownames =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb32-108"><a href="#cb32-108" aria-hidden="true" tabindex="-1"></a>    <span class="at">options =</span> <span class="fu">list</span>(</span>
+<span id="cb32-109"><a href="#cb32-109" aria-hidden="true" tabindex="-1"></a>      <span class="at">pageLength =</span> <span class="fu">nrow</span>(tbl),</span>
+<span id="cb32-110"><a href="#cb32-110" aria-hidden="true" tabindex="-1"></a>      <span class="at">dom =</span> <span class="st">"t"</span></span>
+<span id="cb32-111"><a href="#cb32-111" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb32-112"><a href="#cb32-112" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> htmltools<span class="sc">::</span>tags<span class="sc">$</span><span class="fu">caption</span>(</span>
+<span id="cb32-113"><a href="#cb32-113" aria-hidden="true" tabindex="-1"></a>      <span class="at">style =</span> <span class="st">"caption-side: top; text-align: center; font-size:150%"</span>,</span>
+<span id="cb32-114"><a href="#cb32-114" aria-hidden="true" tabindex="-1"></a>      <span class="fu">sprintf</span>(<span class="st">"RCLL (mean \u00B1 SD) for %s censoring task, n = %d."</span>, task, n_test)</span>
+<span id="cb32-115"><a href="#cb32-115" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb32-116"><a href="#cb32-116" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb32-117"><a href="#cb32-117" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href="">n = 50</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false" href="">n = 100</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-3" role="tab" aria-controls="tabset-5-3" aria-selected="false" href="">n = 250</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-4" role="tab" aria-controls="tabset-5-4" aria-selected="false" href="">n = 500</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">=</span> <span class="fu">plot_rcll_diff_by_grid</span>(res, <span class="at">task_id_val =</span> <span class="st">"low"</span>, <span class="at">n_test_val =</span> <span class="dv">50</span>, <span class="at">legend_position =</span> <span class="st">"none"</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">=</span> <span class="fu">plot_rcll_diff_by_grid</span>(res, <span class="at">task_id_val =</span> <span class="st">"high"</span>, <span class="at">n_test_val =</span> <span class="dv">50</span>, <span class="at">legend_position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">override.aes =</span> <span class="fu">list</span>(<span class="at">size =</span> <span class="dv">5</span>), <span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)) <span class="sc">+</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.direction =</span> <span class="st">"horizontal"</span>)</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>(p1 <span class="sc">/</span> p2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid figure-img" width="1248"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_rcll_table</span>(res_tbl, <span class="at">task =</span> <span class="st">"low"</span>, <span class="at">n_test =</span> <span class="dv">50</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-dc9b6b2f202c941e6590" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-dc9b6b2f202c941e6590">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-size:150%\">RCLL (mean ± SD) for low censoring task, n = 50.<\/caption>","data":[["Truth (true S, true f)","Truth (true S, interp f)","Oracle","LLogis","Weibull","LogNorm_scale","LogNorm_int","LogNorm","Cox_int","RSF","KM"],["1.501 ± 0.090","1.569 ± 0.129","1.573 ± 0.131","1.579 ± 0.136","1.650 ± 0.157","1.607 ± 0.123","1.842 ± 0.206","1.904 ± 0.236","1.991 ± 0.263","2.489 ± 0.264","1.997 ± 0.278"],["1.490 ± 0.090","1.519 ± 0.111","1.523 ± 0.113","1.526 ± 0.111","1.580 ± 0.123","1.568 ± 0.109","1.714 ± 0.117","1.753 ± 0.113","1.816 ± 0.180","2.762 ± 0.245","1.820 ± 0.191"],["1.498 ± 0.086","1.518 ± 0.100","1.531 ± 0.112","1.529 ± 0.106","1.585 ± 0.130","1.578 ± 0.113","1.711 ± 0.107","1.756 ± 0.107","1.806 ± 0.160","2.926 ± 0.255","1.813 ± 0.175"],["1.506 ± 0.095","1.512 ± 0.097","1.537 ± 0.105","1.537 ± 0.101","1.595 ± 0.120","1.585 ± 0.100","1.725 ± 0.102","1.773 ± 0.097","1.817 ± 0.120","3.031 ± 0.266","1.825 ± 0.127"],["1.494 ± 0.092","1.495 ± 0.093","1.587 ± 0.106","1.591 ± 0.104","1.643 ± 0.114","1.634 ± 0.101","1.783 ± 0.112","1.830 ± 0.107","1.896 ± 0.102","3.078 ± 0.266","1.903 ± 0.099"],["1.506 ± 0.092","1.507 ± 0.092","1.681 ± 0.119","1.686 ± 0.118","1.733 ± 0.124","1.724 ± 0.115","1.877 ± 0.121","1.921 ± 0.118","1.993 ± 0.108","3.105 ± 0.255","1.999 ± 0.107"],["1.490 ± 0.087","1.490 ± 0.088","1.710 ± 0.117","1.715 ± 0.117","1.765 ± 0.125","1.758 ± 0.114","1.904 ± 0.125","1.953 ± 0.121","2.016 ± 0.108","3.078 ± 0.263","2.023 ± 0.107"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>learner_id<\/th>\n      <th>16<\/th>\n      <th>38<\/th>\n      <th>76<\/th>\n      <th>152<\/th>\n      <th>379<\/th>\n      <th>607<\/th>\n      <th>758<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":11,"dom":"t","columnDefs":[{"name":"learner_id","targets":0},{"name":"16","targets":1},{"name":"38","targets":2},{"name":"76","targets":3},{"name":"152","targets":4},{"name":"379","targets":5},{"name":"607","targets":6},{"name":"758","targets":7}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[10,11,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_rcll_table</span>(res_tbl, <span class="at">task =</span> <span class="st">"high"</span>, <span class="at">n_test =</span> <span class="dv">50</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-48e6565275f1592f6a3f" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-48e6565275f1592f6a3f">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-size:150%\">RCLL (mean ± SD) for high censoring task, n = 50.<\/caption>","data":[["Truth (true S, true f)","Truth (true S, interp f)","Oracle","LLogis","Weibull","LogNorm_scale","LogNorm_int","LogNorm","Cox_int","RSF","KM"],["0.683 ± 0.070","0.743 ± 0.119","0.746 ± 0.117","0.757 ± 0.123","0.772 ± 0.129","0.786 ± 0.118","0.817 ± 0.132","0.849 ± 0.136","0.919 ± 0.190","1.238 ± 0.256","0.928 ± 0.164"],["0.679 ± 0.069","0.706 ± 0.090","0.709 ± 0.089","0.718 ± 0.095","0.739 ± 0.098","0.746 ± 0.091","0.781 ± 0.093","0.809 ± 0.092","0.860 ± 0.123","1.294 ± 0.185","0.891 ± 0.121"],["0.683 ± 0.072","0.697 ± 0.086","0.703 ± 0.092","0.709 ± 0.093","0.735 ± 0.101","0.738 ± 0.086","0.780 ± 0.085","0.809 ± 0.084","0.856 ± 0.120","1.369 ± 0.208","0.888 ± 0.116"],["0.681 ± 0.078","0.688 ± 0.086","0.696 ± 0.087","0.701 ± 0.087","0.726 ± 0.098","0.731 ± 0.084","0.770 ± 0.092","0.797 ± 0.088","0.861 ± 0.115","1.413 ± 0.234","0.895 ± 0.109"],["0.682 ± 0.072","0.685 ± 0.076","0.709 ± 0.082","0.712 ± 0.081","0.731 ± 0.084","0.740 ± 0.079","0.788 ± 0.087","0.813 ± 0.085","0.890 ± 0.103","1.461 ± 0.218","0.928 ± 0.100"],["0.677 ± 0.070","0.678 ± 0.071","0.723 ± 0.083","0.727 ± 0.082","0.747 ± 0.086","0.757 ± 0.081","0.801 ± 0.091","0.827 ± 0.089","0.922 ± 0.103","1.472 ± 0.214","0.965 ± 0.109"],["0.680 ± 0.067","0.682 ± 0.068","0.741 ± 0.085","0.746 ± 0.086","0.765 ± 0.087","0.778 ± 0.083","0.820 ± 0.092","0.850 ± 0.091","0.948 ± 0.097","1.477 ± 0.206","0.990 ± 0.099"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>learner_id<\/th>\n      <th>8<\/th>\n      <th>19<\/th>\n      <th>37<\/th>\n      <th>73<\/th>\n      <th>182<\/th>\n      <th>291<\/th>\n      <th>363<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":11,"dom":"t","columnDefs":[{"name":"learner_id","targets":0},{"name":"8","targets":1},{"name":"19","targets":2},{"name":"37","targets":3},{"name":"73","targets":4},{"name":"182","targets":5},{"name":"291","targets":6},{"name":"363","targets":7}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[10,11,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">=</span> <span class="fu">plot_rcll_diff_by_grid</span>(res, <span class="at">task_id_val =</span> <span class="st">"low"</span>, <span class="at">n_test_val =</span> <span class="dv">100</span>, <span class="at">legend_position =</span> <span class="st">"none"</span>)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">=</span> <span class="fu">plot_rcll_diff_by_grid</span>(res, <span class="at">task_id_val =</span> <span class="st">"high"</span>, <span class="at">n_test_val =</span> <span class="dv">100</span>, <span class="at">legend_position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">override.aes =</span> <span class="fu">list</span>(<span class="at">size =</span> <span class="dv">5</span>), <span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)) <span class="sc">+</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.direction =</span> <span class="st">"horizontal"</span>)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>(p1 <span class="sc">/</span> p2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid figure-img" width="1248"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_rcll_table</span>(res_tbl, <span class="at">task =</span> <span class="st">"low"</span>, <span class="at">n_test =</span> <span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-dde9dffe663b32dc2189" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-dde9dffe663b32dc2189">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-size:150%\">RCLL (mean ± SD) for low censoring task, n = 100.<\/caption>","data":[["Truth (true S, true f)","Truth (true S, interp f)","Oracle","LLogis","Weibull","LogNorm_scale","LogNorm_int","LogNorm","Cox_int","RSF","KM"],["1.501 ± 0.090","1.569 ± 0.129","1.573 ± 0.131","1.579 ± 0.136","1.650 ± 0.157","1.607 ± 0.123","1.842 ± 0.206","1.904 ± 0.236","1.991 ± 0.263","2.489 ± 0.264","1.997 ± 0.278"],["1.490 ± 0.090","1.519 ± 0.111","1.523 ± 0.113","1.526 ± 0.111","1.580 ± 0.123","1.568 ± 0.109","1.714 ± 0.117","1.753 ± 0.113","1.816 ± 0.180","2.762 ± 0.245","1.820 ± 0.191"],["1.498 ± 0.086","1.518 ± 0.100","1.531 ± 0.112","1.529 ± 0.106","1.585 ± 0.130","1.578 ± 0.113","1.711 ± 0.107","1.756 ± 0.107","1.806 ± 0.160","2.926 ± 0.255","1.813 ± 0.175"],["1.506 ± 0.095","1.512 ± 0.097","1.537 ± 0.105","1.537 ± 0.101","1.595 ± 0.120","1.585 ± 0.100","1.725 ± 0.102","1.773 ± 0.097","1.817 ± 0.120","3.031 ± 0.266","1.825 ± 0.127"],["1.494 ± 0.092","1.495 ± 0.093","1.587 ± 0.106","1.591 ± 0.104","1.643 ± 0.114","1.634 ± 0.101","1.783 ± 0.112","1.830 ± 0.107","1.896 ± 0.102","3.078 ± 0.266","1.903 ± 0.099"],["1.506 ± 0.092","1.507 ± 0.092","1.681 ± 0.119","1.686 ± 0.118","1.733 ± 0.124","1.724 ± 0.115","1.877 ± 0.121","1.921 ± 0.118","1.993 ± 0.108","3.105 ± 0.255","1.999 ± 0.107"],["1.490 ± 0.087","1.490 ± 0.088","1.710 ± 0.117","1.715 ± 0.117","1.765 ± 0.125","1.758 ± 0.114","1.904 ± 0.125","1.953 ± 0.121","2.016 ± 0.108","3.078 ± 0.263","2.023 ± 0.107"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>learner_id<\/th>\n      <th>16<\/th>\n      <th>38<\/th>\n      <th>76<\/th>\n      <th>152<\/th>\n      <th>379<\/th>\n      <th>607<\/th>\n      <th>758<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":11,"dom":"t","columnDefs":[{"name":"learner_id","targets":0},{"name":"16","targets":1},{"name":"38","targets":2},{"name":"76","targets":3},{"name":"152","targets":4},{"name":"379","targets":5},{"name":"607","targets":6},{"name":"758","targets":7}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[10,11,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_rcll_table</span>(res_tbl, <span class="at">task =</span> <span class="st">"high"</span>, <span class="at">n_test =</span> <span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-802aba198eb91c97a92f" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-802aba198eb91c97a92f">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-size:150%\">RCLL (mean ± SD) for high censoring task, n = 100.<\/caption>","data":[["Truth (true S, true f)","Truth (true S, interp f)","Oracle","LLogis","Weibull","LogNorm_scale","LogNorm_int","LogNorm","Cox_int","RSF","KM"],["0.683 ± 0.070","0.743 ± 0.119","0.746 ± 0.117","0.757 ± 0.123","0.772 ± 0.129","0.786 ± 0.118","0.817 ± 0.132","0.849 ± 0.136","0.919 ± 0.190","1.238 ± 0.256","0.928 ± 0.164"],["0.679 ± 0.069","0.706 ± 0.090","0.709 ± 0.089","0.718 ± 0.095","0.739 ± 0.098","0.746 ± 0.091","0.781 ± 0.093","0.809 ± 0.092","0.860 ± 0.123","1.294 ± 0.185","0.891 ± 0.121"],["0.683 ± 0.072","0.697 ± 0.086","0.703 ± 0.092","0.709 ± 0.093","0.735 ± 0.101","0.738 ± 0.086","0.780 ± 0.085","0.809 ± 0.084","0.856 ± 0.120","1.369 ± 0.208","0.888 ± 0.116"],["0.681 ± 0.078","0.688 ± 0.086","0.696 ± 0.087","0.701 ± 0.087","0.726 ± 0.098","0.731 ± 0.084","0.770 ± 0.092","0.797 ± 0.088","0.861 ± 0.115","1.413 ± 0.234","0.895 ± 0.109"],["0.682 ± 0.072","0.685 ± 0.076","0.709 ± 0.082","0.712 ± 0.081","0.731 ± 0.084","0.740 ± 0.079","0.788 ± 0.087","0.813 ± 0.085","0.890 ± 0.103","1.461 ± 0.218","0.928 ± 0.100"],["0.677 ± 0.070","0.678 ± 0.071","0.723 ± 0.083","0.727 ± 0.082","0.747 ± 0.086","0.757 ± 0.081","0.801 ± 0.091","0.827 ± 0.089","0.922 ± 0.103","1.472 ± 0.214","0.965 ± 0.109"],["0.680 ± 0.067","0.682 ± 0.068","0.741 ± 0.085","0.746 ± 0.086","0.765 ± 0.087","0.778 ± 0.083","0.820 ± 0.092","0.850 ± 0.091","0.948 ± 0.097","1.477 ± 0.206","0.990 ± 0.099"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>learner_id<\/th>\n      <th>8<\/th>\n      <th>19<\/th>\n      <th>37<\/th>\n      <th>73<\/th>\n      <th>182<\/th>\n      <th>291<\/th>\n      <th>363<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":11,"dom":"t","columnDefs":[{"name":"learner_id","targets":0},{"name":"8","targets":1},{"name":"19","targets":2},{"name":"37","targets":3},{"name":"73","targets":4},{"name":"182","targets":5},{"name":"291","targets":6},{"name":"363","targets":7}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[10,11,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</div>
+<div id="tabset-5-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-3-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">=</span> <span class="fu">plot_rcll_diff_by_grid</span>(res, <span class="at">task_id_val =</span> <span class="st">"low"</span>, <span class="at">n_test_val =</span> <span class="dv">250</span>, <span class="at">legend_position =</span> <span class="st">"none"</span>)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">=</span> <span class="fu">plot_rcll_diff_by_grid</span>(res, <span class="at">task_id_val =</span> <span class="st">"high"</span>, <span class="at">n_test_val =</span> <span class="dv">250</span>, <span class="at">legend_position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">override.aes =</span> <span class="fu">list</span>(<span class="at">size =</span> <span class="dv">5</span>), <span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)) <span class="sc">+</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.direction =</span> <span class="st">"horizontal"</span>)</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>(p1 <span class="sc">/</span> p2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid figure-img" width="1248"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_rcll_table</span>(res_tbl, <span class="at">task =</span> <span class="st">"low"</span>, <span class="at">n_test =</span> <span class="dv">250</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-f4cbfe2617b4dbd527e0" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-f4cbfe2617b4dbd527e0">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-size:150%\">RCLL (mean ± SD) for low censoring task, n = 250.<\/caption>","data":[["Truth (true S, true f)","Truth (true S, interp f)","Oracle","LLogis","Weibull","LogNorm_scale","LogNorm_int","LogNorm","Cox_int","RSF","KM"],["1.501 ± 0.090","1.569 ± 0.129","1.573 ± 0.131","1.579 ± 0.136","1.650 ± 0.157","1.607 ± 0.123","1.842 ± 0.206","1.904 ± 0.236","1.991 ± 0.263","2.489 ± 0.264","1.997 ± 0.278"],["1.490 ± 0.090","1.519 ± 0.111","1.523 ± 0.113","1.526 ± 0.111","1.580 ± 0.123","1.568 ± 0.109","1.714 ± 0.117","1.753 ± 0.113","1.816 ± 0.180","2.762 ± 0.245","1.820 ± 0.191"],["1.498 ± 0.086","1.518 ± 0.100","1.531 ± 0.112","1.529 ± 0.106","1.585 ± 0.130","1.578 ± 0.113","1.711 ± 0.107","1.756 ± 0.107","1.806 ± 0.160","2.926 ± 0.255","1.813 ± 0.175"],["1.506 ± 0.095","1.512 ± 0.097","1.537 ± 0.105","1.537 ± 0.101","1.595 ± 0.120","1.585 ± 0.100","1.725 ± 0.102","1.773 ± 0.097","1.817 ± 0.120","3.031 ± 0.266","1.825 ± 0.127"],["1.494 ± 0.092","1.495 ± 0.093","1.587 ± 0.106","1.591 ± 0.104","1.643 ± 0.114","1.634 ± 0.101","1.783 ± 0.112","1.830 ± 0.107","1.896 ± 0.102","3.078 ± 0.266","1.903 ± 0.099"],["1.506 ± 0.092","1.507 ± 0.092","1.681 ± 0.119","1.686 ± 0.118","1.733 ± 0.124","1.724 ± 0.115","1.877 ± 0.121","1.921 ± 0.118","1.993 ± 0.108","3.105 ± 0.255","1.999 ± 0.107"],["1.490 ± 0.087","1.490 ± 0.088","1.710 ± 0.117","1.715 ± 0.117","1.765 ± 0.125","1.758 ± 0.114","1.904 ± 0.125","1.953 ± 0.121","2.016 ± 0.108","3.078 ± 0.263","2.023 ± 0.107"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>learner_id<\/th>\n      <th>16<\/th>\n      <th>38<\/th>\n      <th>76<\/th>\n      <th>152<\/th>\n      <th>379<\/th>\n      <th>607<\/th>\n      <th>758<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":11,"dom":"t","columnDefs":[{"name":"learner_id","targets":0},{"name":"16","targets":1},{"name":"38","targets":2},{"name":"76","targets":3},{"name":"152","targets":4},{"name":"379","targets":5},{"name":"607","targets":6},{"name":"758","targets":7}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[10,11,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_rcll_table</span>(res_tbl, <span class="at">task =</span> <span class="st">"high"</span>, <span class="at">n_test =</span> <span class="dv">250</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-5259a22a001c4d95451b" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-5259a22a001c4d95451b">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-size:150%\">RCLL (mean ± SD) for high censoring task, n = 250.<\/caption>","data":[["Truth (true S, true f)","Truth (true S, interp f)","Oracle","LLogis","Weibull","LogNorm_scale","LogNorm_int","LogNorm","Cox_int","RSF","KM"],["0.683 ± 0.070","0.743 ± 0.119","0.746 ± 0.117","0.757 ± 0.123","0.772 ± 0.129","0.786 ± 0.118","0.817 ± 0.132","0.849 ± 0.136","0.919 ± 0.190","1.238 ± 0.256","0.928 ± 0.164"],["0.679 ± 0.069","0.706 ± 0.090","0.709 ± 0.089","0.718 ± 0.095","0.739 ± 0.098","0.746 ± 0.091","0.781 ± 0.093","0.809 ± 0.092","0.860 ± 0.123","1.294 ± 0.185","0.891 ± 0.121"],["0.683 ± 0.072","0.697 ± 0.086","0.703 ± 0.092","0.709 ± 0.093","0.735 ± 0.101","0.738 ± 0.086","0.780 ± 0.085","0.809 ± 0.084","0.856 ± 0.120","1.369 ± 0.208","0.888 ± 0.116"],["0.681 ± 0.078","0.688 ± 0.086","0.696 ± 0.087","0.701 ± 0.087","0.726 ± 0.098","0.731 ± 0.084","0.770 ± 0.092","0.797 ± 0.088","0.861 ± 0.115","1.413 ± 0.234","0.895 ± 0.109"],["0.682 ± 0.072","0.685 ± 0.076","0.709 ± 0.082","0.712 ± 0.081","0.731 ± 0.084","0.740 ± 0.079","0.788 ± 0.087","0.813 ± 0.085","0.890 ± 0.103","1.461 ± 0.218","0.928 ± 0.100"],["0.677 ± 0.070","0.678 ± 0.071","0.723 ± 0.083","0.727 ± 0.082","0.747 ± 0.086","0.757 ± 0.081","0.801 ± 0.091","0.827 ± 0.089","0.922 ± 0.103","1.472 ± 0.214","0.965 ± 0.109"],["0.680 ± 0.067","0.682 ± 0.068","0.741 ± 0.085","0.746 ± 0.086","0.765 ± 0.087","0.778 ± 0.083","0.820 ± 0.092","0.850 ± 0.091","0.948 ± 0.097","1.477 ± 0.206","0.990 ± 0.099"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>learner_id<\/th>\n      <th>8<\/th>\n      <th>19<\/th>\n      <th>37<\/th>\n      <th>73<\/th>\n      <th>182<\/th>\n      <th>291<\/th>\n      <th>363<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":11,"dom":"t","columnDefs":[{"name":"learner_id","targets":0},{"name":"8","targets":1},{"name":"19","targets":2},{"name":"37","targets":3},{"name":"73","targets":4},{"name":"182","targets":5},{"name":"291","targets":6},{"name":"363","targets":7}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[10,11,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</div>
+<div id="tabset-5-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-4-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">=</span> <span class="fu">plot_rcll_diff_by_grid</span>(res, <span class="at">task_id_val =</span> <span class="st">"low"</span>, <span class="at">n_test_val =</span> <span class="dv">500</span>, <span class="at">legend_position =</span> <span class="st">"none"</span>)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">=</span> <span class="fu">plot_rcll_diff_by_grid</span>(res, <span class="at">task_id_val =</span> <span class="st">"high"</span>, <span class="at">n_test_val =</span> <span class="dv">500</span>, <span class="at">legend_position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">override.aes =</span> <span class="fu">list</span>(<span class="at">size =</span> <span class="dv">5</span>), <span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)) <span class="sc">+</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.direction =</span> <span class="st">"horizontal"</span>)</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>(p1 <span class="sc">/</span> p2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-43-1.png" class="img-fluid figure-img" width="1248"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_rcll_table</span>(res_tbl, <span class="at">task =</span> <span class="st">"low"</span>, <span class="at">n_test =</span> <span class="dv">500</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-73e8243cad70c255e246" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-73e8243cad70c255e246">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-size:150%\">RCLL (mean ± SD) for low censoring task, n = 500.<\/caption>","data":[["Truth (true S, true f)","Truth (true S, interp f)","Oracle","LLogis","Weibull","LogNorm_scale","LogNorm_int","LogNorm","Cox_int","RSF","KM"],["1.501 ± 0.090","1.569 ± 0.129","1.573 ± 0.131","1.579 ± 0.136","1.650 ± 0.157","1.607 ± 0.123","1.842 ± 0.206","1.904 ± 0.236","1.991 ± 0.263","2.489 ± 0.264","1.997 ± 0.278"],["1.490 ± 0.090","1.519 ± 0.111","1.523 ± 0.113","1.526 ± 0.111","1.580 ± 0.123","1.568 ± 0.109","1.714 ± 0.117","1.753 ± 0.113","1.816 ± 0.180","2.762 ± 0.245","1.820 ± 0.191"],["1.498 ± 0.086","1.518 ± 0.100","1.531 ± 0.112","1.529 ± 0.106","1.585 ± 0.130","1.578 ± 0.113","1.711 ± 0.107","1.756 ± 0.107","1.806 ± 0.160","2.926 ± 0.255","1.813 ± 0.175"],["1.506 ± 0.095","1.512 ± 0.097","1.537 ± 0.105","1.537 ± 0.101","1.595 ± 0.120","1.585 ± 0.100","1.725 ± 0.102","1.773 ± 0.097","1.817 ± 0.120","3.031 ± 0.266","1.825 ± 0.127"],["1.494 ± 0.092","1.495 ± 0.093","1.587 ± 0.106","1.591 ± 0.104","1.643 ± 0.114","1.634 ± 0.101","1.783 ± 0.112","1.830 ± 0.107","1.896 ± 0.102","3.078 ± 0.266","1.903 ± 0.099"],["1.506 ± 0.092","1.507 ± 0.092","1.681 ± 0.119","1.686 ± 0.118","1.733 ± 0.124","1.724 ± 0.115","1.877 ± 0.121","1.921 ± 0.118","1.993 ± 0.108","3.105 ± 0.255","1.999 ± 0.107"],["1.490 ± 0.087","1.490 ± 0.088","1.710 ± 0.117","1.715 ± 0.117","1.765 ± 0.125","1.758 ± 0.114","1.904 ± 0.125","1.953 ± 0.121","2.016 ± 0.108","3.078 ± 0.263","2.023 ± 0.107"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>learner_id<\/th>\n      <th>16<\/th>\n      <th>38<\/th>\n      <th>76<\/th>\n      <th>152<\/th>\n      <th>379<\/th>\n      <th>607<\/th>\n      <th>758<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":11,"dom":"t","columnDefs":[{"name":"learner_id","targets":0},{"name":"16","targets":1},{"name":"38","targets":2},{"name":"76","targets":3},{"name":"152","targets":4},{"name":"379","targets":5},{"name":"607","targets":6},{"name":"758","targets":7}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[10,11,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_rcll_table</span>(res_tbl, <span class="at">task =</span> <span class="st">"high"</span>, <span class="at">n_test =</span> <span class="dv">500</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-6d62322b30683bf1b7f5" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-6d62322b30683bf1b7f5">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-size:150%\">RCLL (mean ± SD) for high censoring task, n = 500.<\/caption>","data":[["Truth (true S, true f)","Truth (true S, interp f)","Oracle","LLogis","Weibull","LogNorm_scale","LogNorm_int","LogNorm","Cox_int","RSF","KM"],["0.683 ± 0.070","0.743 ± 0.119","0.746 ± 0.117","0.757 ± 0.123","0.772 ± 0.129","0.786 ± 0.118","0.817 ± 0.132","0.849 ± 0.136","0.919 ± 0.190","1.238 ± 0.256","0.928 ± 0.164"],["0.679 ± 0.069","0.706 ± 0.090","0.709 ± 0.089","0.718 ± 0.095","0.739 ± 0.098","0.746 ± 0.091","0.781 ± 0.093","0.809 ± 0.092","0.860 ± 0.123","1.294 ± 0.185","0.891 ± 0.121"],["0.683 ± 0.072","0.697 ± 0.086","0.703 ± 0.092","0.709 ± 0.093","0.735 ± 0.101","0.738 ± 0.086","0.780 ± 0.085","0.809 ± 0.084","0.856 ± 0.120","1.369 ± 0.208","0.888 ± 0.116"],["0.681 ± 0.078","0.688 ± 0.086","0.696 ± 0.087","0.701 ± 0.087","0.726 ± 0.098","0.731 ± 0.084","0.770 ± 0.092","0.797 ± 0.088","0.861 ± 0.115","1.413 ± 0.234","0.895 ± 0.109"],["0.682 ± 0.072","0.685 ± 0.076","0.709 ± 0.082","0.712 ± 0.081","0.731 ± 0.084","0.740 ± 0.079","0.788 ± 0.087","0.813 ± 0.085","0.890 ± 0.103","1.461 ± 0.218","0.928 ± 0.100"],["0.677 ± 0.070","0.678 ± 0.071","0.723 ± 0.083","0.727 ± 0.082","0.747 ± 0.086","0.757 ± 0.081","0.801 ± 0.091","0.827 ± 0.089","0.922 ± 0.103","1.472 ± 0.214","0.965 ± 0.109"],["0.680 ± 0.067","0.682 ± 0.068","0.741 ± 0.085","0.746 ± 0.086","0.765 ± 0.087","0.778 ± 0.083","0.820 ± 0.092","0.850 ± 0.091","0.948 ± 0.097","1.477 ± 0.206","0.990 ± 0.099"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>learner_id<\/th>\n      <th>8<\/th>\n      <th>19<\/th>\n      <th>37<\/th>\n      <th>73<\/th>\n      <th>182<\/th>\n      <th>291<\/th>\n      <th>363<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":11,"dom":"t","columnDefs":[{"name":"learner_id","targets":0},{"name":"8","targets":1},{"name":"19","targets":2},{"name":"37","targets":3},{"name":"73","targets":4},{"name":"182","targets":5},{"name":"291","targets":6},{"name":"363","targets":7}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[10,11,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Summary
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p><strong>Prediction grid resolution affects the absolute RCLL values, but not model rankings or empirical properness.</strong> Across all grid resolutions, the true model consistently achieves the lowest RCLL, with all misspecified models retaining positive excess loss.</p></li>
+<li><p><strong>The RCLL of the true model with linear interpolation of the density is biased upward on coarse grids.</strong> As the prediction grid becomes denser, the interpolated score converges to the exact log-likelihood, although convergence is slower under heavy censoring.</p></li>
+<li><p><strong>Misspecified models have downward-biased RCLL on coarse grids.</strong> This makes models appear artificially closer to the true model regardless of their level of misspecification.</p></li>
+<li><p><strong>Dense prediction grids are therefore essential when reporting absolute RCLL values.</strong> While relative model comparisons remain robust, coarse grids can substantially distort the magnitude of the RCLL through interpolation bias.</p></li>
+<li><p><strong>Model rankings remain largely unchanged.</strong> Although absolute RCLL values change? on coarse grids, the relative ordering of models is remarkably stable across grid resolutions.</p></li>
+</ul>
+</div>
+</div>
 </section>
 </section>
 <section id="bench" class="level2 unnumbered">
@@ -1768,61 +2174,61 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3proba)</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3misc)</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co"># silence mlr3 logging messages</span></span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>lgr<span class="sc">::</span><span class="fu">get_logger</span>(<span class="st">"mlr3"</span>)<span class="sc">$</span><span class="fu">set_threshold</span>(<span class="dv">0</span>)</span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">"results/real_data_bm.rds"</span>)</span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>task_ids <span class="ot">=</span> <span class="fu">unique</span>(res<span class="sc">$</span>task_id)</span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>tasks <span class="ot">=</span> mlr3<span class="sc">::</span><span class="fu">tsks</span>(task_ids)</span>
-<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>metrics <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"C-index"</span>, <span class="st">"D-calib"</span>, <span class="st">"RCLL*"</span>, <span class="st">"RCLL"</span>, <span class="st">"ISBS"</span>)</span>
-<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>res_long <span class="ot">=</span> <span class="fu">melt</span>(</span>
-<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>  res,</span>
-<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"task_id"</span>, <span class="st">"learner_id"</span>, <span class="st">"iteration"</span>),</span>
-<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">measure.vars =</span> metrics,</span>
-<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">variable.name =</span> <span class="st">"metric"</span>,</span>
-<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">value.name =</span> <span class="st">"value"</span></span>
-<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a><span class="co"># remove RCLL* from the boxplots</span></span>
-<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a>res_long <span class="ot">=</span> res_long[metric <span class="sc">!=</span> <span class="st">"RCLL*"</span>]</span>
-<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a><span class="co"># truncate D-calibration to 50 to avoid extreme outliers in the boxplots</span></span>
-<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a>res_long[</span>
-<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a>  metric <span class="sc">==</span> <span class="st">"D-calib"</span>,</span>
-<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a>  value <span class="sc">:</span><span class="er">=</span> <span class="fu">pmin</span>(value, <span class="dv">50</span>)</span>
-<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb33-28"><a href="#cb33-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-29"><a href="#cb33-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Reorder metric factor to the desired sequence</span></span>
-<span id="cb33-30"><a href="#cb33-30" aria-hidden="true" tabindex="-1"></a>res_long[, metric <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(metric, <span class="at">levels =</span> metrics)]</span>
-<span id="cb33-31"><a href="#cb33-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-32"><a href="#cb33-32" aria-hidden="true" tabindex="-1"></a>task_info <span class="ot">=</span> <span class="fu">lapply</span>(tasks, <span class="cf">function</span>(task) {</span>
-<span id="cb33-33"><a href="#cb33-33" aria-hidden="true" tabindex="-1"></a>  id <span class="ot">=</span> task<span class="sc">$</span>id</span>
-<span id="cb33-34"><a href="#cb33-34" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">=</span> task<span class="sc">$</span>nrow</span>
-<span id="cb33-35"><a href="#cb33-35" aria-hidden="true" tabindex="-1"></a>  n_events <span class="ot">=</span> <span class="fu">length</span>(task<span class="sc">$</span><span class="fu">unique_event_times</span>())</span>
-<span id="cb33-36"><a href="#cb33-36" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">=</span> task<span class="sc">$</span>n_features</span>
-<span id="cb33-37"><a href="#cb33-37" aria-hidden="true" tabindex="-1"></a>  feature_dt <span class="ot">=</span> task<span class="sc">$</span>col_info[id <span class="sc">%nin%</span> <span class="fu">c</span>(<span class="st">"..row_id"</span>, task<span class="sc">$</span>target_names)]</span>
-<span id="cb33-38"><a href="#cb33-38" aria-hidden="true" tabindex="-1"></a>  n_factor <span class="ot">=</span> <span class="fu">sum</span>(feature_dt<span class="sc">$</span>type <span class="sc">==</span> <span class="st">"factor"</span>)</span>
-<span id="cb33-39"><a href="#cb33-39" aria-hidden="true" tabindex="-1"></a>  n_numeric <span class="ot">=</span> <span class="fu">sum</span>(feature_dt<span class="sc">$</span>type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"numeric"</span>, <span class="st">"integer"</span>))</span>
-<span id="cb33-40"><a href="#cb33-40" aria-hidden="true" tabindex="-1"></a>  cens_rate <span class="ot">=</span> task<span class="sc">$</span><span class="fu">cens_prop</span>()</span>
-<span id="cb33-41"><a href="#cb33-41" aria-hidden="true" tabindex="-1"></a>  admin_cens_rate <span class="ot">=</span> task<span class="sc">$</span><span class="fu">admin_cens_prop</span>()</span>
-<span id="cb33-42"><a href="#cb33-42" aria-hidden="true" tabindex="-1"></a>  prop_haz <span class="ot">=</span> <span class="fu">ifelse</span>(task<span class="sc">$</span><span class="fu">prop_haz</span>() <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>)</span>
-<span id="cb33-43"><a href="#cb33-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-44"><a href="#cb33-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb33-45"><a href="#cb33-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> id,</span>
-<span id="cb33-46"><a href="#cb33-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> n,</span>
-<span id="cb33-47"><a href="#cb33-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_events =</span> n_events,</span>
-<span id="cb33-48"><a href="#cb33-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> p,</span>
-<span id="cb33-49"><a href="#cb33-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_factor =</span> n_factor,</span>
-<span id="cb33-50"><a href="#cb33-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_numeric =</span> n_numeric,</span>
-<span id="cb33-51"><a href="#cb33-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">censoring_rate =</span> cens_rate,</span>
-<span id="cb33-52"><a href="#cb33-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">admin_censoring_rate =</span> admin_cens_rate,</span>
-<span id="cb33-53"><a href="#cb33-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">prop_haz =</span> prop_haz</span>
-<span id="cb33-54"><a href="#cb33-54" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb33-55"><a href="#cb33-55" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">|&gt;</span> <span class="fu">rbindlist</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3proba)</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3misc)</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="co"># silence mlr3 logging messages</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>lgr<span class="sc">::</span><span class="fu">get_logger</span>(<span class="st">"mlr3"</span>)<span class="sc">$</span><span class="fu">set_threshold</span>(<span class="dv">0</span>)</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">"results/real_data_bm.rds"</span>)</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>task_ids <span class="ot">=</span> <span class="fu">unique</span>(res<span class="sc">$</span>task_id)</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>tasks <span class="ot">=</span> mlr3<span class="sc">::</span><span class="fu">tsks</span>(task_ids)</span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>metrics <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"C-index"</span>, <span class="st">"D-calib"</span>, <span class="st">"RCLL*"</span>, <span class="st">"RCLL"</span>, <span class="st">"ISBS"</span>)</span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>res_long <span class="ot">=</span> <span class="fu">melt</span>(</span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>  res,</span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"task_id"</span>, <span class="st">"learner_id"</span>, <span class="st">"iteration"</span>),</span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">measure.vars =</span> metrics,</span>
+<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">variable.name =</span> <span class="st">"metric"</span>,</span>
+<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">value.name =</span> <span class="st">"value"</span></span>
+<span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb45-19"><a href="#cb45-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-20"><a href="#cb45-20" aria-hidden="true" tabindex="-1"></a><span class="co"># remove RCLL* from the boxplots</span></span>
+<span id="cb45-21"><a href="#cb45-21" aria-hidden="true" tabindex="-1"></a>res_long <span class="ot">=</span> res_long[metric <span class="sc">!=</span> <span class="st">"RCLL*"</span>]</span>
+<span id="cb45-22"><a href="#cb45-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-23"><a href="#cb45-23" aria-hidden="true" tabindex="-1"></a><span class="co"># truncate D-calibration to 50 to avoid extreme outliers in the boxplots</span></span>
+<span id="cb45-24"><a href="#cb45-24" aria-hidden="true" tabindex="-1"></a>res_long[</span>
+<span id="cb45-25"><a href="#cb45-25" aria-hidden="true" tabindex="-1"></a>  metric <span class="sc">==</span> <span class="st">"D-calib"</span>,</span>
+<span id="cb45-26"><a href="#cb45-26" aria-hidden="true" tabindex="-1"></a>  value <span class="sc">:</span><span class="er">=</span> <span class="fu">pmin</span>(value, <span class="dv">50</span>)</span>
+<span id="cb45-27"><a href="#cb45-27" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb45-28"><a href="#cb45-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-29"><a href="#cb45-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Reorder metric factor to the desired sequence</span></span>
+<span id="cb45-30"><a href="#cb45-30" aria-hidden="true" tabindex="-1"></a>res_long[, metric <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(metric, <span class="at">levels =</span> metrics)]</span>
+<span id="cb45-31"><a href="#cb45-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-32"><a href="#cb45-32" aria-hidden="true" tabindex="-1"></a>task_info <span class="ot">=</span> <span class="fu">lapply</span>(tasks, <span class="cf">function</span>(task) {</span>
+<span id="cb45-33"><a href="#cb45-33" aria-hidden="true" tabindex="-1"></a>  id <span class="ot">=</span> task<span class="sc">$</span>id</span>
+<span id="cb45-34"><a href="#cb45-34" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">=</span> task<span class="sc">$</span>nrow</span>
+<span id="cb45-35"><a href="#cb45-35" aria-hidden="true" tabindex="-1"></a>  n_events <span class="ot">=</span> <span class="fu">length</span>(task<span class="sc">$</span><span class="fu">unique_event_times</span>())</span>
+<span id="cb45-36"><a href="#cb45-36" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">=</span> task<span class="sc">$</span>n_features</span>
+<span id="cb45-37"><a href="#cb45-37" aria-hidden="true" tabindex="-1"></a>  feature_dt <span class="ot">=</span> task<span class="sc">$</span>col_info[id <span class="sc">%nin%</span> <span class="fu">c</span>(<span class="st">"..row_id"</span>, task<span class="sc">$</span>target_names)]</span>
+<span id="cb45-38"><a href="#cb45-38" aria-hidden="true" tabindex="-1"></a>  n_factor <span class="ot">=</span> <span class="fu">sum</span>(feature_dt<span class="sc">$</span>type <span class="sc">==</span> <span class="st">"factor"</span>)</span>
+<span id="cb45-39"><a href="#cb45-39" aria-hidden="true" tabindex="-1"></a>  n_numeric <span class="ot">=</span> <span class="fu">sum</span>(feature_dt<span class="sc">$</span>type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"numeric"</span>, <span class="st">"integer"</span>))</span>
+<span id="cb45-40"><a href="#cb45-40" aria-hidden="true" tabindex="-1"></a>  cens_rate <span class="ot">=</span> task<span class="sc">$</span><span class="fu">cens_prop</span>()</span>
+<span id="cb45-41"><a href="#cb45-41" aria-hidden="true" tabindex="-1"></a>  admin_cens_rate <span class="ot">=</span> task<span class="sc">$</span><span class="fu">admin_cens_prop</span>()</span>
+<span id="cb45-42"><a href="#cb45-42" aria-hidden="true" tabindex="-1"></a>  prop_haz <span class="ot">=</span> <span class="fu">ifelse</span>(task<span class="sc">$</span><span class="fu">prop_haz</span>() <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>)</span>
+<span id="cb45-43"><a href="#cb45-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-44"><a href="#cb45-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb45-45"><a href="#cb45-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> id,</span>
+<span id="cb45-46"><a href="#cb45-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> n,</span>
+<span id="cb45-47"><a href="#cb45-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_events =</span> n_events,</span>
+<span id="cb45-48"><a href="#cb45-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> p,</span>
+<span id="cb45-49"><a href="#cb45-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_factor =</span> n_factor,</span>
+<span id="cb45-50"><a href="#cb45-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_numeric =</span> n_numeric,</span>
+<span id="cb45-51"><a href="#cb45-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">censoring_rate =</span> cens_rate,</span>
+<span id="cb45-52"><a href="#cb45-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">admin_censoring_rate =</span> admin_cens_rate,</span>
+<span id="cb45-53"><a href="#cb45-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">prop_haz =</span> prop_haz</span>
+<span id="cb45-54"><a href="#cb45-54" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb45-55"><a href="#cb45-55" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">|&gt;</span> <span class="fu">rbindlist</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>In the following table:</p>
@@ -1840,25 +2246,25 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>task_info <span class="sc">|&gt;</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(censoring_rate) <span class="sc">|&gt;</span></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">rownames =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter =</span> <span class="st">"top"</span>,</span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">options =</span> <span class="fu">list</span>(<span class="at">dom =</span> <span class="st">"t"</span>, <span class="at">searching =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">8</span>), <span class="at">digits =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span></span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">formatStyle</span>(</span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="st">"censoring_rate"</span>,</span>
-<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">backgroundColor =</span> DT<span class="sc">::</span><span class="fu">styleInterval</span>(</span>
-<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>),</span>
-<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">"#e5f5e0"</span>, <span class="st">"#a1d99b"</span>, <span class="st">"#e7785f"</span>, <span class="st">"#f8555b"</span>)</span>
-<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>task_info <span class="sc">|&gt;</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(censoring_rate) <span class="sc">|&gt;</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">rownames =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter =</span> <span class="st">"top"</span>,</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">options =</span> <span class="fu">list</span>(<span class="at">dom =</span> <span class="st">"t"</span>, <span class="at">searching =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">8</span>), <span class="at">digits =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span></span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">formatStyle</span>(</span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="st">"censoring_rate"</span>,</span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">backgroundColor =</span> DT<span class="sc">::</span><span class="fu">styleInterval</span>(</span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>),</span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">"#e5f5e0"</span>, <span class="st">"#a1d99b"</span>, <span class="st">"#e7785f"</span>, <span class="st">"#f8555b"</span>)</span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<div class="datatables html-widget html-fill-item" id="htmlwidget-dc9b6b2f202c941e6590" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-dc9b6b2f202c941e6590">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"137\" data-max=\"1000\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"33\" data-max=\"270\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"3\" data-max=\"9\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"3\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"2\" data-max=\"8\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.0625\" data-max=\"0.86\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"0.724852071005918\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["mgus","veteran","lung","whas","gbsg","grace","gbcs","rats"],[176,137,168,481,686,1000,686,300],[163,97,111,180,270,110,164,33],[7,6,7,9,8,6,8,3],[1,3,1,2,3,0,0,1],[6,3,6,7,5,6,8,2],[0.0625,0.06569343065693431,0.2797619047619048,0.4823284823284824,0.5641399416909622,0.676,0.750728862973761,0.86],[0.09090909090909091,0,0.0425531914893617,0.02155172413793104,0.01808785529715762,0.7248520710059172,0.01553398058252427,0.4147286821705427],[true,false,true,false,false,false,false,true]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>id<\/th>\n      <th>n<\/th>\n      <th>n_events<\/th>\n      <th>p<\/th>\n      <th>n_factor<\/th>\n      <th>n_numeric<\/th>\n      <th>censoring_rate<\/th>\n      <th>admin_censoring_rate<\/th>\n      <th>prop_haz<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","searching":true,"columnDefs":[{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":7,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[1,2,3,4,5,6,7]},{"name":"id","targets":0},{"name":"n","targets":1},{"name":"n_events","targets":2},{"name":"p","targets":3},{"name":"n_factor","targets":4},{"name":"n_numeric","targets":5},{"name":"censoring_rate","targets":6},{"name":"admin_censoring_rate","targets":7},{"name":"prop_haz","targets":8}],"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[6]; $(this.api().cell(row, 6).node()).css({'background-color':isNaN(parseFloat(value)) ? '' : value <= 0.25 ? \"#e5f5e0\" : value <= 0.5 ? \"#a1d99b\" : value <= 0.75 ? \"#e7785f\" : \"#f8555b\"});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.rowCallback"],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-3031f6eeda866e137897" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-3031f6eeda866e137897">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"137\" data-max=\"1000\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"33\" data-max=\"270\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"3\" data-max=\"9\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"3\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"2\" data-max=\"8\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.0625\" data-max=\"0.86\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"0.724852071005918\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["mgus","veteran","lung","whas","gbsg","grace","gbcs","rats"],[176,137,168,481,686,1000,686,300],[163,97,111,180,270,110,164,33],[7,6,7,9,8,6,8,3],[1,3,1,2,3,0,0,1],[6,3,6,7,5,6,8,2],[0.0625,0.06569343065693431,0.2797619047619048,0.4823284823284824,0.5641399416909622,0.676,0.750728862973761,0.86],[0.09090909090909091,0,0.0425531914893617,0.02155172413793104,0.01808785529715762,0.7248520710059172,0.01553398058252427,0.4147286821705427],[true,false,true,false,false,false,false,true]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>id<\/th>\n      <th>n<\/th>\n      <th>n_events<\/th>\n      <th>p<\/th>\n      <th>n_factor<\/th>\n      <th>n_numeric<\/th>\n      <th>censoring_rate<\/th>\n      <th>admin_censoring_rate<\/th>\n      <th>prop_haz<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","searching":true,"columnDefs":[{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":7,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[1,2,3,4,5,6,7]},{"name":"id","targets":0},{"name":"n","targets":1},{"name":"n_events","targets":2},{"name":"p","targets":3},{"name":"n_factor","targets":4},{"name":"n_numeric","targets":5},{"name":"censoring_rate","targets":6},{"name":"admin_censoring_rate","targets":7},{"name":"prop_haz","targets":8}],"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[6]; $(this.api().cell(row, 6).node()).css({'background-color':isNaN(parseFloat(value)) ? '' : value <= 0.25 ? \"#e5f5e0\" : value <= 0.5 ? \"#a1d99b\" : value <= 0.75 ? \"#e7785f\" : \"#f8555b\"});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.rowCallback"],"jsHooks":[]}</script>
 </div>
 </div>
 </section>
@@ -1880,86 +2286,86 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>learner_ids <span class="ot">=</span> <span class="fu">sort</span>(<span class="fu">unique</span>(res_long<span class="sc">$</span>learner_id))</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">=</span> scales<span class="sc">::</span><span class="fu">hue_pal</span>()(<span class="fu">length</span>(learner_ids))</span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cols) <span class="ot">=</span> learner_ids</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>learner_ids <span class="ot">=</span> <span class="fu">sort</span>(<span class="fu">unique</span>(res_long<span class="sc">$</span>learner_id))</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">=</span> scales<span class="sc">::</span><span class="fu">hue_pal</span>()(<span class="fu">length</span>(learner_ids))</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cols) <span class="ot">=</span> learner_ids</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>plot_task <span class="ot">=</span> <span class="cf">function</span>(task) {</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">=</span> res_long[task_id <span class="sc">==</span> task]</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Order learners by median RCLL</span></span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  rcll_medians <span class="ot">=</span> dat[metric <span class="sc">==</span> <span class="st">"RCLL"</span>, .(<span class="at">med =</span> <span class="fu">median</span>(value)), by <span class="ot">=</span> learner_id]</span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  learner_order <span class="ot">=</span> rcll_medians[<span class="fu">order</span>(med), learner_id]</span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>  dat[, learner_id <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(learner_id, <span class="at">levels =</span> learner_order)]</span>
-<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">=</span> dat <span class="sc">|&gt;</span></span>
-<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
-<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> value,</span>
-<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> learner_id,</span>
-<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">colour =</span> learner_id,</span>
-<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">fill =</span> learner_id</span>
-<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>    )) <span class="sc">+</span></span>
-<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_boxplot</span>(<span class="at">alpha =</span> <span class="fl">0.25</span>, <span class="at">outlier.shape =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
-<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="dv">0</span>, <span class="at">height =</span> <span class="fl">0.15</span>, <span class="at">alpha =</span> <span class="fl">0.25</span>, <span class="at">size =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>metric, <span class="at">scales =</span> <span class="st">"free_x"</span>, <span class="at">ncol =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ---- Add the manual scales ----</span></span>
-<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> cols) <span class="sc">+</span></span>
-<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> cols) <span class="sc">+</span></span>
-<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb36-23"><a href="#cb36-23" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="cn">NULL</span>,</span>
-<span id="cb36-24"><a href="#cb36-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="cn">NULL</span>,</span>
-<span id="cb36-25"><a href="#cb36-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> task</span>
-<span id="cb36-26"><a href="#cb36-26" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb36-27"><a href="#cb36-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">14</span>, <span class="at">base_family =</span> <span class="st">"Arial"</span>) <span class="sc">+</span></span>
-<span id="cb36-28"><a href="#cb36-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
-<span id="cb36-29"><a href="#cb36-29" aria-hidden="true" tabindex="-1"></a>      <span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
-<span id="cb36-30"><a href="#cb36-30" aria-hidden="true" tabindex="-1"></a>      <span class="co"># strip.background = element_blank(),</span></span>
-<span id="cb36-31"><a href="#cb36-31" aria-hidden="true" tabindex="-1"></a>      <span class="at">strip.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"grey95"</span>),</span>
-<span id="cb36-32"><a href="#cb36-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
-<span id="cb36-33"><a href="#cb36-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.grid.major.y =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb36-34"><a href="#cb36-34" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>)</span>
-<span id="cb36-35"><a href="#cb36-35" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb36-36"><a href="#cb36-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-37"><a href="#cb36-37" aria-hidden="true" tabindex="-1"></a>  p</span>
-<span id="cb36-38"><a href="#cb36-38" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb36-39"><a href="#cb36-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-40"><a href="#cb36-40" aria-hidden="true" tabindex="-1"></a><span class="co"># order datasets by censoring rate</span></span>
-<span id="cb36-41"><a href="#cb36-41" aria-hidden="true" tabindex="-1"></a>task_ids <span class="ot">=</span> task_info[<span class="fu">order</span>(censoring_rate)]<span class="sc">$</span>id</span>
-<span id="cb36-42"><a href="#cb36-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-43"><a href="#cb36-43" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"::: {.panel-tabset}</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>plot_task <span class="ot">=</span> <span class="cf">function</span>(task) {</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">=</span> res_long[task_id <span class="sc">==</span> task]</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Order learners by median RCLL</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  rcll_medians <span class="ot">=</span> dat[metric <span class="sc">==</span> <span class="st">"RCLL"</span>, .(<span class="at">med =</span> <span class="fu">median</span>(value)), by <span class="ot">=</span> learner_id]</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>  learner_order <span class="ot">=</span> rcll_medians[<span class="fu">order</span>(med), learner_id]</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>  dat[, learner_id <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(learner_id, <span class="at">levels =</span> learner_order)]</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">=</span> dat <span class="sc">|&gt;</span></span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> value,</span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> learner_id,</span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">colour =</span> learner_id,</span>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">fill =</span> learner_id</span>
+<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a>    )) <span class="sc">+</span></span>
+<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_boxplot</span>(<span class="at">alpha =</span> <span class="fl">0.25</span>, <span class="at">outlier.shape =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="dv">0</span>, <span class="at">height =</span> <span class="fl">0.15</span>, <span class="at">alpha =</span> <span class="fl">0.25</span>, <span class="at">size =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb48-18"><a href="#cb48-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>metric, <span class="at">scales =</span> <span class="st">"free_x"</span>, <span class="at">ncol =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb48-19"><a href="#cb48-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ---- Add the manual scales ----</span></span>
+<span id="cb48-20"><a href="#cb48-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> cols) <span class="sc">+</span></span>
+<span id="cb48-21"><a href="#cb48-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> cols) <span class="sc">+</span></span>
+<span id="cb48-22"><a href="#cb48-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb48-23"><a href="#cb48-23" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="cn">NULL</span>,</span>
+<span id="cb48-24"><a href="#cb48-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="cn">NULL</span>,</span>
+<span id="cb48-25"><a href="#cb48-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> task</span>
+<span id="cb48-26"><a href="#cb48-26" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb48-27"><a href="#cb48-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">14</span>, <span class="at">base_family =</span> <span class="st">"Arial"</span>) <span class="sc">+</span></span>
+<span id="cb48-28"><a href="#cb48-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb48-29"><a href="#cb48-29" aria-hidden="true" tabindex="-1"></a>      <span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
+<span id="cb48-30"><a href="#cb48-30" aria-hidden="true" tabindex="-1"></a>      <span class="co"># strip.background = element_blank(),</span></span>
+<span id="cb48-31"><a href="#cb48-31" aria-hidden="true" tabindex="-1"></a>      <span class="at">strip.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"grey95"</span>),</span>
+<span id="cb48-32"><a href="#cb48-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb48-33"><a href="#cb48-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.grid.major.y =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb48-34"><a href="#cb48-34" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>)</span>
+<span id="cb48-35"><a href="#cb48-35" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb48-36"><a href="#cb48-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-37"><a href="#cb48-37" aria-hidden="true" tabindex="-1"></a>  p</span>
+<span id="cb48-38"><a href="#cb48-38" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb48-39"><a href="#cb48-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-40"><a href="#cb48-40" aria-hidden="true" tabindex="-1"></a><span class="co"># order datasets by censoring rate</span></span>
+<span id="cb48-41"><a href="#cb48-41" aria-hidden="true" tabindex="-1"></a>task_ids <span class="ot">=</span> task_info[<span class="fu">order</span>(censoring_rate)]<span class="sc">$</span>id</span>
+<span id="cb48-42"><a href="#cb48-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-43"><a href="#cb48-43" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"::: {.panel-tabset}</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href="">mgus (n=176, p=7, PH)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false" href="">veteran (n=137, p=6, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-3" role="tab" aria-controls="tabset-5-3" aria-selected="false" href="">lung (n=168, p=7, PH)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-4" role="tab" aria-controls="tabset-5-4" aria-selected="false" href="">whas (n=481, p=9, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-5" role="tab" aria-controls="tabset-5-5" aria-selected="false" href="">gbsg (n=686, p=8, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-6-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-6" role="tab" aria-controls="tabset-5-6" aria-selected="false" href="">grace (n=1000, p=6, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-7-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-7" role="tab" aria-controls="tabset-5-7" aria-selected="false" href="">gbcs (n=686, p=8, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-8-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-8" role="tab" aria-controls="tabset-5-8" aria-selected="false" href="">rats (n=300, p=3, PH)</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true" href="">mgus (n=176, p=7, PH)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false" href="">veteran (n=137, p=6, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-3" role="tab" aria-controls="tabset-6-3" aria-selected="false" href="">lung (n=168, p=7, PH)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-4" role="tab" aria-controls="tabset-6-4" aria-selected="false" href="">whas (n=481, p=9, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-5" role="tab" aria-controls="tabset-6-5" aria-selected="false" href="">gbsg (n=686, p=8, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-6-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-6" role="tab" aria-controls="tabset-6-6" aria-selected="false" href="">grace (n=1000, p=6, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-7-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-7" role="tab" aria-controls="tabset-6-7" aria-selected="false" href="">gbcs (n=686, p=8, PH violated)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-8-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-8" role="tab" aria-controls="tabset-6-8" aria-selected="false" href="">rats (n=300, p=3, PH)</a></li></ul>
 <div class="tab-content">
-<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
-<p><img src="index_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid" width="960"></p>
+<div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
+<p><img src="index_files/figure-html/unnamed-chunk-50-1.png" class="img-fluid" width="960"></p>
 </div>
-<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
-<p><img src="index_files/figure-html/unnamed-chunk-37-2.png" class="img-fluid" width="960"></p>
+<div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
+<p><img src="index_files/figure-html/unnamed-chunk-50-2.png" class="img-fluid" width="960"></p>
 </div>
-<div id="tabset-5-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-3-tab">
-<p><img src="index_files/figure-html/unnamed-chunk-37-3.png" class="img-fluid" width="960"></p>
+<div id="tabset-6-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-3-tab">
+<p><img src="index_files/figure-html/unnamed-chunk-50-3.png" class="img-fluid" width="960"></p>
 </div>
-<div id="tabset-5-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-4-tab">
-<p><img src="index_files/figure-html/unnamed-chunk-37-4.png" class="img-fluid" width="960"></p>
+<div id="tabset-6-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-4-tab">
+<p><img src="index_files/figure-html/unnamed-chunk-50-4.png" class="img-fluid" width="960"></p>
 </div>
-<div id="tabset-5-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-5-tab">
-<p><img src="index_files/figure-html/unnamed-chunk-37-5.png" class="img-fluid" width="960"></p>
+<div id="tabset-6-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-5-tab">
+<p><img src="index_files/figure-html/unnamed-chunk-50-5.png" class="img-fluid" width="960"></p>
 </div>
-<div id="tabset-5-6" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-6-tab">
-<p><img src="index_files/figure-html/unnamed-chunk-37-6.png" class="img-fluid" width="960"></p>
+<div id="tabset-6-6" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-6-tab">
+<p><img src="index_files/figure-html/unnamed-chunk-50-6.png" class="img-fluid" width="960"></p>
 </div>
-<div id="tabset-5-7" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-7-tab">
-<p><img src="index_files/figure-html/unnamed-chunk-37-7.png" class="img-fluid" width="960"></p>
+<div id="tabset-6-7" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-7-tab">
+<p><img src="index_files/figure-html/unnamed-chunk-50-7.png" class="img-fluid" width="960"></p>
 </div>
-<div id="tabset-5-8" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-8-tab">
-<p><img src="index_files/figure-html/unnamed-chunk-37-8.png" class="img-fluid" width="960"></p>
+<div id="tabset-6-8" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-8-tab">
+<p><img src="index_files/figure-html/unnamed-chunk-50-8.png" class="img-fluid" width="960"></p>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">":::</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">":::</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
@@ -1968,22 +2374,22 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>res_mean <span class="ot">=</span> res[,</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(.SD, mean, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), by <span class="ot">=</span> .(task_id, learner_id), .SDcols <span class="ot">=</span> metrics</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>res_mean <span class="sc">|&gt;</span></span>
-<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
-<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">rownames =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter =</span> <span class="st">"top"</span>,</span>
-<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">options =</span> <span class="fu">list</span>(<span class="at">searching =</span> <span class="cn">TRUE</span>, <span class="at">pageLength =</span> <span class="dv">10</span>)</span>
-<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">"RCLL"</span>, <span class="st">"RCLL*"</span>, <span class="st">"C-index"</span>, <span class="st">"ISBS"</span>), <span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
-<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="st">"D-calib"</span>, <span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>res_mean <span class="ot">=</span> res[,</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(.SD, mean, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), by <span class="ot">=</span> .(task_id, learner_id), .SDcols <span class="ot">=</span> metrics</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>res_mean <span class="sc">|&gt;</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">rownames =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter =</span> <span class="st">"top"</span>,</span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">options =</span> <span class="fu">list</span>(<span class="at">searching =</span> <span class="cn">TRUE</span>, <span class="at">pageLength =</span> <span class="dv">10</span>)</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">"RCLL"</span>, <span class="st">"RCLL*"</span>, <span class="st">"C-index"</span>, <span class="st">"ISBS"</span>), <span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">formatSignif</span>(<span class="at">columns =</span> <span class="st">"D-calib"</span>, <span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<div class="datatables html-widget html-fill-item" id="htmlwidget-48e6565275f1592f6a3f" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-48e6565275f1592f6a3f">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.5\" data-max=\"0.846303716897965\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.748608155916526\" data-max=\"5081389.38630878\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"7.17770578235325\" data-max=\"3520.19836933282\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.891038834038669\" data-max=\"10.1080860264941\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.061439480369413\" data-max=\"0.239721989600469\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["gbcs","gbcs","gbcs","gbcs","gbcs","gbsg","gbsg","gbsg","gbsg","gbsg","grace","grace","grace","grace","grace","lung","lung","lung","lung","lung","mgus","mgus","mgus","mgus","mgus","rats","rats","rats","rats","rats","veteran","veteran","veteran","veteran","veteran","whas","whas","whas","whas","whas"],["KM","Cox","RSF","LogNorm","Weibull","KM","Cox","RSF","LogNorm","Weibull","KM","Cox","RSF","LogNorm","Weibull","KM","Cox","RSF","LogNorm","Weibull","KM","Cox","RSF","LogNorm","Weibull","KM","Cox","RSF","LogNorm","Weibull","KM","Cox","RSF","LogNorm","Weibull","KM","Cox","RSF","LogNorm","Weibull"],[0.5,0.7394198381900787,0.7180941033363343,0.7397741198539733,0.7394729590415955,0.5,0.679541791677475,0.6819990193843841,0.6820003771781922,0.6797607314586639,0.5,0.8386807763576507,0.8463037168979645,0.8335666799545288,0.8400632774829865,0.5,0.6170812088251114,0.5896736484766006,0.616787017583847,0.6188208228349685,0.5,0.6987921464443206,0.6809086179733277,0.6914569568634034,0.6955473721027374,0.5,0.7774715912342072,0.7887628746032714,0.7742652249336243,0.7777211380004883,0.5,0.7155748915672302,0.7068011748790741,0.7254471933841705,0.7124019253253937,0.5,0.740630476474762,0.7595438694953919,0.7434101045131684,0.7417533385753632],[2.738689806380517,73.69091359653305,2.845877527534004,2.853333623762633,17.41402949041746,4.058199338792486,534482.26371699,4.171071475485834,16.48418226424474,506495.0507784202,2.759957592499181,5.769622962372271,15.57848213454741,8.019965101214867,6.129487165829424,12.01732658584611,33.8676760759779,9.390809252335183,8.205633341680569,70.14114744489103,5081389.386308777,10.34043836822064,15.54190448653408,13.13722548919093,9.18355836780407,0.7486081559165261,1.362980083550353,1.429805467558477,1.285021398187949,1.342258946132349,9.898464122997368,13.69830210373412,14.82930929629461,10.84913749553902,12.96000360532304,5.432480035341034,118.6631364524829,7.896997746822682,6.75416796595415,40032.23756977482],[614.3072920577636,658.1639219903693,571.2029957422517,466.877275021093,498.5120932167026,729.6584584754864,691.8386442604752,700.8379316066581,653.6019041938447,677.070598466461,46.01825085053717,21.65366312345535,38.70052299899962,22.33203158976158,21.13402906018674,383.6401709728846,337.4446811072356,209.9108145228802,236.8131343705053,251.0928560924621,3520.198369332823,3067.00792409519,1872.083517790813,1625.360508107754,2382.099387957589,8.612788283934115,7.177705782353255,7.27599413330838,8.414629218956371,7.949339431099028,84.0203844272024,77.56697212279865,59.02423532623747,71.86506381810072,74.78859931782608,2086.916119458552,2090.830246457956,1714.489814301077,1901.520830999983,2003.627921765728],[2.493443823970787,2.422966491567674,2.64417281385235,2.279593301030997,2.294621353450049,3.946307156903699,3.892889373475528,4.307944458761068,3.747554973686269,3.786302103422948,2.043188551967057,1.753699901391595,1.439411951575675,1.772845190886329,1.736598248122889,5.417143093132478,5.382510942471629,6.155387918539236,5.111176385332951,5.054061766920847,9.410771963425981,9.137816625648178,10.10808602649412,9.134555679322352,8.868268681406549,0.9941663466400651,0.922802748576224,1.021745075976638,0.902818343723169,0.8910388340386691,5.825114429599864,5.700850314468521,6.608209030425198,5.311361807925018,5.355179374592495,4.2811060474024,4.117002632385376,4.506695302271322,4.014266888793233,4.040431903881473],[0.1294178848697866,0.110154185296653,0.1136238604489248,0.1095274969861937,0.1103242105704853,0.1857692789966447,0.1619139748617896,0.16219823623735,0.160941030125342,0.1625537515216356,0.1975157460459984,0.09754443922602647,0.1049229863359076,0.1018812966991325,0.096942748418405,0.1898448270170843,0.1867156445493801,0.1958454129459233,0.1853805705547784,0.1853774076832742,0.1753068376157896,0.140311693909887,0.1564139530030019,0.1486782411149805,0.1402754191926971,0.08307357573895917,0.07090614501138606,0.06143948036941315,0.07244824294364326,0.07059117248598878,0.1584116346764514,0.1315284659426533,0.1444748973229671,0.1311804986478173,0.131589193360638,0.2397219896004688,0.1974389432960518,0.194214961685872,0.1974416669116585,0.196765831291171]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>task_id<\/th>\n      <th>learner_id<\/th>\n      <th>C-index<\/th>\n      <th>D-calib<\/th>\n      <th>RCLL*<\/th>\n      <th>RCLL<\/th>\n      <th>ISBS<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"searching":true,"pageLength":10,"columnDefs":[{"targets":3,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatSignif(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":5,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":2,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[2,3,4,5,6]},{"name":"task_id","targets":0},{"name":"learner_id","targets":1},{"name":"C-index","targets":2},{"name":"D-calib","targets":3},{"name":"RCLL*","targets":4},{"name":"RCLL","targets":5},{"name":"ISBS","targets":6}],"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.columnDefs.3.render","options.columnDefs.4.render"],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-32348fd263812f402b66" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-32348fd263812f402b66">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.5\" data-max=\"0.846303716897965\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.748608155916526\" data-max=\"5081389.38630878\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"7.17770578235325\" data-max=\"3520.19836933282\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.891038834038669\" data-max=\"10.1080860264941\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.061439480369413\" data-max=\"0.239721989600469\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["gbcs","gbcs","gbcs","gbcs","gbcs","gbsg","gbsg","gbsg","gbsg","gbsg","grace","grace","grace","grace","grace","lung","lung","lung","lung","lung","mgus","mgus","mgus","mgus","mgus","rats","rats","rats","rats","rats","veteran","veteran","veteran","veteran","veteran","whas","whas","whas","whas","whas"],["KM","Cox","RSF","LogNorm","Weibull","KM","Cox","RSF","LogNorm","Weibull","KM","Cox","RSF","LogNorm","Weibull","KM","Cox","RSF","LogNorm","Weibull","KM","Cox","RSF","LogNorm","Weibull","KM","Cox","RSF","LogNorm","Weibull","KM","Cox","RSF","LogNorm","Weibull","KM","Cox","RSF","LogNorm","Weibull"],[0.5,0.7394198381900787,0.7180941033363343,0.7397741198539733,0.7394729590415955,0.5,0.679541791677475,0.6819990193843841,0.6820003771781922,0.6797607314586639,0.5,0.8386807763576507,0.8463037168979645,0.8335666799545288,0.8400632774829865,0.5,0.6170812088251114,0.5896736484766006,0.616787017583847,0.6188208228349685,0.5,0.6987921464443206,0.6809086179733277,0.6914569568634034,0.6955473721027374,0.5,0.7774715912342072,0.7887628746032714,0.7742652249336243,0.7777211380004883,0.5,0.7155748915672302,0.7068011748790741,0.7254471933841705,0.7124019253253937,0.5,0.740630476474762,0.7595438694953919,0.7434101045131684,0.7417533385753632],[2.738689806380517,73.69091359653305,2.845877527534004,2.853333623762633,17.41402949041746,4.058199338792486,534482.26371699,4.171071475485834,16.48418226424474,506495.0507784202,2.759957592499181,5.769622962372271,15.57848213454741,8.019965101214867,6.129487165829424,12.01732658584611,33.8676760759779,9.390809252335183,8.205633341680569,70.14114744489103,5081389.386308777,10.34043836822064,15.54190448653408,13.13722548919093,9.18355836780407,0.7486081559165261,1.362980083550353,1.429805467558477,1.285021398187949,1.342258946132349,9.898464122997368,13.69830210373412,14.82930929629461,10.84913749553902,12.96000360532304,5.432480035341034,118.6631364524829,7.896997746822682,6.75416796595415,40032.23756977482],[614.3072920577636,658.1639219903693,571.2029957422517,466.877275021093,498.5120932167026,729.6584584754864,691.8386442604752,700.8379316066581,653.6019041938447,677.070598466461,46.01825085053717,21.65366312345535,38.70052299899962,22.33203158976158,21.13402906018674,383.6401709728846,337.4446811072356,209.9108145228802,236.8131343705053,251.0928560924621,3520.198369332823,3067.00792409519,1872.083517790813,1625.360508107754,2382.099387957589,8.612788283934115,7.177705782353255,7.27599413330838,8.414629218956371,7.949339431099028,84.0203844272024,77.56697212279865,59.02423532623747,71.86506381810072,74.78859931782608,2086.916119458552,2090.830246457956,1714.489814301077,1901.520830999983,2003.627921765728],[2.493443823970787,2.422966491567674,2.64417281385235,2.279593301030997,2.294621353450049,3.946307156903699,3.892889373475528,4.307944458761068,3.747554973686269,3.786302103422948,2.043188551967057,1.753699901391595,1.439411951575675,1.772845190886329,1.736598248122889,5.417143093132478,5.382510942471629,6.155387918539236,5.111176385332951,5.054061766920847,9.410771963425981,9.137816625648178,10.10808602649412,9.134555679322352,8.868268681406549,0.9941663466400651,0.922802748576224,1.021745075976638,0.902818343723169,0.8910388340386691,5.825114429599864,5.700850314468521,6.608209030425198,5.311361807925018,5.355179374592495,4.2811060474024,4.117002632385376,4.506695302271322,4.014266888793233,4.040431903881473],[0.1294178848697866,0.110154185296653,0.1136238604489248,0.1095274969861937,0.1103242105704853,0.1857692789966447,0.1619139748617896,0.16219823623735,0.160941030125342,0.1625537515216356,0.1975157460459984,0.09754443922602647,0.1049229863359076,0.1018812966991325,0.096942748418405,0.1898448270170843,0.1867156445493801,0.1958454129459233,0.1853805705547784,0.1853774076832742,0.1753068376157896,0.140311693909887,0.1564139530030019,0.1486782411149805,0.1402754191926971,0.08307357573895917,0.07090614501138606,0.06143948036941315,0.07244824294364326,0.07059117248598878,0.1584116346764514,0.1315284659426533,0.1444748973229671,0.1311804986478173,0.131589193360638,0.2397219896004688,0.1974389432960518,0.194214961685872,0.1974416669116585,0.196765831291171]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>task_id<\/th>\n      <th>learner_id<\/th>\n      <th>C-index<\/th>\n      <th>D-calib<\/th>\n      <th>RCLL*<\/th>\n      <th>RCLL<\/th>\n      <th>ISBS<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"searching":true,"pageLength":10,"columnDefs":[{"targets":3,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatSignif(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":5,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":2,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 3, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[2,3,4,5,6]},{"name":"task_id","targets":0},{"name":"learner_id","targets":1},{"name":"C-index","targets":2},{"name":"D-calib","targets":3},{"name":"RCLL*","targets":4},{"name":"RCLL","targets":5},{"name":"ISBS","targets":6}],"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.columnDefs.3.render","options.columnDefs.4.render"],"jsHooks":[]}</script>
 </div>
 </div>
 </section>
@@ -1994,42 +2400,42 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggcorrplot)</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="co"># convert C-index to 1 - C</span></span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> res[, <span class="st">`</span><span class="at">C-index-error</span><span class="st">`</span> <span class="sc">:</span><span class="er">=</span> <span class="dv">1</span> <span class="sc">-</span> <span class="st">`</span><span class="at">C-index</span><span class="st">`</span>]</span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>metrics <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"C-index-error"</span>, <span class="st">"D-calib"</span>, <span class="st">"RCLL*"</span>, <span class="st">"RCLL"</span>, <span class="st">"ISBS"</span>)</span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute ranks per task for each metric</span></span>
-<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>rank_cols <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"rank_"</span>, metrics)</span>
-<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>res_ranks <span class="ot">=</span> <span class="fu">copy</span>(res)</span>
-<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate ranks for each metric, grouped by task_id and iteration</span></span>
-<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(metrics)) {</span>
-<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">=</span> metrics[i]</span>
-<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>  res_ranks[,</span>
-<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(<span class="st">"rank_"</span>, m) <span class="sc">:</span><span class="er">=</span> <span class="fu">frank</span>(<span class="fu">get</span>(m), <span class="at">ties.method =</span> <span class="st">"min"</span>),</span>
-<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a>    by <span class="ot">=</span> .(task_id, iteration)</span>
-<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>  ]</span>
-<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>cor_all <span class="ot">=</span> <span class="fu">cor</span>(res_ranks[, ..rank_cols], <span class="at">method =</span> <span class="st">"pearson"</span>)</span>
-<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcorrplot</span>(</span>
-<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a>  cor_all,</span>
-<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"square"</span>,</span>
-<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"lower"</span>,</span>
-<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">hc.order =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb39-28"><a href="#cb39-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">lab =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb39-29"><a href="#cb39-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">lab_size =</span> <span class="dv">4</span>,</span>
-<span id="cb39-30"><a href="#cb39-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">outline.color =</span> <span class="st">"white"</span></span>
-<span id="cb39-31"><a href="#cb39-31" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggcorrplot)</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="co"># convert C-index to 1 - C</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> res[, <span class="st">`</span><span class="at">C-index-error</span><span class="st">`</span> <span class="sc">:</span><span class="er">=</span> <span class="dv">1</span> <span class="sc">-</span> <span class="st">`</span><span class="at">C-index</span><span class="st">`</span>]</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>metrics <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"C-index-error"</span>, <span class="st">"D-calib"</span>, <span class="st">"RCLL*"</span>, <span class="st">"RCLL"</span>, <span class="st">"ISBS"</span>)</span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute ranks per task for each metric</span></span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>rank_cols <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"rank_"</span>, metrics)</span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a>res_ranks <span class="ot">=</span> <span class="fu">copy</span>(res)</span>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate ranks for each metric, grouped by task_id and iteration</span></span>
+<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(metrics)) {</span>
+<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">=</span> metrics[i]</span>
+<span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a>  res_ranks[,</span>
+<span id="cb51-16"><a href="#cb51-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(<span class="st">"rank_"</span>, m) <span class="sc">:</span><span class="er">=</span> <span class="fu">frank</span>(<span class="fu">get</span>(m), <span class="at">ties.method =</span> <span class="st">"min"</span>),</span>
+<span id="cb51-17"><a href="#cb51-17" aria-hidden="true" tabindex="-1"></a>    by <span class="ot">=</span> .(task_id, iteration)</span>
+<span id="cb51-18"><a href="#cb51-18" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb51-19"><a href="#cb51-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb51-20"><a href="#cb51-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-21"><a href="#cb51-21" aria-hidden="true" tabindex="-1"></a>cor_all <span class="ot">=</span> <span class="fu">cor</span>(res_ranks[, ..rank_cols], <span class="at">method =</span> <span class="st">"pearson"</span>)</span>
+<span id="cb51-22"><a href="#cb51-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-23"><a href="#cb51-23" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcorrplot</span>(</span>
+<span id="cb51-24"><a href="#cb51-24" aria-hidden="true" tabindex="-1"></a>  cor_all,</span>
+<span id="cb51-25"><a href="#cb51-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"square"</span>,</span>
+<span id="cb51-26"><a href="#cb51-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"lower"</span>,</span>
+<span id="cb51-27"><a href="#cb51-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">hc.order =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb51-28"><a href="#cb51-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">lab =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb51-29"><a href="#cb51-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">lab_size =</span> <span class="dv">4</span>,</span>
+<span id="cb51-30"><a href="#cb51-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">outline.color =</span> <span class="st">"white"</span></span>
+<span id="cb51-31"><a href="#cb51-31" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-52-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -2061,7 +2467,7 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>utils<span class="sc">::</span><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>utils<span class="sc">::</span><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>R version 4.4.2 (2024-10-31)

@@ -1688,12 +1688,12 @@ res_tbl[, learner_id := factor(
 plot_rcll_table = function(
   res_tbl,
   task = c("low", "high"),
-  n_test = 250,
+  n = 250,
   caption = NULL,
   digits = 3
 ) {
   tbl = res_tbl[
-    task_id == task & n_test == n_test,
+    task_id == task & n_test == n,
     .(
       mean = mean(rcll),
       sd = sd(rcll)
@@ -1720,7 +1720,7 @@ plot_rcll_table = function(
     ),
     caption = htmltools::tags$caption(
       style = "caption-side: top; text-align: center; font-size:150%",
-      sprintf("RCLL (mean \u00B1 SD) for %s censoring task, n = %d.", task, n_test)
+      sprintf("RCLL (mean \u00B1 SD) for %s censoring task, n = %d.", task, n)
     )
   )
 }
@@ -1741,11 +1741,11 @@ p2 = plot_rcll_diff_by_grid(res, task_id_val = "high", n_test_val = 50, legend_p
 ```
 
 ```{r}
-plot_rcll_table(res_tbl, task = "low", n_test = 50)
+plot_rcll_table(res_tbl, task = "low", n = 50)
 ```
 
 ```{r}
-plot_rcll_table(res_tbl, task = "high", n_test = 50)
+plot_rcll_table(res_tbl, task = "high", n = 50)
 ```
 
 ### n = 100
@@ -1761,11 +1761,11 @@ p2 = plot_rcll_diff_by_grid(res, task_id_val = "high", n_test_val = 100, legend_
 ```
 
 ```{r}
-plot_rcll_table(res_tbl, task = "low", n_test = 100)
+plot_rcll_table(res_tbl, task = "low", n = 100)
 ```
 
 ```{r}
-plot_rcll_table(res_tbl, task = "high", n_test = 100)
+plot_rcll_table(res_tbl, task = "high", n = 100)
 ```
 
 ### n = 250
@@ -1781,11 +1781,11 @@ p2 = plot_rcll_diff_by_grid(res, task_id_val = "high", n_test_val = 250, legend_
 ```
 
 ```{r}
-plot_rcll_table(res_tbl, task = "low", n_test = 250)
+plot_rcll_table(res_tbl, task = "low", n = 250)
 ```
 
 ```{r}
-plot_rcll_table(res_tbl, task = "high", n_test = 250)
+plot_rcll_table(res_tbl, task = "high", n = 250)
 ```
 
 ### n = 500
@@ -1801,11 +1801,11 @@ p2 = plot_rcll_diff_by_grid(res, task_id_val = "high", n_test_val = 500, legend_
 ```
 
 ```{r}
-plot_rcll_table(res_tbl, task = "low", n_test = 500)
+plot_rcll_table(res_tbl, task = "low", n = 500)
 ```
 
 ```{r}
-plot_rcll_table(res_tbl, task = "high", n_test = 500)
+plot_rcll_table(res_tbl, task = "high", n = 500)
 ```
 
 :::

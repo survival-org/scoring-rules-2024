@@ -2142,11 +2142,10 @@ Note
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li><p><strong>Prediction grid resolution affects the absolute RCLL values, but not model rankings or empirical properness.</strong> Across all grid resolutions, the true model consistently achieves the lowest RCLL, with all misspecified models retaining positive excess loss.</p></li>
-<li><p><strong>The RCLL of the true model with linear interpolation of the density is biased upward on coarse grids.</strong> As the prediction grid becomes denser, the interpolated score converges to the exact log-likelihood, although convergence is slower under heavy censoring.</p></li>
-<li><p><strong>Misspecified models have downward-biased RCLL on coarse grids.</strong> This makes models appear artificially closer to the true model regardless of their level of misspecification.</p></li>
-<li><p><strong>Dense prediction grids are therefore essential when reporting absolute RCLL values.</strong> While relative model comparisons remain robust, coarse grids can substantially distort the magnitude of the RCLL through interpolation bias.</p></li>
-<li><p><strong>Model rankings remain largely unchanged.</strong> Although absolute RCLL values change? on coarse grids, the relative ordering of models is remarkably stable across grid resolutions.</p></li>
+<li><p><strong>Prediction grid resolution has little influence on model ranking.</strong> Across all grid sizes, the ordering of the fitted models remains largely unchanged in both censoring scenarios, indicating that interpolation mainly affects the absolute scale of the RCLL rather than its ability to rank models.</p></li>
+<li><p><strong>Interpolation bias affects the true model and fitted models in opposite directions.</strong> For the true model, coarse prediction grids inflate the interpolated RCLL above the exact likelihood, whereas all fitted models exhibit systematically smaller RCLL values, making them appear artificially closer to the truth. This bias is largely eliminated using sufficiently dense prediction grids.</p></li>
+<li><p><strong>The absolute scale of the RCLL depends strongly on the censoring rate.</strong> All models attain substantially smaller RCLL values under high censoring compared to under low censoring.</p></li>
+<li><p><strong>Dense prediction grids are recommended when reporting absolute RCLL values.</strong> While moderate grid coarsening has little effect on model ranking, sufficiently dense prediction grids are needed to minimize interpolation bias, particularly when accurate absolute RCLL values are of interest.</p></li>
 </ul>
 </div>
 </div>

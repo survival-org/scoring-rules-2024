@@ -862,10 +862,15 @@ Further details on the DGP, generated tasks, models, and benchmark design are pr
 The simulation and benchmarking pipeline is implemented in the [simulation_benchmark](https://github.com/survival-org/scoring-rules-2024/tree/main/simulation_benchmark) directory.
 Key scripts include:
 
-- [simulate.R](https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/simulate.R): Defines the DGP and can generate data sets under **low** and **high** censoring settings.
-- [train.R](https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/train.R): Trains all models on the generated tasks. The trained models are saved as `trained_low.rds`, `trained_high.rds`, and separate files for the large Random Survival Forest objects (`trained_low_rsf.rds`, `trained_high_rsf.rds`).
-- [execute_dense.R](https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/execute_dense.R): Runs a benchmark where the specified models are evaluated on test sets of varying sizes using a dense prediction time grid (unique event times from the training task). Results are saved in [`results/sim_bm_dense.rds`](https://github.com/survival-org/scoring-rules-2024/blob/main/results/sim_bm_dense.rds).
-- [RCLL_investigation.R](https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/RCLL_investigation.R): Investigates the sensitivity of the RCLL to the resolution of the prediction time grid. Results are saved in [`results/rcll_sim.rds`](https://github.com/survival-org/scoring-rules-2024/blob/main/results/rcll_sim.rds).
+- [simulate.R](https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/simulate.R): Defines the DGP and can generate data sets with different censoring rates.
+We use it to generate two tasks, one with a low censoring rate and one with a high censoring rate, and save them as [`tasks.rds`](https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/tasks.rds).
+- [train.R](https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/train.R): Trains all models on the generated tasks.
+The trained models are saved as `trained_low.rds`, `trained_high.rds`, and separate files for the large Random Survival Forest objects (`trained_low_rsf.rds`, `trained_high_rsf.rds`).
+- [execute_dense.R](https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/execute_dense.R):
+Executes a benchmark where the specified models are evaluated on test sets of varying sizes using a dense prediction time grid (unique event times from the training task).
+Results are saved in [`results/sim_bm_dense.rds`](https://github.com/survival-org/scoring-rules-2024/blob/main/results/sim_bm_dense.rds).
+- [RCLL_investigation.R](https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/RCLL_investigation.R): Investigates the sensitivity of the RCLL to the resolution of the prediction time grid.
+Results are saved in [`results/rcll_sim.rds`](https://github.com/survival-org/scoring-rules-2024/blob/main/results/rcll_sim.rds).
 :::
 
 ### DGP and censoring scenarios
@@ -1049,7 +1054,7 @@ $$
 $$
 
 i.e. the difference in empirical mean loss between a candidate model and the true data-generating process.
-We then plot it against the mean integrated absolute error (MIAE) between the predicted and true survival functions, which serves as a measure of misspecification.
+We then plot it against the *mean integrated absolute error* (MIAE) between the predicted and true survival functions, which serves as a measure of misspecification.
 
 The panels below show the relationship between excess loss and MIAE for four commonly used evaluation metrics:
 
@@ -1838,17 +1843,14 @@ ggsave(filename = "sensitivity_RCLL_grid_few_learners.png", dpi = 600, height = 
 ## Summary
 
 - **Prediction grid resolution has little influence on model ranking.**
-Across all grid sizes, the ordering of the fitted models remains largely unchanged in both censoring scenarios, indicating that interpolation mainly affects the absolute scale of the RCLL rather than its ability to rank models.
+Across all grid sizes and test set sizes, the ordering of the fitted models remains largely unchanged in both censoring scenarios, indicating that interpolation mainly affects the absolute scale of the RCLL rather than its ability to rank models.
 
-- **Interpolation bias affects the true model and fitted models in opposite directions.**
-For the true model, coarse prediction grids inflate the interpolated RCLL above the exact likelihood, whereas all fitted models exhibit systematically smaller RCLL values, making them appear artificially closer to the truth.
-This bias is largely eliminated using sufficiently dense prediction grids.
+- **The absolute scale of the RCLL depends on the density of the prediction grid.**
+The general trend is that for the true model, coarse prediction grids inflate the interpolated RCLL above the exact likelihood, whereas all fitted models exhibit systematically smaller RCLL values, making them appear artificially closer to the truth.
+While moderate grid coarsening has little effect on model ranking, sufficiently dense prediction grids are needed to minimize interpolation bias.
 
 - **The absolute scale of the RCLL depends strongly on the censoring rate.**
 All models attain substantially smaller RCLL values under high censoring compared to under low censoring.
-
-- **Dense prediction grids are recommended when reporting absolute RCLL values.**
-While moderate grid coarsening has little effect on model ranking, sufficiently dense prediction grids are needed to minimize interpolation bias, particularly when accurate absolute RCLL values are of interest.
 :::
 
 ## Benchmark (Real-World Data) {-#bench}

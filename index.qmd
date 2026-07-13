@@ -25,6 +25,7 @@ knitr::opts_chunk$set(echo = TRUE, cache = FALSE)
 
 Load libraries:
 ```{r, message=FALSE}
+library(survival)
 library(dplyr)
 library(tibble)
 library(ggplot2)
@@ -877,6 +878,7 @@ Results are saved in [`results/rcll_sim.rds`](https://github.com/survival-org/sc
 
 The code below generates Kaplan–Meier curves for both tasks with additional summary statistics, stratified by the binary treatment variable.
 See Figure 4 in the paper.
+Below, we also display the estimated censoring survival function $S_C(t)$ via Kaplan–Meier alongside the true exponential censoring distribution for each DGP.
 
 ```{r}
 #| cache: true
@@ -1013,6 +1015,49 @@ plot_km_task = function(task, title, show_censor = FALSE, extend_to_last_time = 
 
   p
 }
+
+plot_cens_surv = function(tasks, task_id) {
+  surv_obj = tasks[[task_id]]$truth()
+  time = surv_obj[, 1]
+  status = surv_obj[, 2] # 1 for event, 0 for censored
+  surv_cens = Surv(time, 1 - status) # now "event" means "censored"
+
+  # Fit KM to the censoring survival
+  km_cens_fit = survfit(surv_cens ~ 1)
+  km_cens_df = data.frame(
+    time = c(0, km_cens_fit$time),
+    surv = c(1, km_cens_fit$surv)
+  )
+
+  # True lambda for the censoring distribution
+  lambda = ifelse(task_id == "low", 0.075, 0.45)
+
+  # Create the comparison plot
+  ggplot() +
+    # KM for censoring: black
+    geom_step(
+      data = km_cens_df,
+      aes(x = time, y = surv, color = "Kaplan-Meier"),
+      linewidth = 1,
+      linetype = "solid"
+    ) +
+    # True exponential survival for censoring: blue
+    stat_function(
+      aes(color = "True"),
+      fun = function(t) exp(-lambda * t),
+      linewidth = 1.2
+    ) +
+    scale_color_manual(
+      name = "",
+      values = c("Kaplan-Meier" = "black", "True" = "blue")
+    ) +
+    labs(
+      title = bquote("" * S[C](t) * " Estimation (True " * lambda[C] * " = " * .(lambda) * ")"),
+      x = "Time",
+      y = "Censoring Survival Probability"
+    ) +
+    theme_bw(base_size = 14)
+}
 ```
 
 :::{.panel-tabset}
@@ -1026,6 +1071,10 @@ p_low  = plot_km_task(tasks$low, title = "Low censoring task", show_censor = TRU
 p_low
 ```
 
+```{r}
+plot_cens_surv(tasks, "low")
+```
+
 ### High censoring DGP
 ```{r}
 #| warning: false
@@ -1033,6 +1082,10 @@ p_low
 #| fig-height: 6
 p_high = plot_km_task(tasks$high, title = "High censoring task", show_censor = TRUE)
 p_high
+```
+
+```{r}
+plot_cens_surv(tasks, "high")
 ```
 
 ```{r}

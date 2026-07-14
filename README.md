@@ -11,7 +11,7 @@ See [HTML report](https://survival-org.github.io/scoring-rules-2024/).
 - **SBS improperness: Bias and Tail Effects** [[link](https://survival-org.github.io/scoring-rules-2024/#sbs-bias)] (main manuscript; Figures 2,3)
 - **SBS improperness: Administrative Censoring** [[link](https://survival-org.github.io/scoring-rules-2024/#sbs-admin)] (main manuscript; investigation related to the experiments section)
 - **Empirical violations of properness using G(t)** [[link](https://survival-org.github.io/scoring-rules-2024/#tabc1)] (main manuscript; Table C1)
-- **Sensitivity to Model Misspecification** [[link](https://survival-org.github.io/scoring-rules-2024/#sen)] (main manuscript; Figures 4,5,6,7 and C1)
+- **Sensitivity to Model Misspecification** [[link](https://survival-org.github.io/scoring-rules-2024/#sen)] (main manuscript; Figures 4,5,6,7,C1; Tables 3,C2)
 - **Real-World Benchmark Evaluation** [[link](https://survival-org.github.io/scoring-rules-2024/#bench)]
   An exploratory comparison of survival metrics including 3 scoring rules (RCLL, RCLL\*, ISBS), the C-index and D-calibration, on a few real-world survival datasets.
 

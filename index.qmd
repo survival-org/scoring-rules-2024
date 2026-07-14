@@ -1543,7 +1543,7 @@ For machine learning models that predict survival probabilities only at a discre
 To assess the impact of this approximation, we progressively reduce the prediction time grid by uniformly subsampling the unique event times, from 100% down to 2% of the original grid.
 
 The figures below show how the resulting approximation affects the excess RCLL for different test set sizes.
-The results for $n = 250$ correspond to Figure 7 and Table C2 in the manuscript.
+The results for $n = 250$ correspond to Figure 7 and Tables 3 and C2 in the manuscript.
 
 ```{r}
 # plots score differences (relative to TRUE likelihood) vs. MIAE/MISE for RCLL
@@ -1737,8 +1737,8 @@ res_tbl[, learner_id := factor(
     "LogNorm_int",
     "LogNorm",
     "Cox_int",
-    "RSF",
-    "KM"
+    "KM",
+    "RSF"
   )
 )]
 

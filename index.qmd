@@ -1542,7 +1542,7 @@ Unlike the Brier score, the RCLL requires both the survival function and event d
 For machine learning models that predict survival probabilities only at a discrete set of time points, the density must therefore be approximated by interpolating the survival curve.
 To assess the impact of this approximation, we progressively reduce the prediction time grid by uniformly subsampling the unique event times, from 100% down to 2% of the original grid.
 
-The figures below show how the resulting approximation affects the excess RCLL for different test set sizes.
+The figures below show how the resulting approximation (grid size $B$) affects the excess RCLL for different test set sizes.
 The results for $n = 250$ correspond to Figure 7 and Tables 3 and C2 in the manuscript.
 
 ```{r}

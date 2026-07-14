@@ -1796,7 +1796,7 @@ Note
 <section id="impact-of-prediction-grid-resolution-on-rcll" class="level3">
 <h3 class="anchored" data-anchor-id="impact-of-prediction-grid-resolution-on-rcll">Impact of Prediction Grid Resolution on RCLL</h3>
 <p>Unlike the Brier score, the RCLL requires both the survival function and event density. For machine learning models that predict survival probabilities only at a discrete set of time points, the density must therefore be approximated by interpolating the survival curve. To assess the impact of this approximation, we progressively reduce the prediction time grid by uniformly subsampling the unique event times, from 100% down to 2% of the original grid.</p>
-<p>The figures below show how the resulting approximation affects the excess RCLL for different test set sizes. The results for <span class="math inline">n = 250</span> correspond to Figure 7 and Tables 3 and C2 in the manuscript.</p>
+<p>The figures below show how the resulting approximation (grid size <span class="math inline">B</span>) affects the excess RCLL for different test set sizes. The results for <span class="math inline">n = 250</span> correspond to Figure 7 and Tables 3 and C2 in the manuscript.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>

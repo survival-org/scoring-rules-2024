@@ -44,6 +44,8 @@ These distributions represent either the true survival, predicted survival, or c
 The wide parameter range induces substantial variability, ensuring a rich family of distributions and increasing the sensitivity of our evaluation to detect violations of properness.
 By construction, all data-generating mechanisms assume $Y$ independent of $C$, satisfying the random censoring assumption.
 
+The figure below corresponds to Figure 1 in the main manuscript.
+
 ```{r, message=FALSE}
 #| fig-cap: "Weibull density (top) and survival (bottom) curves for randomly generated shape, $\\alpha$, and scale, $\\sigma$ parameters. Each curve corresponds to a different parameter pair, illustrating the broad variability across simulated distributions."
 set.seed(0L)
@@ -93,14 +95,18 @@ ggplot(plot_df, aes(x = t, y = value, color = group, group = group)) +
 ## Table 1 {-#tab1}
 
 :::{.callout-note}
-Use [properness_test.R](https://github.com/survival-org/scoring-rules-2024/blob/main/properness_test.R) to run the experiments.
+[properness_test.R](https://github.com/survival-org/scoring-rules-2024/blob/main/properness_test.R) is the core file related to the assessment of empirical violations of properness.
 
 Example execution: `Rscript properness_test.R 10000 1000 10000 FALSE 42`.
 
 The above arguments correspond to (in that order): $K = 10\,000$ simulations, $m = 1\,000$ distributions per simulation and $n = 10\,000$ samples drawn from each distribution.
-`FALSE` means that $S_C(t)$ is used directly from the true Weibull distribution and not estimated, $42$ is just a seed number we used for reproducibility.
+`FALSE` means that $S_C(t)$ is used directly from the true Weibull distribution and not estimated, $42$ is just a seed number for reproducibility.
+There is a hard-coded argument in the script, `num_cores = 60`, to allow parallelization of the simulations across multiple CPU cores.
+Change as needed for your system.
 
-To run for different sample sizes `n`, use [run_tests.sh](https://github.com/survival-org/scoring-rules-2024/blob/main/run_tests.sh).
+To run for different sample sizes `n` (sequentially), use [run_tests.sh](https://github.com/survival-org/scoring-rules-2024/blob/main/run_tests.sh).
+
+To get the results displayed, we executed: `./run_tests.sh 10 25 50 100 250 500 1000 2500 5000 10000` (this will take a while to run, depending on your system).
 
 Merged simulation results for all sample sizes are available [here](https://github.com/survival-org/scoring-rules-2024/blob/main/results/res_sims10000_distrs1000_0.rds).
 :::
@@ -256,6 +262,7 @@ All differences are small (typically < 0.01).
 
 ## SBS Improperness: Bias and Tail Effects {-#sbs-bias}
 
+Here we use the results from the [previous section](#tab1).
 The theoretical shift (i.e. bias) of the global minimum $x^*$ of the expected SBS from the true survival probability at $\tau^*$ is (for $\varepsilon \ge 0$):
 
 $$x^\star - S_Y(\tau^*) = - \frac{\varepsilon (1-S_Y(\tau^*))}{S_C(\tau^*) - \varepsilon} \approx - \varepsilon \cdot \frac{1 - S_Y(\tau^*)}{S_C(\tau^*)}$$
@@ -292,6 +299,9 @@ plot_data = data |>
     )
   )
 ```
+
+- The $\hat \varepsilon$ vs bias plot corresponds to Figure 2 in the main manuscript.
+- The Bias surface over ($S_Y,S_C$) (n = 50) corresponds to Figure 3 in the main manuscript.
 
 ::: {.panel-tabset}
 
@@ -764,7 +774,10 @@ For RCLL\* we use *linear interpolation* of $S_C(t)$ to mitigate density estimat
 
 Use [properness_test.R](https://github.com/survival-org/scoring-rules-2024/blob/main/properness_test.R) to run the experiments.
 To run for different sample sizes `n`, use [run_tests.sh](https://github.com/survival-org/scoring-rules-2024/blob/main/run_tests.sh), changing `estimate_cens` to `TRUE`.
-Merged simulation results for all `n` are available [here](https://github.com/survival-org/scoring-rules-2024/blob/main/results/res_sims10000_distrs1000_1.rds).
+
+To get the results displayed, we executed the following command: `./run_tests.sh 10 25 50 100 250 500 1000 2500 5000 10000` (this will take a while to run, depending on your system).
+
+Merged simulation results for all sample sizes are available [here](https://github.com/survival-org/scoring-rules-2024/blob/main/results/res_sims10000_distrs1000_1.rds).
 :::
 
 Load results (same output columns as in the previous section):
@@ -864,8 +877,7 @@ The simulation and benchmarking pipeline is implemented in the [simulation_bench
 Key scripts include:
 
 - [simulate.R](https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/simulate.R): Defines the DGP and can generate data sets with different censoring rates.
-We use it to generate two tasks, one with a low censoring rate and one with a high censoring rate, and save them as [`tasks.rds`](https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/tasks.rds).
-- [train.R](https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/train.R): Trains all models on the generated tasks.
+- [train.R](https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/train.R): Generates two tasks, one with a low censoring rate and one with a high censoring rate, and saves them as [`tasks.rds`](https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/tasks.rds). Then trains all models on the generated tasks.
 The trained models are saved as `trained_low.rds`, `trained_high.rds`, and separate files for the large Random Survival Forest objects (`trained_low_rsf.rds`, `trained_high_rsf.rds`).
 - [execute_dense.R](https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/execute_dense.R):
 Executes a benchmark where the specified models are evaluated on test sets of varying sizes using a dense prediction time grid (unique event times from the training task).
@@ -1109,7 +1121,7 @@ $$
 i.e. the difference in empirical mean loss between a candidate model and the true data-generating process.
 We then plot it against the *mean integrated absolute error* (MIAE) between the predicted and true survival functions, which serves as a measure of misspecification.
 
-The panels below show the relationship between excess loss and MIAE for four commonly used evaluation metrics:
+The panels below correspond to Figure 5 in the main manuscript and show the relationship between excess loss and MIAE for four commonly used evaluation metrics:
 
 - **RCLL**: right-censored log-loss (density estimated via linear interpolation of the survival function)
 - **SBS**: Survival Brier Score evaluated at $t = 5$
@@ -1543,7 +1555,7 @@ For machine learning models that predict survival probabilities only at a discre
 To assess the impact of this approximation, we progressively reduce the prediction time grid by uniformly subsampling the unique event times, from 100% down to 2% of the original grid.
 
 The figures below show how the resulting approximation (grid size $B$) affects the excess RCLL for different test set sizes.
-The results for $n = 250$ correspond to Figure 7 and Tables 3 and C2 in the manuscript.
+The results for $n = 250$ correspond to Figure 7, Table 3 and Table C2 in the manuscript.
 
 ```{r}
 # plots score differences (relative to TRUE likelihood) vs. MIAE/MISE for RCLL
@@ -1912,6 +1924,8 @@ All models attain substantially smaller RCLL values under high censoring compare
 This benchmark complements the simulation study by comparing how different evaluation metrics assess and rank survival learners across eight heterogeneous, low-dimensional, real-world datasets.
 
 To reproduce this benchmark, see [real_data_benchmark.R](https://github.com/survival-org/scoring-rules-2024/blob/main/real_data_benchmark.R).
+
+Results are available in [results/real_data_bm.rds](https://github.com/survival-org/scoring-rules-2024/blob/main/results/real_data_bm.rds).
 :::
 
 ### Datasets

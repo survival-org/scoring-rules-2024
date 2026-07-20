@@ -3,6 +3,7 @@
 This repository contains code, data, and results from a simulation study on the properness of scoring rules in survival analysis, including supplementary experiments and visualizations.
 
 See [HTML report](https://survival-org.github.io/scoring-rules-2024/).
+Instructions for running each simulation are provided in the corresponding sections of the report.
 
 ## Contents of the HTML Report
 

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="John Zobolas">
-<meta name="dcterms.date" content="2026-07-14">
+<meta name="dcterms.date" content="2026-07-20">
 <meta name="description" content="Supporting information for paper: ‘When Are Scoring Rules Proper? Bridging Theory and Practice in Survival Model Evaluation’">
 
 <title>Supplementary Material</title>
@@ -231,7 +231,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">July 14, 2026</p>
+      <p class="date">July 20, 2026</p>
     </div>
   </div>
   
@@ -262,6 +262,7 @@ window.Quarto = {
 <section id="weib" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="weib">Weibull distribution variability</h2>
 <p>To illustrate the diversity of the Weibull distributions used in our simulation design, we plot both the density <span class="math inline">f(t)</span> and survival <span class="math inline">S(t)</span> functions for 10 randomly sampled shape <span class="math inline">\alpha</span> and scale <span class="math inline">\sigma</span> parameter pairs. These distributions represent either the true survival, predicted survival, or censoring times across simulations. The wide parameter range induces substantial variability, ensuring a rich family of distributions and increasing the sensitivity of our evaluation to detect violations of properness. By construction, all data-generating mechanisms assume <span class="math inline">Y</span> independent of <span class="math inline">C</span>, satisfying the random censoring assumption.</p>
+<p>The figure below corresponds to Figure 1 in the main manuscript.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -333,10 +334,11 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Use <a href="https://github.com/survival-org/scoring-rules-2024/blob/main/properness_test.R">properness_test.R</a> to run the experiments.</p>
+<p><a href="https://github.com/survival-org/scoring-rules-2024/blob/main/properness_test.R">properness_test.R</a> is the core file related to the assessment of empirical violations of properness.</p>
 <p>Example execution: <code>Rscript properness_test.R 10000 1000 10000 FALSE 42</code>.</p>
-<p>The above arguments correspond to (in that order): <span class="math inline">K = 10\,000</span> simulations, <span class="math inline">m = 1\,000</span> distributions per simulation and <span class="math inline">n = 10\,000</span> samples drawn from each distribution. <code>FALSE</code> means that <span class="math inline">S_C(t)</span> is used directly from the true Weibull distribution and not estimated, <span class="math inline">42</span> is just a seed number we used for reproducibility.</p>
-<p>To run for different sample sizes <code>n</code>, use <a href="https://github.com/survival-org/scoring-rules-2024/blob/main/run_tests.sh">run_tests.sh</a>.</p>
+<p>The above arguments correspond to (in that order): <span class="math inline">K = 10\,000</span> simulations, <span class="math inline">m = 1\,000</span> distributions per simulation and <span class="math inline">n = 10\,000</span> samples drawn from each distribution. <code>FALSE</code> means that <span class="math inline">S_C(t)</span> is used directly from the true Weibull distribution and not estimated, <span class="math inline">42</span> is just a seed number for reproducibility. There is a hard-coded argument in the script, <code>num_cores = 60</code>, to allow parallelization of the simulations across multiple CPU cores. Change as needed for your system.</p>
+<p>To run for different sample sizes <code>n</code> (sequentially), use <a href="https://github.com/survival-org/scoring-rules-2024/blob/main/run_tests.sh">run_tests.sh</a>.</p>
+<p>To get the results displayed, we executed: <code>./run_tests.sh 10 25 50 100 250 500 1000 2500 5000 10000</code> (this will take a while to run, depending on your system).</p>
 <p>Merged simulation results for all sample sizes are available <a href="https://github.com/survival-org/scoring-rules-2024/blob/main/results/res_sims10000_distrs1000_0.rds">here</a>.</p>
 </div>
 </div>
@@ -528,7 +530,7 @@ Important
 </section>
 <section id="sbs-bias" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="sbs-bias">SBS Improperness: Bias and Tail Effects</h2>
-<p>The theoretical shift (i.e.&nbsp;bias) of the global minimum <span class="math inline">x^*</span> of the expected SBS from the true survival probability at <span class="math inline">\tau^*</span> is (for <span class="math inline">\varepsilon \ge 0</span>):</p>
+<p>Here we use the results from the <a href="#tab1">previous section</a>. The theoretical shift (i.e.&nbsp;bias) of the global minimum <span class="math inline">x^*</span> of the expected SBS from the true survival probability at <span class="math inline">\tau^*</span> is (for <span class="math inline">\varepsilon \ge 0</span>):</p>
 <p><span class="math display">x^\star - S_Y(\tau^*) = - \frac{\varepsilon (1-S_Y(\tau^*))}{S_C(\tau^*) - \varepsilon} \approx - \varepsilon \cdot \frac{1 - S_Y(\tau^*)}{S_C(\tau^*)}</span></p>
 <p>Filter SBS simulation data for plotting:</p>
 <div class="cell">
@@ -565,6 +567,10 @@ Important
 <span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
+<ul>
+<li>The <span class="math inline">\hat \varepsilon</span> vs bias plot corresponds to Figure 2 in the main manuscript.</li>
+<li>The Bias surface over (<span class="math inline">S_Y,S_C</span>) (n = 50) corresponds to Figure 3 in the main manuscript.</li>
+</ul>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href=""><span class="math inline">\hat \varepsilon</span> vs bias</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href=""><span class="math inline">S_Y(\tau^*)</span> vs bias</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href=""><span class="math inline">S_C(\tau^*)</span> vs bias</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false" href="">Bias surface over (<span class="math inline">S_Y,S_C</span>) (n = 50)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-5" role="tab" aria-controls="tabset-1-5" aria-selected="false" href="">Bias surface over (<span class="math inline">S_Y,S_C</span>) (n = 100)</a></li></ul>
 <div class="tab-content">
@@ -980,7 +986,9 @@ Note
 </div>
 <div class="callout-body-container callout-body">
 <p>The only difference with the <a href="#tab1">previous experiment</a> is that <span class="math inline">S_C(t)</span> is now being estimated using the marginal Kaplan-Meier model via <code>survival::survfit()</code> instead of using the true Weibull censoring distribution (see <a href="https://github.com/survival-org/scoring-rules-2024/blob/main/helper.R">helper.R</a>). For SBS/ISBS we use <em>constant interpolation</em> of the censoring survival distribution <span class="math inline">S_C(t)</span>. For RCLL* we use <em>linear interpolation</em> of <span class="math inline">S_C(t)</span> to mitigate density estimation issues, i.e.&nbsp;for <span class="math inline">f_C(t)</span>.</p>
-<p>Use <a href="https://github.com/survival-org/scoring-rules-2024/blob/main/properness_test.R">properness_test.R</a> to run the experiments. To run for different sample sizes <code>n</code>, use <a href="https://github.com/survival-org/scoring-rules-2024/blob/main/run_tests.sh">run_tests.sh</a>, changing <code>estimate_cens</code> to <code>TRUE</code>. Merged simulation results for all <code>n</code> are available <a href="https://github.com/survival-org/scoring-rules-2024/blob/main/results/res_sims10000_distrs1000_1.rds">here</a>.</p>
+<p>Use <a href="https://github.com/survival-org/scoring-rules-2024/blob/main/properness_test.R">properness_test.R</a> to run the experiments. To run for different sample sizes <code>n</code>, use <a href="https://github.com/survival-org/scoring-rules-2024/blob/main/run_tests.sh">run_tests.sh</a>, changing <code>estimate_cens</code> to <code>TRUE</code>.</p>
+<p>To get the results displayed, we executed the following command: <code>./run_tests.sh 10 25 50 100 250 500 1000 2500 5000 10000</code> (this will take a while to run, depending on your system).</p>
+<p>Merged simulation results for all sample sizes are available <a href="https://github.com/survival-org/scoring-rules-2024/blob/main/results/res_sims10000_distrs1000_1.rds">here</a>.</p>
 </div>
 </div>
 <p>Load results (same output columns as in the previous section):</p>
@@ -1102,8 +1110,8 @@ Note
 <div class="callout-body-container callout-body">
 <p>The simulation and benchmarking pipeline is implemented in the <a href="https://github.com/survival-org/scoring-rules-2024/tree/main/simulation_benchmark">simulation_benchmark</a> directory. Key scripts include:</p>
 <ul>
-<li><a href="https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/simulate.R">simulate.R</a>: Defines the DGP and can generate data sets with different censoring rates. We use it to generate two tasks, one with a low censoring rate and one with a high censoring rate, and save them as <a href="https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/tasks.rds"><code>tasks.rds</code></a>.</li>
-<li><a href="https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/train.R">train.R</a>: Trains all models on the generated tasks. The trained models are saved as <code>trained_low.rds</code>, <code>trained_high.rds</code>, and separate files for the large Random Survival Forest objects (<code>trained_low_rsf.rds</code>, <code>trained_high_rsf.rds</code>).</li>
+<li><a href="https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/simulate.R">simulate.R</a>: Defines the DGP and can generate data sets with different censoring rates.</li>
+<li><a href="https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/train.R">train.R</a>: Generates two tasks, one with a low censoring rate and one with a high censoring rate, and saves them as <a href="https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/tasks.rds"><code>tasks.rds</code></a>. Then trains all models on the generated tasks. The trained models are saved as <code>trained_low.rds</code>, <code>trained_high.rds</code>, and separate files for the large Random Survival Forest objects (<code>trained_low_rsf.rds</code>, <code>trained_high_rsf.rds</code>).</li>
 <li><a href="https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/execute_dense.R">execute_dense.R</a>: Executes a benchmark where the specified models are evaluated on test sets of varying sizes using a dense prediction time grid (unique event times from the training task). Results are saved in <a href="https://github.com/survival-org/scoring-rules-2024/blob/main/results/sim_bm_dense.rds"><code>results/sim_bm_dense.rds</code></a>.</li>
 <li><a href="https://github.com/survival-org/scoring-rules-2024/blob/main/simulation_benchmark/RCLL_investigation.R">RCLL_investigation.R</a>: Investigates the sensitivity of the RCLL to the resolution of the prediction time grid. Results are saved in <a href="https://github.com/survival-org/scoring-rules-2024/blob/main/results/rcll_sim.rds"><code>results/rcll_sim.rds</code></a>.</li>
 </ul>
@@ -1363,7 +1371,7 @@ Note
 \Delta L = L(\hat S) - L(S_Y),
 </span></p>
 <p>i.e.&nbsp;the difference in empirical mean loss between a candidate model and the true data-generating process. We then plot it against the <em>mean integrated absolute error</em> (MIAE) between the predicted and true survival functions, which serves as a measure of misspecification.</p>
-<p>The panels below show the relationship between excess loss and MIAE for four commonly used evaluation metrics:</p>
+<p>The panels below correspond to Figure 5 in the main manuscript and show the relationship between excess loss and MIAE for four commonly used evaluation metrics:</p>
 <ul>
 <li><strong>RCLL</strong>: right-censored log-loss (density estimated via linear interpolation of the survival function)</li>
 <li><strong>SBS</strong>: Survival Brier Score evaluated at <span class="math inline">t = 5</span></li>
@@ -1796,7 +1804,7 @@ Note
 <section id="impact-of-prediction-grid-resolution-on-rcll" class="level3">
 <h3 class="anchored" data-anchor-id="impact-of-prediction-grid-resolution-on-rcll">Impact of Prediction Grid Resolution on RCLL</h3>
 <p>Unlike the Brier score, the RCLL requires both the survival function and event density. For machine learning models that predict survival probabilities only at a discrete set of time points, the density must therefore be approximated by interpolating the survival curve. To assess the impact of this approximation, we progressively reduce the prediction time grid by uniformly subsampling the unique event times, from 100% down to 2% of the original grid.</p>
-<p>The figures below show how the resulting approximation (grid size <span class="math inline">B</span>) affects the excess RCLL for different test set sizes. The results for <span class="math inline">n = 250</span> correspond to Figure 7 and Tables 3 and C2 in the manuscript.</p>
+<p>The figures below show how the resulting approximation (grid size <span class="math inline">B</span>) affects the excess RCLL for different test set sizes. The results for <span class="math inline">n = 250</span> correspond to Figure 7, Table 3 and Table C2 in the manuscript.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -2234,6 +2242,7 @@ Note
 <div class="callout-body-container callout-body">
 <p>This benchmark complements the simulation study by comparing how different evaluation metrics assess and rank survival learners across eight heterogeneous, low-dimensional, real-world datasets.</p>
 <p>To reproduce this benchmark, see <a href="https://github.com/survival-org/scoring-rules-2024/blob/main/real_data_benchmark.R">real_data_benchmark.R</a>.</p>
+<p>Results are available in <a href="https://github.com/survival-org/scoring-rules-2024/blob/main/results/real_data_bm.rds">results/real_data_bm.rds</a>.</p>
 </div>
 </div>
 <section id="datasets" class="level3">

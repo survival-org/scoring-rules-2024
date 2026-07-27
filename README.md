@@ -29,5 +29,5 @@ The most important packages, depending on the analysis script, are:
 
 ## Citation
 
-> Sonabend, R., Zobolas, J., De Bin, R., Kopper, P., Burk, L., & Bender, A. (2024). Examining properness in the external validation of survival models with squared and logarithmic losses. https://arxiv.org/abs/2212.05260v3
+> Sonabend, R., Zobolas, J., De Bin, R., Piller, J., Kopper, P., Burk, L., & Bender, A. (2024). When Are Scoring Rules Proper? Bridging Theory and Practice in Survival Model Evaluation. https://arxiv.org/abs/2212.05260v4
 
